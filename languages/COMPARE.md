@@ -16,11 +16,26 @@ numberString = '1,2,3,4,5'
 numbers = [int(n) for n in numberString.split(',')]
 ```
 
+Ruby:
+
+```ruby
+"1,2,3,4,5".split(",").map(&:to_i)
+```
+
 Kotlin:
 
 ```kotlin
 val numberString = "1,2,3,4,5"
 val numbers: List<Int> = numberString.split(",").map { it.toInt() }
+```
+
+Clojure:
+
+```clojure
+(require '[clojure.string :as str])
+(map #(Integer/parseInt %) (str/split "1,2,3,4,5" #","))
+; Alternative:
+(map read-string (str/split "1,2,3,4,5" #","))
 ```
 
 ## Join List
