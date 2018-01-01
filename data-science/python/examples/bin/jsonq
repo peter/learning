@@ -1,0 +1,81 @@
+#!/usr/bin/env python
+
+import sys
+import json
+import argparse
+import copy
+import re
+from functools import reduce
+
+def arg_parser():
+    parser = argparse.ArgumentParser(
+        description='Query JSON document and pretty print it')
+    parser.add_argument('query', nargs='?', default=None, help='Name of service to look up')
+    parser.add_argument('--limit', type=int, help='Maximum size for arrays')
+    parser.add_argument('--print', action='store_true', help='Plain string output instead of JSON format')
+    return parser
+
+args = arg_parser().parse_args()
+
+def pretty_json(value):
+  return json.dumps(value, indent=4, sort_keys=True)
+
+def deep_get(dictionary, keys, default=None):
+    if not isinstance(dictionary, dict):
+        return default
+    path = keys.split('.') if isinstance(keys, str) else keys
+    result = dictionary
+    def valid_index(key, _list):
+        return valid_int(key) and int(key) >= 0
+    for key in path:
+        if isinstance(result, dict) and key in result:
+            result = result[key]
+        elif isinstance(result, list) and valid_index(key, result):
+            result = result[int(key)] if int(key) < len(result) else None
+        elif isinstance(result, list) and len(result) > 0:
+            result = list(map(lambda v: v.get(key, None) if isinstance(v, dict) else None,
+                              result))
+        else:
+            result = default
+            break
+    return copy.deepcopy(result)
+
+def valid_int(value):
+    if isinstance(value, str) and re.match('^([1-9][0-9]*|[0-9])$', value):
+        return True
+    else:
+        return isinstance(value, int)
+
+def limit_lists(data, limit):
+    def build_limited(d, key):
+        value = d[key]
+        if isinstance(value, list):
+            d[key] = list(map(lambda l: limit_lists(l, limit), value[:limit]))
+        elif isinstance(value, dict):
+            d[key] = limit_lists(value, limit)
+        return d
+    if isinstance(data, dict):
+        return reduce(build_limited, data.keys(), copy.deepcopy(data))
+    else:
+        return data
+
+def pretty_print(value):
+    if isinstance(value, list):
+        for v in value:
+            print(v)
+    else:
+        print(value)
+
+data = json.loads(sys.stdin.read())
+if args.limit:
+    data = limit_lists(data, args.limit)
+if isinstance(data, dict):
+    result = deep_get(data, args.query) if args.query else data
+else:
+    query = ('data.' + args.query) if args.query else None
+    result = deep_get({'data': data}, query) if args.query else data
+
+if args.print:
+    pretty_print(result)
+else:
+    print(pretty_json(result))

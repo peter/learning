@@ -1,0 +1,14 @@
+#!/usr/bin/env python
+# URL decode a string
+#
+# echo "foo+bar%2F" | urldecode
+# urldecode "foo+bar%2F"
+
+import urllib.parse
+from util import first_arg_or_stdin
+
+def urldecode(value):
+    return urllib.parse.unquote_plus(value)
+
+if __name__ == "__main__":
+    print(urldecode(first_arg_or_stdin()))

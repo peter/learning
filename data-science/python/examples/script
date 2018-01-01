@@ -1,0 +1,21 @@
+#!/usr/bin/env python
+# -*- coding: UTF-8 -*-
+
+import argparse
+
+import lib.date as date
+from lib.util import env
+
+def arg_parser():
+    parser = argparse.ArgumentParser(description='An example Python command line script')
+    parser.add_argument('--intArg', type=int, required=False, help='Argument of type int, not required')
+    parser.add_argument('--startDate', type=date.parse, help='Date arg (YYYY-MM-DD)')
+    parser.add_argument('--argWithDefault', default='this-is-the-default-value', help='An arg with a default value')
+    return parser
+
+def main():
+    opts = arg_parser().parse_args()
+    print('Starting with opts=%s, USER=%s' % (opts, env('USER')))
+
+if __name__ == '__main__':
+    main()

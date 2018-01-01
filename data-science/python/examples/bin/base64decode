@@ -1,0 +1,11 @@
+#!/usr/bin/env python
+# Base64 decode a string
+
+import base64
+from util import first_arg_or_stdin
+
+def base64decode(value):
+    return base64.b64decode(bytes(value, 'utf-8')).decode('utf-8')
+
+if __name__ == "__main__":
+    print(base64decode(first_arg_or_stdin()))

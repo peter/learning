@@ -1,0 +1,15 @@
+#!/usr/bin/env python
+# Query/replace pattern in lines in input
+# Examples:
+#
+# cat ./replace |./replace \\d x
+# cat ./replace |./replace \\w x
+
+import sys
+import re
+
+pattern = sys.argv[1]
+replacement = sys.argv[2]
+
+for line in sys.stdin:
+    sys.stdout.write(re.sub(pattern, replacement, line))

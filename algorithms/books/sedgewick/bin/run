@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+export CLASSPATH=$CLASSPATH:lib/algs4.jar:classes
+
+find src -name "*.java" | xargs javac -d classes
+
+java "$@"

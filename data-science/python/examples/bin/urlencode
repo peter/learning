@@ -1,0 +1,14 @@
+#!/usr/bin/env python
+# URL encode a string
+#
+# echo "foo bar" | urlencode
+# urlencode "foo bar"
+
+import urllib.parse
+from util import first_arg_or_stdin
+
+def urlencode(value):
+    return urllib.parse.quote_plus(value)
+
+if __name__ == "__main__":
+    print(urlencode(first_arg_or_stdin()))
