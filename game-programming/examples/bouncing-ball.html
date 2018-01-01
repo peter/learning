@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Bouncing Ball (Canvas)</title>
+  </head>
+  <body>
+    <h1>Bouncing Ball (Canvas)</h1>
+
+    <canvas id="gameCanvas"></canvas>
+
+    <script type="text/javascript">
+      var config = {
+        framesPerSecond: 50,
+        speed: {
+          max: 8,
+          min: 4
+        },
+        radius: {
+          min: 10,
+          max: 20
+        },
+        width: 600,
+        height: 300,
+        paddle: {
+          height: 80,
+          width: 10
+        }
+      }
+
+      var state = {
+        ball: {
+          x: config.width/2,
+          y: config.height/2,
+          dx: randomSpeed(),
+          dy: randomSpeed(),
+          color: randomColor(),
+          radius: randomRadius()
+        },
+        paddle1: {
+          x: 0,
+          y: config.height/2
+        }
+      }
+
+      function random(from, to) {
+        return from + Math.round(Math.random()*(to-from))
+      }
+
+      function randomSpeed() {
+        var direction = Math.random() >= 0.5 ? 1 : -1
+        return direction * random(config.speed.max, config.speed.min)
+      }
+
+      function randomRadius() {
+        return random(config.radius.min, config.radius.max)
+      }
+
+      function randomColor() {
+        var letters = '0123456789ABCDEF';
+        var color = '#';
+        for (var i = 0; i < 6; i++ ) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+      }
+
+      function getContext() {
+        var canvas = document.getElementById('gameCanvas')
+        canvas.width = config.width
+        canvas.height = config.height
+        var c = canvas.getContext('2d')
+        c.fillStyle = 'black'
+        c.fillRect(0, 0, canvas.width, canvas.height)
+        return c
+      }
+
+      function drawBall(c) {
+        c.beginPath();
+        c.arc(state.ball.x, state.ball.y, state.ball.radius, 0, 2*Math.PI, false);
+        c.fillStyle = state.ball.color;
+        c.fill();
+        c.closePath();
+      }
+
+      function drawPaddle1(c) {
+        c.fillStyle = 'white'
+        c.fillRect(state.paddle1.x, state.paddle1.y, config.paddle.width, config.paddle.height)
+      }
+
+      function randomizeBall() {
+        state.ball.radius = randomRadius()
+        state.ball.color = randomColor()
+      }
+
+      function moveBall() {
+        state.ball.x = state.ball.x + state.ball.dx
+        state.ball.y = state.ball.y + state.ball.dy
+      }
+
+      function resetBall() {
+        state.ball.x = config.width/2
+        state.ball.y = config.height/2
+        state.ball.dx = randomSpeed()
+        state.ball.dy = randomSpeed()
+        state.ball.color = randomColor(),
+        state.ball.radius = randomRadius()
+      }
+
+      function checkCollisions() {
+        if (state.ball.x < state.ball.radius) {
+          if (state.ball.y > state.paddle1.y && state.ball.y < (state.paddle1.y + config.paddle.height)) {
+            state.ball.dx = -state.ball.dx
+          } else {
+            resetBall()
+          }
+        } else if (state.ball.x > (config.width - state.ball.radius)) {
+          state.ball.dx = -state.ball.dx
+        }
+        if (state.ball.y > (config.height - state.ball.radius) || state.ball.y < state.ball.radius) {
+          state.ball.dy = -state.ball.dy
+        }
+      }
+
+      function calculateMousePos(c, event) {
+        var rect = c.canvas.getBoundingClientRect()
+        var root = document.documentElement
+        var x = event.clientX - rect.left - root.scrollLeft
+        var y = event.clientY - rect.top - root.scrollTop
+        return {x: x, y: y}
+      }
+
+      function updateState() {
+        moveBall()
+        checkCollisions()
+      }
+
+      function clear(c) {
+        c.fillStyle = 'black'
+        c.fillRect(0, 0, config.width, config.height);
+      }
+
+      function draw(c) {
+        clear(c)
+        drawPaddle1(c)
+        drawBall(c)
+      }
+
+      function gameLoop(c) {
+        draw(c)
+        updateState()
+      }
+
+      function runGame() {
+        var c = getContext()
+        c.canvas.addEventListener('mousemove', function(event) {
+          var mousePos = calculateMousePos(c, event)
+          state.paddle1.y = mousePos.y - config.paddle.height/2
+        })
+
+        setInterval(function () {
+          gameLoop(c)
+        }, 1000/config.framesPerSecond)
+      }
+
+      window.onload = runGame
+    </script>
+  </body>
+</html>

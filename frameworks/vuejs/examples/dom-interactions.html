@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Hello World in Vue.js</title>
+  </head>
+  <body>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+
+    <style media="screen">
+      .demo {
+        with: 100px;
+        height: 100px;
+        background-color: gray;
+        display: inline-block;
+        margin: 10px;
+      }
+    </style>
+
+    <div id="app" v-on:mousemove="updateCoordinates">
+      <p>
+        <input type="text" v-model="message"> (v-model two way data binding)
+      </p>
+
+      <p>
+        <input type="text" v-on:input="changeMessage"> (v-on:input method invocation - one way data flow)
+      </p>
+
+      <p>
+        {{ message }} (double curlies)
+      </p>
+
+      <p>
+        {{Math.random()}}
+        (double curlies with arbitrary JavaScript expression)
+      </p>
+
+      <p v-once>
+        {{ message }} (v-once)
+      </p>
+
+      <p>
+        {{ sayHello() }} (method invocation)
+      </p>
+
+      <p>
+        <a v-bind:href="link">Google</a> (v-bind:href - cannot use double curlies in attribute values)
+      </p>
+
+      <p>
+        <span v-html="finishedLink"></span>
+        (v-html - raw HTML output)
+      </p>
+
+      <p>
+        <button v-on:click="increment">Increment</button>
+
+        {{count}}
+
+        (v-on:click method invocation that changes data)
+      </p>
+
+      <p>
+        {{count > 10 ? 'count > 10' : 'count <= 10'}}
+        (JavaScript expression (ternary operator) in double curlies)
+      </p>
+
+      <p>
+        Coordinates: {{x}} / {{y}}
+
+        (v-on:mousemove with event.clientX/clientY)
+      </p>
+
+      <p>
+        <button v-on:click="increment(2, $event)">Increment by 2</button>
+
+        {{count}}
+
+        (v-on:click method invocation with an argument)
+      </p>
+
+      <p v-on:mousemove="stopPropagation">
+        stop coordinate update here
+        (v-on:mousemove inokes event.stopPropagation())
+      </p>
+
+      <p v-on:mousemove="stopPropagation">
+        stop coordinate update here
+        (v-on:mousemove.stop - shorthand for above with stop event modifier (there is also prevent))
+      </p>
+
+      <p>
+        <input type="text" v-on:keyup.enter.space="alertMe">
+        (v-on:keyup.enter.space - key modifiers)
+      </p>
+
+      <p>
+        Color: <input type="text" v-model="color">
+        Width: <input type="text" v-model="width">
+      </p>
+
+      <div class="demo" :style="{backgroundColor: color}"></div>
+      <div class="demo" :style="[myStyle, {height: width + 'px'}]"></div>
+    </div>
+
+    <script type="text/javascript">
+      new Vue({
+        el: '#app',
+        data: {
+          message: 'Hello World',
+          link: 'http://www.google.com',
+          finishedLink: '<a href="http://www.google.com">Google</a>',
+          count: 1,
+          x: null,
+          y: null,
+          color: 'blue',
+          width: 100
+        },
+        methods: {
+          changeMessage: function(event) {
+            this.message = event.target.value
+          },
+          sayHello: function() {
+            return this.message
+          },
+          increment: function(incr, event) {
+            incr = (typeof incr === "number" ? incr : 1)
+            this.count = this.count + incr
+          },
+          updateCoordinates: function(event) {
+            this.x = event.clientX
+            this.y = event.clientY
+          },
+          stopPropagation: function(event) {
+            event.stopPropagation()
+          },
+          alertMe: function(event) {
+            alert("You pressed enter or space, value=" + event.target.value)
+          }
+        },
+        computed: {
+          myStyle: function() {
+            return {
+              backgroundColor: this.color,
+              width: (this.width + 'px')
+            }
+          }
+        },
+        watch: {
+          count: function(value) {
+            var vm = this
+            setTimeout(function() {
+              vm.count = 1
+            }, 3000)
+          }
+        }
+      })
+    </script>
+  </body>
+</html>
