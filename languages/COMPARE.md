@@ -26,7 +26,7 @@ Kotlin:
 
 ```kotlin
 val numberString = "1,2,3,4,5"
-val numbers: List<Int> = numberString.split(",").map { it.toInt() }
+val numbers: List<Int> = numberString.split(",").map { it..trim().toInt() }
 ```
 
 Clojure:
@@ -54,6 +54,13 @@ Python:
 ```python
 numbers = [4, 8, 15, 16, 23, 42]
 numberString = ",".join([str(n) for n in numbers])
+```
+
+Kotlin
+
+```kotlin
+val numbers = listOf(4, 8, 15, 16, 23, 42)
+val numberString = numbers.joinToString(",")
 ```
 
 ## Interpolate String
