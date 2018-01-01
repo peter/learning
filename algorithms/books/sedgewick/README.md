@@ -24,6 +24,29 @@ public static int gcd(int p, int q) {
 
 ### 1.3 Bags, Queues, and Stacks
 
+API - each container data type (`Bag`, `Queue`, `Stack`) has an empty constructor, a method for adding (`add`, `enqueue`, `push`), an optional removal method (`dequeue`, `pop`), `isEmpty`, and `size`.
+
+The container types use generics to be able to hold any type of data.
+
+```java
+Stack<String> stack = new Stack<String>();
+stack.push("Test");
+String next = stack.pop();
+
+Queue<Date> queue = new Queue<Date>();
+queue.enqueue(new Date(12, 31, 1999));
+Date next = queue.dequeue();
+```
+
+Collections should also be iterable:
+
+```java
+Queue<Transaction> collection = new Queue<Transaction>();
+for (Transaction t : collection) {
+  StdOut.println(t);
+}
+```
+
 Dijkstra’s Two-Stack Algorithm for Expression Evaluation:
 
 ```java
