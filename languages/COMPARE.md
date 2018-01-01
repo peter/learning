@@ -26,7 +26,7 @@ Kotlin:
 
 ```kotlin
 val numberString = "1,2,3,4,5"
-val numbers: List<Int> = numberString.split(",").map { it..trim().toInt() }
+val numbers = numberString.split(",").map { it.toInt() }
 ```
 
 Clojure:
