@@ -1,5 +1,23 @@
 # Language Comparison
 
+## Hello World
+
+Java:
+
+```java
+public class Hello {
+  public static void main(String[] args) {
+    System.out.println("Hello World!");
+  }
+}
+```
+
+Python:
+
+```python
+print('Hello World!')
+```
+
 ## Split String
 
 Java:
@@ -63,6 +81,15 @@ val numbers = listOf(4, 8, 15, 16, 23, 42)
 val numberString = numbers.joinToString(",")
 ```
 
+## Get n:th value from list/array or default
+
+Python
+
+```
+my_list = [1, 2, 3]
+my_list[3] if len(my_list) > 3 else 'default-value'
+```
+
 ## Interpolate String
 
 Java:
@@ -86,3 +113,59 @@ Kotlin:
 ```kotlin
 "a=$a b=$b c=$c"
 ```
+
+## Match Regex
+
+Python:
+
+```python
+import re
+re.match(r'^([1-9][0-9]*|[0-9])$', my_string)
+```
+
+## Extract Substring with Regex
+
+Python:
+
+```python
+import re
+re.match(r'^(.+)_bar$', 'foo_bar').group(1) # => 'foo'
+```
+
+
+## Copy/Clone List or Dictionary
+
+Python:
+
+```python
+import copy
+new_list_shallow = copy.copy(old_list)
+new_list_deep = copy.deepcopy(old_list)
+
+# Alternative shallow copy:
+new_list_shallow = list(old_list)
+```
+
+## For loop with index
+
+Python:
+
+```python
+my_list = [3, 2, 1]
+for i, item in enumerate(my_list):
+    print(i, item)
+```
+
+## Elapsed Time
+
+Python:
+
+```python
+import time
+start_time = time.time() # floating point seconds since epoch
+# Code here
+elapsed_seconds = time.time() - start_time
+```
+
+* [timeit module](https://docs.python.org/3/library/timeit.html)
+* [python decorator for profiling functions](https://stackoverflow.com/questions/3620943/measuring-elapsed-time-with-the-time-module)
