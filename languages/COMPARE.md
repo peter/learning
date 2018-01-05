@@ -90,6 +90,13 @@ my_list = [1, 2, 3]
 my_list[3] if len(my_list) > 3 else 'default-value'
 ```
 
+Ruby:
+
+```ruby
+my_list = [1, 2, 3]
+my_list[3] || 'default-value'
+```
+
 ## Interpolate String
 
 Java:

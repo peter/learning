@@ -77,9 +77,9 @@ def insertion_binary_sort(items):
         i += 1
     return result
 
-def run_search_functions(numbers):
+def run_search_functions(search_functions, numbers):
     previous_result = None
-    for name in sort_function_names():
+    for name in search_functions:
         start_time = time.time()
         result = lookup_sort_function(name)(numbers)
         elapsed = time.time() - start_time
@@ -88,11 +88,13 @@ def run_search_functions(numbers):
             assert result == previous_result
 
 def main():
-    for exponent in range(0, 5):
+    max_exponent = int(sys.argv[1]) if len(sys.argv) > 1 else 4
+    search_functions = sys.argv[2].split(',') if len(sys.argv) > 2 else sort_function_names()
+    for exponent in range(0, max_exponent+1):
         print(f'exponent={exponent}')
         size = 10 ** exponent
         numbers = random_numbers(size)
-        run_search_functions(numbers)
+        run_search_functions(search_functions, numbers)
 
 if __name__ == "__main__":
     main()
