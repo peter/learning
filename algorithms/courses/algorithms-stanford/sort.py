@@ -2,9 +2,13 @@ import sys
 import random
 import time
 import re
+import math
 
 def compact(items):
     return [i for i in items if i != None]
+
+def mean(numbers):
+    return float(sum(numbers)) / max(len(numbers), 1)
 
 def parse_sort_function_name(name):
     m = re.match(r'(.+)_sort$', name)
@@ -72,7 +76,6 @@ def insertion_binary_sort(items):
     i = 1
     while i < len(result):
         j = binary_search(result[0:i], result[i])
-        # print(f'debug insertion_binary_sort i={i} j={j} result={result} result[j]={result[j]} result[i]={result[i]}')
         if j != i:
             result.insert(j, result.pop(i))
         i += 1
@@ -92,15 +95,23 @@ def run_search_functions(search_functions, numbers):
             print(f'result={result}')
             assert result == previous_result
 
-def test_binary_search(max_exponent):
-    for exponent in range(0, max_exponent+1):
+def test_binary_search(max_exponent=4):
+    start_exponent = 1
+    for exponent in range(start_exponent, max_exponent+1):
         print(f'exponent={exponent}')
         size = 10 ** exponent
         numbers = random_numbers(size)
-        start_time = time.time()
-        result = binary_search(numbers, random.randrange(size))
-        elapsed = time.time() - start_time
-        print(f'result={result} elapsed={elapsed}')
+        elapsed = []
+        for _ in range(0, 100):
+            start_time = time.time()
+            result = binary_search(numbers, random.randrange(size))
+            elapsed.append(time.time() - start_time)
+        if len(elapsed) == 1:
+            print(f'elapsed={mean(elapsed)}')
+        else:
+            log2_expect = (elapsed[0]/math.log(10**start_exponent, 2)) * math.log(10**exponent, 2)
+            print(f'elapsed={mean(elapsed)} log2_expect={log2_expect} ratio={mean(elapsed)/log2_expect}')
+
 
 def test_search_functions(search_functions, max_exponent):
     for exponent in range(0, max_exponent+1):
