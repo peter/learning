@@ -71,7 +71,8 @@ def insertion_binary_sort(items):
     result = list(items) # copy
     i = 1
     while i < len(result):
-        j = binary_search(result[0:1], result[i])
+        j = binary_search(result[0:i], result[i])
+        # print(f'debug insertion_binary_sort i={i} j={j} result={result} result[j]={result[j]} result[i]={result[i]}')
         if j != i:
             result.insert(j, result.pop(i))
         i += 1
@@ -84,17 +85,34 @@ def run_search_functions(search_functions, numbers):
         result = lookup_sort_function(name)(numbers)
         elapsed = time.time() - start_time
         print(f'{sort_function_name(name)} elapsed={elapsed}')
-        if previous_result:
+        if not previous_result:
+            previous_result = result
+        elif result != previous_result:
+            print(f'previous_result={previous_result}')
+            print(f'result={result}')
             assert result == previous_result
 
-def main():
-    max_exponent = int(sys.argv[1]) if len(sys.argv) > 1 else 4
-    search_functions = sys.argv[2].split(',') if len(sys.argv) > 2 else sort_function_names()
+def test_binary_search(max_exponent):
+    for exponent in range(0, max_exponent+1):
+        print(f'exponent={exponent}')
+        size = 10 ** exponent
+        numbers = random_numbers(size)
+        start_time = time.time()
+        result = binary_search(numbers, random.randrange(size))
+        elapsed = time.time() - start_time
+        print(f'result={result} elapsed={elapsed}')
+
+def test_search_functions(search_functions, max_exponent):
     for exponent in range(0, max_exponent+1):
         print(f'exponent={exponent}')
         size = 10 ** exponent
         numbers = random_numbers(size)
         run_search_functions(search_functions, numbers)
+
+def main():
+    max_exponent = int(sys.argv[1]) if len(sys.argv) > 1 else 4
+    search_functions = sys.argv[2].split(',') if len(sys.argv) > 2 else sort_function_names()
+    test_search_functions(search_functions, max_exponent)
 
 if __name__ == "__main__":
     main()
