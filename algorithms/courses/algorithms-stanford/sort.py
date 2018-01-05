@@ -55,6 +55,28 @@ def insertion_sort(items):
         i += 1
     return result
 
+# Find index to place item in list of sorted items to retain ascending sort
+def binary_search(sorted_items, item):
+    if len(sorted_items) == 0:
+        return 0
+    elif len(sorted_items) == 1:
+        return 0 if sorted_items[0] > item else 1
+    pivot = len(sorted_items) // 2
+    if sorted_items[pivot] > item:
+        return binary_search(sorted_items[0:pivot], item)
+    else:
+        return pivot + binary_search(sorted_items[pivot:], item)
+
+def insertion_binary_sort(items):
+    result = list(items) # copy
+    i = 1
+    while i < len(result):
+        j = binary_search(result[0:1], result[i])
+        if j != i:
+            result.insert(j, result.pop(i))
+        i += 1
+    return result
+
 def run_search_functions(numbers):
     previous_result = None
     for name in sort_function_names():
