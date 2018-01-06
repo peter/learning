@@ -81,13 +81,104 @@ val numbers = listOf(4, 8, 15, 16, 23, 42)
 val numberString = numbers.joinToString(",")
 ```
 
+## Anomymous Functions
+
+Python:
+
+```python
+foo = lambda n: n*n
+foo(3) # => 9
+# NOTE: Python lambdas are single line only
+```
+
+## Conditional with Assignmemt
+
+Clojure:
+
+```clojure
+(defn get-data [] "the-data")
+
+(if-let [data (get-data)]
+  (println data))
+```
+
+Ruby:
+
+```ruby
+def get_data
+  "the-data"
+end
+
+if data = get_data
+  puts data
+end
+```
+
+Java: not possible
+Python: not possible
+
+## Single Line Conditional
+
+Java:
+
+```java
+public static void foobar(Integer n) {
+  if (n == null) return;
+}
+```
+
+JavaScript:
+
+```javascript
+function foobar(n) {
+  if (n == null) throw new Error("n cannot be null or undefined")
+}
+```
+
+Ruby:
+
+```ruby
+def get_data
+  "the-data"
+end
+
+def should_get_data?
+  true
+end
+
+get_data if should_get_data?
+```
+
+Python: not possible
+
+## Ternary operator
+
+JavaScript:
+
+```javascript
+const foo = n % 0 == 0 ? 'even' : 'odd'
+```
+
+Python:
+
+```python
+# NOTE: Python doesn't have the ternary operator
+foo = 'even' if n % 2 == 0 else 'odd'
+```
+
 ## Get n:th value from list/array or default
 
 Python
 
-```
+```python
 my_list = [1, 2, 3]
 my_list[3] if len(my_list) > 3 else 'default-value'
+
+def nth(items, index, default=None):
+  return items[index] if len(items) > index else default
+
+nth([1, 2, 3], 3) # => None
+nth([1, 2, 3], 3, 'default value') # => 'default value'
 ```
 
 Ruby:
@@ -95,6 +186,16 @@ Ruby:
 ```ruby
 my_list = [1, 2, 3]
 my_list[3] || 'default-value'
+```
+
+## Partial Function Application and Currying
+
+Python:
+
+```python
+from functools import partial
+basetwo = partial(int, base=2)
+basetwo('10010'
 ```
 
 ## Interpolate String
