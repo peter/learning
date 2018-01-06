@@ -33,7 +33,7 @@ instances is possible but can be an anti pattern.
 You can set data properties and invoke methods on view instances:
 
 ```javascript
-var vm1 = new View({
+var vm1 = new Vue({
   el: '#app',
   data: {foo: 'bar'},
   methods: {

@@ -1,0 +1,105 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "An example Flask REST API with user registration and JWT-based login",
+        "version": "1.0.0",
+        "title": "Flask Auth API"
+    },
+    "host": "api-auth-flask.herokuapp.com",
+    "basePath": "/",
+    "schemes": ["http"],
+    "paths": {
+        "/register": {
+            "post": {
+                "tags": ["user"],
+                "summary": "Register user with email and password",
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
+                "parameters": [{
+                    "in": "body",
+                    "name": "body",
+                    "description": "User object to register",
+                    "required": true,
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "user": {
+                          "type": "object",
+                          "properties": {
+                            "name": {"type": "string"},
+                            "email": {"type": "string"},
+                            "password": {"type": "string"}
+                          },
+                          "additionalProperties": false,
+                          "required": ["email", "password"]
+                        }
+                      },
+                      "additionalProperties": false,
+                      "required": ["user"]
+                    }
+                }],
+                "responses": {
+                    "201": {
+                        "description": "User created"
+                    },
+                    "422": {
+                      "description": "User could not be created"
+                    }
+                }
+            }
+        },
+        "/login": {
+            "post": {
+                "tags": ["user"],
+                "summary": "Log in user with email and password and get JWT token",
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
+                "parameters": [{
+                    "in": "body",
+                    "name": "body",
+                    "description": "Email and password",
+                    "required": true,
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "email": {"type": "string"},
+                        "password": {"type": "string"}
+                      },
+                      "additionalProperties": false,
+                      "required": ["email", "password"]
+                    }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "User logged and token returned"
+                    },
+                    "401": {
+                      "description": "Could not log in user with credentials"
+                    }
+                }
+            }
+        },
+        "/me": {
+            "post": {
+                "tags": ["user"],
+                "summary": "Get info about logged in user with recent successful logins",
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
+                "parameters": [{
+                    "in": "header",
+                    "name": "Authorization",
+                    "description": "Bearer <jwt-token>",
+                    "required": true
+                }],
+                "responses": {
+                    "200": {
+                        "description": "User info with successful logins"
+                    },
+                    "401": {
+                      "description": "Could not authorize user with token in header"
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+SECRET_KEY=a1c18b7014fe46b886395c66da05eed2 \
+python -m pytest -s -vv test_app.py

@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+. venv/bin/activate
+
+DATABASE_URL=postgresql://localhost/api-auth-flask-dev \
+SECRET_KEY=a1c18b7014fe46b886395c66da05eed2 \
+FLASK_DEBUG=1 \
+FLASK_APP=app.py \
+python -m flask run

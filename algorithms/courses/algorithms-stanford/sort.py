@@ -71,23 +71,30 @@ def binary_search(sorted_items, item):
     else:
         return pivot + binary_search(sorted_items[pivot:], item)
 
-# I'm not sure insertion_binary_sort is O(NlogN). Test output:
+# It seems insertion_binary_sort is not O(NlogN). Test output:
 #
+# size=10
+# insertion_binary_sort elapsed=2.002716064453125e-05 nlog2_constant=6.028776081985097e-07
+# insertion_sort elapsed=1.0776519775390626e-05 nlog2_constant=3.2440557012586476e-07
+# merge_sort elapsed=3.204345703125e-05 nlog2_constant=9.646041731176154e-07
+# size=100
+# insertion_binary_sort elapsed=0.00034413337707519533 nlog2_constant=5.179723450438863e-07
+# insertion_sort elapsed=0.0003197193145751953 nlog2_constant=4.812255194013104e-07
+# merge_sort elapsed=0.0003436088562011719 nlog2_constant=5.171828624617216e-07
 # size=1000
-# insertion_binary_sort elapsed=0.008890056610107422 nlog2_constant=8.920579009310614e-07
-# merge_sort elapsed=0.005132436752319336 nlog2_constant=5.150058044321158e-07
+# insertion_binary_sort elapsed=0.0083221435546875 nlog2_constant=8.350716127275357e-07
+# insertion_sort elapsed=0.031513309478759764 nlog2_constant=3.1621504719162495e-06
+# merge_sort elapsed=0.004467201232910156 nlog2_constant=4.4825385592435855e-07
 # size=10000
-# insertion_binary_sort elapsed=0.6642757415771484 nlog2_constant=4.9991730901664216e-06
-# merge_sort elapsed=0.0631753921508789 nlog2_constant=4.754422006312347e-07
+# insertion_binary_sort elapsed=0.6656803607940673 nlog2_constant=5.0097439030858885e-06
+# insertion_sort elapsed=3.458074760437012 nlog2_constant=2.602460575350191e-05
+# merge_sort elapsed=0.0655287742614746 nlog2_constant=4.931531657949426e-07
 # size=30000
-# insertion_binary_sort elapsed=5.621889925003051 nlog2_constant=1.260004218084712e-05
-# merge_sort elapsed=0.20027585029602052 nlog2_constant=4.488675863808401e-07
+# insertion_binary_sort elapsed=5.8100584030151365 nlog2_constant=1.3021774159182998e-05
+# insertion_sort elapsed=31.56323504447937 nlog2_constant=7.07409960404403e-05
+# merge_sort elapsed=0.20908894538879394 nlog2_constant=4.686199065781626e-07
 # size=50000
-# insertion_binary_sort elapsed=16.851253271102905 nlog2_constant=2.1590828179162007e-05
-# merge_sort elapsed=0.3670228958129883 nlog2_constant=4.7025156846378976e-07
-# size=80000
-# insertion_binary_sort elapsed=47.66332216262818 nlog2_constant=3.657920235507824e-05
-# merge_sort elapsed=0.6951335430145263 nlog2_constant=5.334800299268262e-07
+# insertion_binary_sort elapsed=16.143204307556154 nlog2_constant=2.068363372493189e-05
 def insertion_binary_sort(items):
     result = list(items) # copy
     i = 1
@@ -134,16 +141,15 @@ def test_binary_search(max_exponent=4):
             print(f'elapsed={mean(elapsed)} log2_expect={log2_expect} ratio={mean(elapsed)/log2_expect}')
 
 
-def test_search_functions(search_functions, max_exponent):
+def test_search_functions(search_functions):
     for size in [10, 100, 1000, 10000, 30000, 50000, 80000, 100000]:
         print(f'size={size}')
         numbers = random_numbers(size)
         run_search_functions(search_functions, numbers)
 
 def main():
-    max_exponent = int(sys.argv[1]) if len(sys.argv) > 1 else 4
-    search_functions = sys.argv[2].split(',') if len(sys.argv) > 2 else sort_function_names()
-    test_search_functions(search_functions, max_exponent)
+    search_functions = sys.argv[1].split(',') if len(sys.argv) > 1 else sort_function_names()
+    test_search_functions(search_functions)
 
 if __name__ == "__main__":
     main()
