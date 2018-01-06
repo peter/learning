@@ -71,6 +71,23 @@ def binary_search(sorted_items, item):
     else:
         return pivot + binary_search(sorted_items[pivot:], item)
 
+# I'm not sure insertion_binary_sort is O(NlogN). Test output:
+#
+# size=1000
+# insertion_binary_sort elapsed=0.008890056610107422 nlog2_constant=8.920579009310614e-07
+# merge_sort elapsed=0.005132436752319336 nlog2_constant=5.150058044321158e-07
+# size=10000
+# insertion_binary_sort elapsed=0.6642757415771484 nlog2_constant=4.9991730901664216e-06
+# merge_sort elapsed=0.0631753921508789 nlog2_constant=4.754422006312347e-07
+# size=30000
+# insertion_binary_sort elapsed=5.621889925003051 nlog2_constant=1.260004218084712e-05
+# merge_sort elapsed=0.20027585029602052 nlog2_constant=4.488675863808401e-07
+# size=50000
+# insertion_binary_sort elapsed=16.851253271102905 nlog2_constant=2.1590828179162007e-05
+# merge_sort elapsed=0.3670228958129883 nlog2_constant=4.7025156846378976e-07
+# size=80000
+# insertion_binary_sort elapsed=47.66332216262818 nlog2_constant=3.657920235507824e-05
+# merge_sort elapsed=0.6951335430145263 nlog2_constant=5.334800299268262e-07
 def insertion_binary_sort(items):
     result = list(items) # copy
     i = 1
@@ -84,10 +101,14 @@ def insertion_binary_sort(items):
 def run_search_functions(search_functions, numbers):
     previous_result = None
     for name in search_functions:
-        start_time = time.time()
-        result = lookup_sort_function(name)(numbers)
-        elapsed = time.time() - start_time
-        print(f'{sort_function_name(name)} elapsed={elapsed}')
+        sort_function = lookup_sort_function(name)
+        elapsed = []
+        for _ in range(0, 5):
+            start_time = time.time()
+            result = sort_function(numbers)
+            elapsed.append(time.time() - start_time)
+        nlog2_constant = mean(elapsed)/(len(numbers)*math.log(len(numbers), 2)) if len(numbers) > 1 else None
+        print(f'{sort_function_name(name)} elapsed={mean(elapsed)} nlog2_constant={nlog2_constant}')
         if not previous_result:
             previous_result = result
         elif result != previous_result:
@@ -114,9 +135,8 @@ def test_binary_search(max_exponent=4):
 
 
 def test_search_functions(search_functions, max_exponent):
-    for exponent in range(0, max_exponent+1):
-        print(f'exponent={exponent}')
-        size = 10 ** exponent
+    for size in [10, 100, 1000, 10000, 30000, 50000, 80000, 100000]:
+        print(f'size={size}')
         numbers = random_numbers(size)
         run_search_functions(search_functions, numbers)
 
