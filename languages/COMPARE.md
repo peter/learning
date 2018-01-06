@@ -115,6 +115,7 @@ end
 ```
 
 Java: not possible
+
 Python: not possible
 
 ## Single Line Conditional
@@ -156,7 +157,7 @@ Python: not possible
 JavaScript:
 
 ```javascript
-const foo = n % 0 == 0 ? 'even' : 'odd'
+const foo = n % 2 == 0 ? 'even' : 'odd'
 ```
 
 Python:
