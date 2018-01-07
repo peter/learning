@@ -18,6 +18,18 @@ Python:
 print('Hello World!')
 ```
 
+Clojure:
+
+```clojure
+(println "Hello World!")
+```
+
+Elixir:
+
+```elixir
+IO.puts "Hello World"
+```
+
 ## Split String
 
 Java:
@@ -56,6 +68,12 @@ Clojure:
 (map read-string (str/split "1,2,3,4,5" #","))
 ```
 
+Elixir:
+
+```elixir
+"1,2,3,4,5" |> String.split(",") |> Enum.map(&String.to_integer/1)
+```
+
 ## Join List
 
 Java:
@@ -74,6 +92,20 @@ numbers = [4, 8, 15, 16, 23, 42]
 numberString = ",".join([str(n) for n in numbers])
 ```
 
+Clojure:
+
+```clojure
+(require '[clojure.string :as str])
+(let [numbers [4, 8, 15, 16, 23, 42]
+      number-string (str/join ", " numbers)])
+```
+
+Elixir:
+
+```elixir
+Enum.join([4, 8, 15, 16, 23, 42], ", ")
+```
+
 Kotlin
 
 ```kotlin
@@ -89,6 +121,16 @@ Python:
 foo = lambda n: n*n
 foo(3) # => 9
 # NOTE: Python lambdas are single line only
+```
+
+Clojure:
+
+```clojure
+(let [foo #(* % %)]
+  (foo 3))
+; Alternative syntax with argument names
+(let [foo (fn [n] (* n n))]
+  (foo 3))
 ```
 
 ## Conditional with Assignmemt
@@ -150,6 +192,14 @@ end
 get_data if should_get_data?
 ```
 
+Clojure:
+
+```clojure
+(defn get-data[] "the-data")
+(defn should-get-data?[] true)
+(if (should-get-data?) (get-data)) ; => "the-data"
+```
+
 Python: not possible
 
 ## Ternary operator
@@ -165,6 +215,18 @@ Python:
 ```python
 # NOTE: Python doesn't have the ternary operator
 foo = 'even' if n % 2 == 0 else 'odd'
+```
+
+Clojure:
+
+```clojure
+(def n 10)
+(let [foo (if (= (mod n 2) 0) "even" "odd")]
+     (println foo)) ; => "even"
+
+; Alternative:
+(let [foo (if (even? n) "even" "odd")]
+     (println foo)) ; => "even"
 ```
 
 ## Get n:th value from list/array or default
@@ -189,6 +251,13 @@ my_list = [1, 2, 3]
 my_list[3] || 'default-value'
 ```
 
+Clojure:
+
+```clojure
+(let [my-list [1, 2, 3]]
+  (nth my-list 3 "default-value")) ; => "default-value"
+```
+
 ## Partial Function Application and Currying
 
 Python:
@@ -196,10 +265,17 @@ Python:
 ```python
 from functools import partial
 basetwo = partial(int, base=2)
-basetwo('10010'
+basetwo('10010')
 ```
 
-## Interpolate String
+Clojure:
+
+```clojure
+(defn add [a b] (+ a b))
+(map (partial add 2) [3 5]) ; => [5, 7]
+```
+
+## String Interpolation
 
 Java:
 
@@ -221,6 +297,18 @@ Kotlin:
 
 ```kotlin
 "a=$a b=$b c=$c"
+```
+
+Clojure:
+
+```clojure
+(str "a=" a " b=" b " c=" c)
+```
+
+Elixir:
+
+```elixir
+"a=#{a} b=#{b} c=#{c}"
 ```
 
 ## Match Regex
