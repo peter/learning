@@ -156,6 +156,16 @@ JavaScript: you can *not* use `==`for value based equality checks of objects and
 
 Clojure: provides value based equality via the `=` operator for primitive data types and built in composite data types such as vector, map, set etc. Due to immutability equality checks are fast.
 
+## Immutability
+
+Java: strings are immutable
+
+JavaScript: strings are immutable
+
+Python: strings are immutable
+
+Ruby: strings are mutable
+
 ## Initialize Variable with Default if Null
 
 Ruby:
