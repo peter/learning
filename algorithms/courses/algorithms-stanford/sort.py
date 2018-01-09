@@ -4,6 +4,8 @@ import time
 import re
 import math
 
+sys.setrecursionlimit(10000)
+
 def compact(items):
     return [i for i in items if i != None]
 
@@ -46,6 +48,86 @@ def merge_sort(items):
             result.append(right[j])
             j += 1
     return result
+
+def quick_sort(items, start=0, end=None, strategy='first'):
+    if end is None:
+        end = len(items) - 1
+    cost = 0
+    if start < end:
+        cost = end - start
+        _quick_sort_put_pivot_first(items, start, end, strategy)
+        pivot = _quick_sort_partition1(items, start, end)
+        cost += quick_sort(items, start, pivot - 1, strategy)
+        cost += quick_sort(items, pivot + 1, end, strategy)
+    return cost
+
+def _quick_sort_put_pivot_first(items, start, end, strategy):
+    length = end - start
+    if strategy == 'first':
+        swap_index = start
+    elif strategy == 'last':
+        swap_index = end
+    elif strategy == 'median':
+        middle_index = int(length/2 - 1) if (length % 2 == 0) else int(length/2)
+        values = sorted([items[start], items[middle_index], items[end]])
+        if items[middle_index] == values[1]:
+            swap_index = middle_index
+        elif items[end] == values[1]:
+            swap_index = end
+        else:
+            swap_index = start
+    elif strategy == 'random':
+        swap_index = random.randrange(start, end + 1)
+    else:
+        raise ValueError(f'Unrecognized pivot strategy={strategy}')
+    if swap_index > start:
+        tmp = items[start]
+        items[start] = items[swap_index]
+        items[swap_index] = tmp
+
+def _quick_sort_swap(items, i, j):
+    tmp = items[i]
+    items[i] = items[j]
+    items[j] = tmp
+
+# Recursion limit: https://stackoverflow.com/questions/27116255/python-quicksort-maximum-recursion-depth
+def _quick_sort_partition1(items, start, end):
+    pivot = items[start]
+    left = start + 1
+    right = end
+    done = False
+    while not done:
+        while left <= right and items[left] <= pivot:
+            left = left + 1
+        while items[right] >= pivot and right >= left:
+            right = right - 1
+        if right < left:
+            done = True
+        else:
+            tmp = items[left]
+            items[left] = items[right]
+            items[right] = tmp
+    tmp = items[start]
+    items[start] = items[right]
+    items[right] = tmp
+    return right
+
+def _quick_sort_partition2(items, start, end):
+    pivot = items[start]
+    length = end - start + 1
+    i = start + 1
+    print(f'debug partition2 items={items} start={start} end={end} items[start:end+1]={items[start:end+1]} pivot={pivot} length={length} i={i}')
+    for j in range(i, length):
+        if items[j] < pivot:
+            _quick_sort_swap(items, i, j)
+            print(f'debug partition2 j={j} i={i} items[j]={items[j]} pivot={pivot} - swap and increment i items={items}')
+            i += 1
+        else:
+            print(f'debug partition2 j={j} i={i} items[j]={items[j]} pivot={pivot} - dont swap items={items}')
+    print(f'debug partition2 done swap pivot={pivot} at start={start} with items[i-1]={items[i-1]} at i-1={i-1}')
+    _quick_sort_swap(items, start, i - 1)
+    print(f'debug partition2 done items={items} items[start:end+1]={items[start:end+1]}')
+    return i - 1
 
 def insertion_sort(items):
     result = list(items) # copy
@@ -113,6 +195,8 @@ def run_search_functions(search_functions, numbers):
         for _ in range(0, 5):
             start_time = time.time()
             result = sort_function(numbers)
+            if not isinstance(result, list):
+                result = numbers # Assume in-place sorting
             elapsed.append(time.time() - start_time)
         nlog2_constant = mean(elapsed)/(len(numbers)*math.log(len(numbers), 2)) if len(numbers) > 1 else None
         print(f'{sort_function_name(name)} elapsed={mean(elapsed)} nlog2_constant={nlog2_constant}')

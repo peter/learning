@@ -30,6 +30,12 @@ Elixir:
 IO.puts "Hello World"
 ```
 
+JavaScript:
+
+```javascript
+console.log('Hello World!')
+```
+
 ## Split String
 
 Java:
@@ -57,6 +63,12 @@ Kotlin:
 ```kotlin
 val numberString = "1,2,3,4,5"
 val numbers = numberString.split(",").map { it.toInt() }
+```
+
+JavaScript:
+
+```javascript
+"1,2,3,4,5".split(",").map(n => parseInt(n))
 ```
 
 Clojure:
@@ -89,7 +101,14 @@ Python:
 
 ```python
 numbers = [4, 8, 15, 16, 23, 42]
-numberString = ",".join([str(n) for n in numbers])
+numberString = ", ".join([str(n) for n in numbers])
+```
+
+JavaScript:
+
+```javascript
+const numbers = [4, 8, 15, 16, 23, 42]
+const numberString = numbers.join(", ")
 ```
 
 Clojure:
@@ -113,6 +132,31 @@ val numbers = listOf(4, 8, 15, 16, 23, 42)
 val numberString = numbers.joinToString(",")
 ```
 
+## Initialize Variable with Default if Null
+
+Ruby:
+
+```
+my_var ||= 'some-default-value'
+```
+
+Ruby treats `nil` and `false` as falsy.
+
+Python:
+
+```python
+my_var = 'some-default-value' if my_var is None else my_var
+
+# Alternative 1:
+if my_var is None:
+  my_var = 'some-default-value'
+
+# Alternative 2:
+my_var = vars().get('my_var', 'some-default-value')
+```
+
+Python treats `None`, `False`, `0`, and empty sequences such as `""`, `[]`, `{}`, `()` as falsy. If `bool(value)` returns `False` then the value is falsy. Python will invoke `__bool__` or `__len__` to figure out the boolean value.
+
 ## Anomymous Functions
 
 Python:
@@ -121,6 +165,13 @@ Python:
 foo = lambda n: n*n
 foo(3) # => 9
 # NOTE: Python lambdas are single line only
+```
+
+JavaScript:
+
+```javascript
+const foo = (n) => n*n
+foo(3)
 ```
 
 Clojure:
@@ -158,6 +209,8 @@ end
 
 Java: not possible
 
+JavaScript: not possible
+
 Python: not possible
 
 ## Single Line Conditional
@@ -190,6 +243,18 @@ def should_get_data?
 end
 
 get_data if should_get_data?
+```
+
+JavaScript:
+
+```javascript
+function getData() {
+  return 'the-data'
+}
+function shouldGetData() {
+  return true
+}
+if (shouldGetData()) getData()
 ```
 
 Clojure:
@@ -244,6 +309,13 @@ nth([1, 2, 3], 3) # => None
 nth([1, 2, 3], 3, 'default value') # => 'default value'
 ```
 
+JavaScript:
+
+```javascript
+const myList = [1, 2, 3]
+myList[3] || 'default-value'
+```
+
 Ruby:
 
 ```ruby
@@ -275,6 +347,15 @@ Clojure:
 (map (partial add 2) [3 5]) ; => [5, 7]
 ```
 
+JavaScript:
+
+```javascript
+function add(a, b) {
+  return a + b
+}
+[3, 5].map(add.bind(null, 2))
+```
+
 ## String Interpolation
 
 Java:
@@ -291,6 +372,12 @@ f"a={a} b={b} c={c}"
 
 # Older versions:
 "a={} b={} c={}".format(a, b, c)
+```
+
+JavaScript:
+
+```javascript
+`a=${a} b=${b} c=${c}`
 ```
 
 Kotlin:
@@ -414,3 +501,41 @@ elapsed_seconds = time.time() - start_time
 
 * [timeit module](https://docs.python.org/3/library/timeit.html)
 * [python decorator for profiling functions](https://stackoverflow.com/questions/3620943/measuring-elapsed-time-with-the-time-module)
+
+## Read a File
+
+Python:
+
+```python
+# Using the [open context manager](http://docs.python-guide.org/en/latest/writing/structure):
+with open('README.md') as f:
+    data = f.read()
+
+# Read one integer per line:
+with open('my-data-file.txt') as f:
+    a = [int(x) for x in f]
+
+# Alternative 1:
+data = open('README.md').read()
+
+# Alternative 2:
+data = open('README.md').readlines()
+def chomp(line):
+  return line.rstrip('\r\n')
+data = [chomp(l) for l in open('README.md').readlines() if chomp(l)]
+```
+
+Clojure:
+
+```
+(slurp "README.md")
+```
+
+## Write a File
+
+Clojure:
+
+```
+(spit "/tmp/foobar" "this is the data")
+(slurp "/tmp/foobar") ; => "this is the data"
+```
