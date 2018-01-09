@@ -132,6 +132,30 @@ val numbers = listOf(4, 8, 15, 16, 23, 42)
 val numberString = numbers.joinToString(",")
 ```
 
+## Truth
+
+Java: only `true` and `false` are valid in a boolean context, there is no concept of truthy/falsy
+
+Ruby: only `nil` and `false` are falsy
+
+Python: treats `None`, `False`, `0`, and empty sequences such as `""`, `[]`, `{}`, `()` as falsy. If `bool(value)` returns `False` then the value is falsy. Python will invoke `__bool__` or `__len__` to figure out the boolean value.
+
+JavaScript: treats `false`, `null`, `undefined`, `0`, `NaN`, `""` (empty string) as falsy. Empty arrays and objects are truthy.
+
+Clojure: only `nil` and `false` are falsy
+
+## Equality
+
+Java: you need to use/implement the `equals` method for value based equality. The `==` operator is identity based.
+
+Ruby: you can use `==` for value based equality checks of arrays and maps
+
+Python: you can use `==` for value based equality checks of arrays and maps
+
+JavaScript: you can *not* use `==`for value based equality checks of objects and arrays
+
+Clojure: provides value based equality via the `=` operator for primitive data types and built in composite data types such as vector, map, set etc. Due to immutability equality checks are fast.
+
 ## Initialize Variable with Default if Null
 
 Ruby:
@@ -139,8 +163,6 @@ Ruby:
 ```
 my_var ||= 'some-default-value'
 ```
-
-Ruby treats `nil` and `false` as falsy.
 
 Python:
 
@@ -154,8 +176,6 @@ if my_var is None:
 # Alternative 2:
 my_var = vars().get('my_var', 'some-default-value')
 ```
-
-Python treats `None`, `False`, `0`, and empty sequences such as `""`, `[]`, `{}`, `()` as falsy. If `bool(value)` returns `False` then the value is falsy. Python will invoke `__bool__` or `__len__` to figure out the boolean value.
 
 ## Anomymous Functions
 
