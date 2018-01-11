@@ -1,8 +1,6 @@
-# Algorithmic Toolbox (Coursera)
+# Week 1
 
-## Week 1
-
-### Maximum Pairwise Addition
+## Maximum Pairwise Addition
 
 Given a sequence of non-negative integers a0,…,an−1, find the maximum pairwise product, that is, the largest integer that can be obtained by multiplying two different elements from the sequence (or, more formally, max0≤i≠j≤n−1aiaj). Different elements here mean ai and aj with i≠j (it can be the case that ai=aj).
 
@@ -32,7 +30,7 @@ long long MaxPairwiseProductFast(const vector<int>& numbers) {
 
 Now, you decide to check how long does it take your program to process a large dataset. For this, you pass an array of size 200,000=2⋅105 filled in by zeroes to your new function.
 
-### Stress Testing
+## Stress Testing
 
 * A few small manual tests.
 * A test for each possible type of answer (smallest answer, biggest answer, answer doesn't exist, etc.)
@@ -77,7 +75,3 @@ while (true) {
 ```
 
 "Test on the examples from the problem statement. Then make a few other small tests, solve them manually and check that your program outputs the correct answer. Generate a big input and launch your program to check that it works fast enough and doesn't consume too much memory. Test for corner cases: smallest allowed values and largest allowed values of all input parameters, equal numbers in the input, very long strings, etc. Then make a stress test. After all these tests passed, submit the solution."
-
-## Resources
-
-* [Course Home](https://www.coursera.org/learn/algorithmic-toolbox/home/welcome)
