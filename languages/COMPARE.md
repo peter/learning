@@ -166,6 +166,80 @@ Python: strings are immutable
 
 Ruby: strings are mutable
 
+## Keyword Function Arguments and Default Values
+
+Python:
+
+```python
+def foo(a, b, c=3, d=4):
+  return [a, b, c, d]
+
+foo(1, 2) # [1, 2, 3, 4]
+foo(1, b=2) # [1, 2, 3, 4]
+foo(a=1, b=2) # [1, 2, 3, 4]
+foo(1, b=2, c=5, d=6) # [1, 2, 5, 6]
+```
+
+## Implicit Function Return Values
+
+Ruby: yes, the last evaluated expression is the return value
+
+JavaScript: no, you need an explicit return except in single line lambdas
+
+Python: no, you need an explicit return except in single line lambdas
+
+Clojure: yes, the last evaluated expression is the return value
+
+## Proxying/Wrapping Functions (Forwarding Arguments)
+
+Python:
+
+```python
+def proxy_no_args(f):
+  def f_proxy(*args, **kwargs):
+    print('Before invoking f')
+    result = f(*args, **kwargs)
+    print('After invoking f')
+    return result
+  return f_proxy
+
+@proxy_no_args
+def foo(a, b=2):
+  return [a, b]
+
+foo(1, b=3) # => [1, 3]
+```
+
+```python
+class ProxyWithConfig(object):
+    def __init__(self, *args):
+        self.config = list(args)
+    def __call__(self, f):
+        def proxy(*args, **kwargs):
+            return self.config + f(*args, **kwargs)
+        return proxy
+
+@ProxyWithConfig(1, 2, 3)
+def bar(a, b=2):
+  return [a, b]
+
+bar(4, b=5) # => [1, 2, 3, 4, 5]
+```
+
+## Proxy Objects
+
+Python: [Generalized delegates and proxies](http://code.activestate.com/recipes/252151-generalized-delegates-and-proxies)
+
+## Destructuring Assignments
+
+[JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment):
+
+```javascript
+const {a, b, ...rest} = {a: 10, b: 20, c: 30, d: 40} // => a=10, b=20, rest={c: 30, d: 40}
+const [c, d, ...rest] = [3, 4, 5, 6] // => c=3, d=4, rest=[5, 6]
+[a, b] = [b, a] // swap values
+```
+
 ## Initialize Variable with Default if Null
 
 Ruby:

@@ -34,3 +34,20 @@ Assume pivot is the first element. If it's not, swap pivot with first element as
 ## Quicksort: Partitioning around a Pivot
 
 The pivot element winds up in the right position. Then you recurse on the left side and on the right side.
+
+## Mathematical Analaysis of Randomized Quick Sort
+
+We need probability theory now that we are dealing with randomness.
+
+* Sample Spaces (all the things that can happen)
+* Random Variables (functions on sample spaces)
+* Expectations - averages of random variables
+* Linearity of expectation
+
+We need to prove O(nlog(n)) for random pivot choice. Worst case of quicksort in general is O(n^2).
+
+Fix input array A of length n.
+Sample space: all possible outcomes/choices/sequences in quicksort
+Comparsions: comparisons between numbers C(sigma)
+
+## Probability Review
