@@ -240,6 +240,12 @@ const [c, d, ...rest] = [3, 4, 5, 6] // => c=3, d=4, rest=[5, 6]
 [a, b] = [b, a] // swap values
 ```
 
+Python:
+
+```python
+n, *numbers = list(map(int, sys.stdin.read().split()))
+```
+
 ## Initialize Variable with Default if Null
 
 Ruby:
