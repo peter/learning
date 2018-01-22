@@ -985,6 +985,12 @@ add_safe_numbers(SafeNumber(5), SafeNumber(5)) # => 10
 * [Underscores in Python](https://shahriar.svbtle.com/underscores-in-python)
 * [Python data model (dunder methods)](https://docs.python.org/3.6/reference/datamodel.html)
 
+## Style and Idioms
+
+* [Transforming Code into Beautiful, Idiomatic Python - Raymond Hettinger](https://www.youtube.com/watch?v=OSGv2VnC0go&feature=youtu.be)
+* [Raymond Hettinger - Beyond PEP 8 -- Best practices for beautiful intelligible code - PyCon 2015 - Raymond Hettinger](https://www.youtube.com/watch?v=wf-BqAjZb8M&feature=youtu.be)
+
+
 ## Resources: Books
 
 * [Learning Python](http://shop.oreilly.com/product/0636920028154.do)
