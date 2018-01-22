@@ -38,7 +38,14 @@ Data science:
 mathematics dealing with the collection, analysis, interpretation,
 presentation, and organization of data"
 
+## Discussion and Critique
+
+* [Deep Learning: A Critical Appraisal - Gary Marcus1](https://arxiv.org/ftp/arxiv/papers/1801/1801.00631.pdf)
+
 ## Resources
+
+* [What is a Neural Netowork - 3Blue1Brown](https://www.youtube.com/watch?v=aircAruvnKk)
+* [Essence of Linear Algebra - 3Blue1Brown](https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab)
 
 * [Book: Data Science from Scratch](http://shop.oreilly.com/product/0636920033400.do)
 * [Python Code: Data Science from Scratch](https://github.com/joelgrus/data-science-from-scratch)
