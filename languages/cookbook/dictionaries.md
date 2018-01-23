@@ -28,3 +28,46 @@ my_dict = {'foo': 1, 'bar': 2}
 for k, v in my_dict.items():
   print(k, v)
 ```
+
+## Deep Get/Set of Dictionary Values
+
+Python:
+
+```python
+import copy
+
+def deep_get(dictionary, keys, default=None):
+    if not isinstance(dictionary, dict):
+        return default
+    path = keys.split('.') if isinstance(keys, str) else keys
+    result = dictionary
+    def valid_index(key, _list):
+        return valid_int(key) and int(key) >= 0
+    for key in path:
+        if isinstance(result, dict) and key in result:
+            result = result[key]
+        elif isinstance(result, list) and valid_index(key, result):
+            result = result[int(key)] if int(key) < len(result) else None
+        elif isinstance(result, list) and len(result) > 0:
+            result = list(map(lambda v: v.get(key, None) if isinstance(v, dict) else None,
+                              result))
+        else:
+            result = default
+            break
+    return copy.deepcopy(result)
+
+def deep_set(dictionary, keys, value):
+    if dictionary is None:
+        dictionary = {}
+    path = keys.split('.')
+    result = copy.deepcopy(dictionary)
+    nested_dict = result
+    for i, key in enumerate(path):
+        if i == (len(path) - 1):
+            nested_dict[key] = value
+        else:
+            if not key in nested_dict or not isinstance(nested_dict[key], dict):
+                nested_dict[key] = {}
+            nested_dict = nested_dict[key]
+    return result
+```
