@@ -1,6 +1,7 @@
 # Programming Cookbook
 
 * [Hello World](hello.md)
+* [Tour](tour/README.md)
 * [Strings](strings.md)
 * [Sequences](sequences.md)
 * [Dictionaries/Maps](dictionaries.md)
