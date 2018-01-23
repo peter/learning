@@ -990,6 +990,9 @@ add_safe_numbers(SafeNumber(5), SafeNumber(5)) # => 10
 * [Transforming Code into Beautiful, Idiomatic Python - Raymond Hettinger](https://www.youtube.com/watch?v=OSGv2VnC0go&feature=youtu.be)
 * [Raymond Hettinger - Beyond PEP 8 -- Best practices for beautiful intelligible code - PyCon 2015 - Raymond Hettinger](https://www.youtube.com/watch?v=wf-BqAjZb8M&feature=youtu.be)
 
+## Python 2 vs Python 3
+
+* [Porting Code to Python 3 with 2to3](http://www.diveintopython3.net/porting-code-to-python-3-with-2to3.html)
 
 ## Resources: Books
 
