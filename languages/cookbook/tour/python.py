@@ -25,6 +25,9 @@ my_list = [5, 'foobar', 3.14, True, False, None]
 # Appending values to a list
 my_list.append('bla')
 
+# Get the length/size of the list
+len(my_list) # => 7
+
 # Accessing value by index
 my_list[1] # => 'foobar'
 

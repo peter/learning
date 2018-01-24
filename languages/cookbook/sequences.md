@@ -93,3 +93,14 @@ colors = ['red', 'green', 'blue', 'yellow']
 sorted(colors) # => ['blue', 'green', 'red', 'yellow']
 sorted(colors, key=len) # => ['red', 'blue', 'green', 'yellow']
 ```
+
+## Slicing a List
+
+Python:
+
+```python
+my_list = ['a', 'b', 'c', 'd']
+my_list[1:-1]  # => ['b', 'c']
+my_list[0:2] = 'z' # replace ['a', 'b'] with ['z']
+my_list  # => ['z', 'c', 'd']
+```

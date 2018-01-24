@@ -70,4 +70,39 @@ def deep_set(dictionary, keys, value):
                 nested_dict[key] = {}
             nested_dict = nested_dict[key]
     return result
+
+def test_deep_get():
+    assert deep_get(None, 'foo.bar') is None
+    assert deep_get({'foo': 1}, 'foo') == 1
+    assert deep_get({'foo': 1}, 'foo.bar.baz') is None
+    assert deep_get({'foo': 1}, 'bar') is None
+    assert deep_get({'foo': 1}, 'bar', 'default-value') == 'default-value'
+    assert deep_get({'foo': {'bar': 1}}, 'foo.bar') == 1
+    assert deep_get({'foo': {'bar': 1}}, 'foo.baz') is None
+
+def test_deep_get_array_index():
+    assert deep_get({'foo': {'bar': [1]}}, 'foo.bar') == [1]
+    assert deep_get({'foo': {'bar': [1]}}, 'foo.bar.0') == 1
+    assert deep_get({'foo': {'bar': [1]}}, 'foo.bar.1') is None
+    assert deep_get({'foo': {'bar': [{'baz': 1}]}}, 'foo.bar.0.baz') == 1
+    assert deep_get({'foo': {'bar': [{'baz': 1}]}}, 'foo.bar.1.baz') is None
+
+def test_deep_get_list_keys():
+    assert deep_get({'foo': {'bar': 1}}, ['foo', 'bar']) == 1
+    assert deep_get({'foo': {'bar': [1]}}, ['foo', 'bar', '0']) == 1
+    assert deep_get({'foo': {'bar': [1]}}, ['foo', 'bar', 0]) == 1
+
+def test_deep_get_array_map():
+    assert deep_get({'foo': {'bar': [{'baz': 1}]}}, 'foo.bar') == [{'baz': 1}]
+    assert deep_get({'foo': {'bar': [{'baz': 1}]}}, 'foo.bar.baz') == [1]
+    assert deep_get({'foo': {'bar': [{'baz': 1}]}}, 'foo.bar.baz.bla') == [None]
+    assert deep_get({'foo': {'bar': [1]}}, 'foo.bar.baz') == [None]
+
+def test_deep_set():
+    assert deep_set(None, 'foo.bar', 1) == {'foo': {'bar': 1}}
+    assert deep_set({}, 'foo.bar', 1) == {'foo': {'bar': 1}}
+    assert deep_set({'foo': 2}, 'foo.bar', 1) == {'foo': {'bar': 1}}
+    assert deep_set({'foo': {'bar': 2}}, 'foo.bar', 1) == {'foo': {'bar': 1}}
+    assert deep_set({'foo': {'bar': 2, 'baz': 1}, 'bla': 0}, 'foo.bar', 1) == {'foo': {'bar': 1, 'baz': 1}, 'bla': 0}
+    assert deep_set({'foo': {'bar': 1}}, 'foo.baz', 0) == {'foo': {'bar': 1, 'baz': 0}}
 ```

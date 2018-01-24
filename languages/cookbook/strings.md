@@ -147,3 +147,21 @@ Elixir:
 ```elixir
 "a=#{a} b=#{b} c=#{c}"
 ```
+
+## Parsing Strings
+
+Python:
+
+```python
+def parse_boolean(value):
+    if isinstance(value, str):
+        return value.lower() in ['t', 'true', '1']
+    else:
+        return value
+
+def valid_int(value):
+    if isinstance(value, str) and re.match('^([1-9][0-9]*|[0-9])$', value):
+        return True
+    else:
+        return isinstance(value, int)
+```

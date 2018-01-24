@@ -15,6 +15,7 @@
 * [Copying and Cloning](copy.md)
 * [Objects and Classes](objects.md)
 * [Regular Expressions](regex.md)
+* [Time and Dates](time.md)
 * [Dynamic Access to Functions/Variables](dynamic.md)
 * [Benchmarking and Profiling](benchmark.md)
 * [Command Line Scripts](scripts.md)
