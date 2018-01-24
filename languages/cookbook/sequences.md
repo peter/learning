@@ -104,3 +104,14 @@ my_list[1:-1]  # => ['b', 'c']
 my_list[0:2] = 'z' # replace ['a', 'b'] with ['z']
 my_list  # => ['z', 'c', 'd']
 ```
+
+## Flattening a List
+
+Python:
+
+```python
+# Flattening one level only
+def flatten(list):
+    return [item for sublist in list for item in sublist]
+flatten([[1], [2]]) # => [1, 2]
+```

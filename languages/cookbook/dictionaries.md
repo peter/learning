@@ -9,6 +9,20 @@ my_dict = {'foo': 1, 'bar': 2}
 {k: 2*v for k, v in my_dict.items()} # => {'bar': 4, 'foo': 2}
 ```
 
+## Merging Dictionaries
+
+Python:
+
+```python
+# Does not mutate
+def merge(dict1, dict2):
+  return dict(dict1.items() + dict2.items())
+
+# Mutates first dict
+def merge_mutate(dict1, dict2):
+  dict1.update(dict2)
+```
+
 ## Create a Dictionary from Arrays/Lists
 
 Python:

@@ -16,4 +16,8 @@ Python:
 ```python
 import re
 re.match(r'^(.+)_bar$', 'foo_bar').group(1) # => 'foo'
+# This function only extracts subgroups, not the entire match which is in match.group(0)
+def extract(pattern, string):
+    match = re.match(pattern, string)
+    return match.groups() if match else ()
 ```

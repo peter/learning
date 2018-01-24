@@ -44,3 +44,19 @@ Clojure:
 (spit "/tmp/foobar" "this is the data")
 (slurp "/tmp/foobar") ; => "this is the data"
 ```
+
+## Create a Directory
+
+Python:
+
+```python
+def makedirs(name):
+    import os, errno
+    try:
+        os.makedirs(name)
+    except OSError as ex:
+        if ex.errno == errno.EEXIST and os.path.isdir(name):            
+            pass # ignore existing directory
+        else:            
+            raise # a different error happened
+```
