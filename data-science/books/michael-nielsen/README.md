@@ -76,11 +76,18 @@ A perceptron can also implement a NAND gate if you have weights w1=-2 and w2=-2 
 
 
 ```
+import matplotlib.pyplot as plt
+import visualize
+import numpy as np
 import network
 import mnist_loader
 import os
 path = os.path.expanduser('~/src/vendor/neural-networks-and-deep-learning/data/mnist.pkl.gz')
 training_data, validation_data, test_data = mnist_loader.load_data_wrapper(path)
+
+digit1 = training_data[0]
+
+visualize.plot(digit1)
 
 type(training_data) # => list
 len(training_data) # => 50000
@@ -105,3 +112,4 @@ net.train(training_data, 30, 10, 3.0, test_data=test_data)
 * [Book Homepage](http://neuralnetworksanddeeplearning.com)
 * [Source Code - Python 2](https://github.com/mnielsen/neural-networks-and-deep-learning)
 * [Source Code - Python 3](https://github.com/MichalDanielDobrzanski/DeepLearningPython35)
+* [Visualizing MNIST DIgits](https://stackoverflow.com/questions/37228371/visualize-mnist-dataset-using-opencv-or-matplotlib-pyplot)
