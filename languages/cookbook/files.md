@@ -45,6 +45,51 @@ Clojure:
 (slurp "/tmp/foobar") ; => "this is the data"
 ```
 
+## Check if File Exists
+
+Python:
+
+```python
+import os
+path = 'README.md'
+os.path.exists(path)
+os.path.isfile(path)
+os.path.isdir(path)
+```
+
+## Stat a File
+
+Python:
+
+```
+import os
+path = 'README.md'
+os.stat(path)
+```
+
+## Recursively get Files in a Directory
+
+Python:
+
+```python
+import glob
+for filename in glob.iglob('**/*.py', recursive=True):
+  print filename
+
+paths = list(glob.iglob('**/*.py', recursive=True))
+```
+
+## Dealing with Tilde (~) in Path
+
+Python:
+
+```
+import os
+path = '~/.bashrc'
+os.path.exists(path) # => False
+os.path.exists(os.path.expanduser(path)) # => True
+```
+
 ## Create a Directory
 
 Python:

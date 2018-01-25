@@ -8,6 +8,7 @@ Python:
 #!/usr/bin/env python3
 # Invoke script with --help to get usage details
 
+import sys
 import argparse
 
 def arg_parser():
@@ -21,4 +22,5 @@ def arg_parser():
 if __name__ == "__main__":
   args = arg_parser().parse_args()
   print(args.service, args.prod, args.all)
+  print(f'service={sys.argv[1]}')
 ```

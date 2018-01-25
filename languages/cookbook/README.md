@@ -22,3 +22,4 @@
 * [Dynamic Access to Functions/Variables](dynamic.md)
 * [Benchmarking and Profiling](benchmark.md)
 * [Command Line Scripts](scripts.md)
+* [Library Dependencies](libraries.md)
