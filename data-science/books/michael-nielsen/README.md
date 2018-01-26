@@ -76,7 +76,6 @@ A perceptron can also implement a NAND gate if you have weights w1=-2 and w2=-2 
 
 
 ```
-import matplotlib.pyplot as plt
 import visualize
 import numpy as np
 import network
@@ -103,8 +102,27 @@ training_data[0][1].shape # => (10, 1)
 test_data[0][0].shape # => (784, 1)
 test_data[0][1] # => 7
 
-net = Network([784, 30, 10])
+net = network.Network([784, 30, 10])
 net.train(training_data, 30, 10, 3.0, test_data=test_data)
+
+np.set_printoptions(threshold=np.nan)
+
+result = net.feedforward(test_data[0][0])
+assert np.argmax(result) == test_data[0][1]
+
+failures = []
+for i, (x, y) in enumerate(test_data):
+  result = net.feedforward(x)
+  if np.argmax(result) == y:
+    print(i)
+  else:
+    failures.append(i)
+    print(f'FAILURE: {i}')
+len(failures) # => 514
+
+for i in failures:
+  visualize.plot(test_data[i])
+  input()
 ```
 
 ## Resources

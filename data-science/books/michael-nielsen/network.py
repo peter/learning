@@ -28,10 +28,9 @@ class Network(object):
             for mini_batch in mini_batches:
                 self.update_mini_batch(mini_batch, eta)
             if test_data:
-                print("Epoch {0}: {1} / {2}".format(
-                        j, self.evaluate(test_data), n_test))
+                print(f'Epoch {j}: {self.evaluate(test_data)} / {n_test}')
             else:
-                print("Epoch {0} complete".format(j))
+                print(f'Epoch {j} complete')
 
     def update_mini_batch(self, mini_batch, eta):
         nabla_b = [np.zeros(b.shape) for b in self.biases]
@@ -56,16 +55,19 @@ class Network(object):
             zs.append(z)
             activation = sigmoid(z)
             activations.append(activation)
-        delta = self.cost_derivative(activations[-1], y) * \
-            sigmoid_prime(zs[-1])
+        delta = self.cost_derivative(activations[-1], y) * sigmoid_prime(zs[-1])
         nabla_b[-1] = delta
         nabla_w[-1] = np.dot(delta, activations[-2].transpose())
+        # nanlba_b[-1]=(10, 1) dot activations[-2].transpose()=(1, 30) = nabla_w[-1]=(10, 30)
+        # print(f'debug nanlba_b[-1]={nabla_b[-1].shape} dot activations[-2].transpose()={activations[-2].transpose().shape} = nabla_w[-1]={nabla_w[-1].shape} ')
         for l in range(2, self.num_layers):
-            z = zs[-l]
-            sp = sigmoid_prime(z)
-            delta = np.dot(self.weights[-l+1].transpose(), delta) * sp
+            # debug l=2 self.weights[-l+1].transpose()=(30, 10) dot delta=(10, 1)
+            #print(f'debug l={l} self.weights[-l+1].transpose()={self.weights[-l+1].transpose().shape} dot delta={delta.shape}')
+            delta = np.dot(self.weights[-l+1].transpose(), delta) * sigmoid_prime(zs[-l])
             nabla_b[-l] = delta
             nabla_w[-l] = np.dot(delta, activations[-l-1].transpose())
+            # debug l=2 = delta=(30, 1) dot activations[-l-1].transpose()=(1, 784) = nabla_w[-l]=(30, 784)
+            #print(f'debug l={l} = delta={delta.shape} dot activations[-l-1].transpose()={activations[-l-1].transpose().shape} = nabla_w[-l]={nabla_w[-l].shape}')
         return (nabla_b, nabla_w)
 
     def evaluate(self, test_data):
@@ -81,13 +83,3 @@ def sigmoid(z):
 
 def sigmoid_prime(z):
     return sigmoid(z)*(1-sigmoid(z))
-
-if __name__ == '__main__':
-    import sys
-    import mnist_loader
-    path = sys.argv[1]
-    training_data, validation_data, test_data = mnist_loader.load_data_wrapper(path)
-    print(f'training_data={len(training_data)} validation_data={len(validation_data)} test_data={len(test_data)}')
-
-    net = Network([784, 30, 10])
-    net.train(training_data, 30, 10, 3.0, test_data=test_data)
