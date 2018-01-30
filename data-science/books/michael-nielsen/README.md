@@ -85,8 +85,7 @@ path = os.path.expanduser('~/src/vendor/neural-networks-and-deep-learning/data/m
 training_data, validation_data, test_data = mnist_loader.load_data_wrapper(path)
 
 digit1 = training_data[0]
-
-visualize.plot(digit1)
+visualize.plot_digit(digit1)
 
 type(training_data) # => list
 len(training_data) # => 50000
@@ -105,20 +104,41 @@ test_data[0][1] # => 7
 net = network.Network([784, 30, 10])
 net.train(training_data, 30, 10, 3.0, test_data=test_data)
 
+# With fewer neurons (30 - 95%, 10 - 92%, 5 - 83%):
+# net = network.Network([784, 10, 10])
+
 np.set_printoptions(threshold=np.nan)
+
+visualize.plot_pixels(net.weights[0][0])
 
 result = net.feedforward(test_data[0][0])
 assert np.argmax(result) == test_data[0][1]
 
+def output_pixels(net, n):
+  out_weights = net.weights[1][n]
+  result = np.zeros(net.weights[0][0].shape)
+  for i in range(len(out_weights)):
+    result += out_weights[i] * net.weights[0][i]
+  return result
+
+visualize.plot_pixels(output_pixels(net, 0))
+
+def pretty_result(result):
+  return sorted(list(result[:,0]))
+
 failures = []
+maxes = []
 for i, (x, y) in enumerate(test_data):
   result = net.feedforward(x)
   if np.argmax(result) == y:
     print(i)
   else:
     failures.append(i)
-    print(f'FAILURE: {i}')
+    max = pretty_result(result)[-1]
+    maxes.append(max)
+    print(f'FAILURE: {i} max={max} {pretty_result(result)}')
 len(failures) # => 514
+sorted(maxes)
 
 for i in failures:
   visualize.plot(test_data[i])
