@@ -1,4 +1,4 @@
-# Learning Algorithms
+# Learning Computer Science
 
 * [Course: Algorithms (Coursera/Sedgewick)](courses/coursera-algorithms-1/README.md)
 
