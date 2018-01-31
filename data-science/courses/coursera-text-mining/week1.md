@@ -195,8 +195,11 @@ DATA_PATH = os.path.expanduser('~/Dropbox/data/projects/courses/coursera-text-mi
 lines = [l.strip() for l in open(DATA_PATH)]
 
 def parse_date(line):
-  numeric_pattern = r'(?:(\d{1,2})(?:/|-))?([1-9]|0[1-9]|1[012])(?:/|-)(\d\d|19\d\d|20\d\d)'
-  month_prefixes = ['Jan', 'Feb', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  # TODO: refactor to used named capture groups with (?P<group_name>)
+  # NOTE: it's mm/dd/yy or mm/yy
+  day_pattern = r'([1-9]|0[1-9]|1[012])(?:/|-)(\d{1,2})(?:/|-)(19\d\d|20\d\d|\d\d)'
+  month_pattern = r'([1-9]|0[1-9]|1[012])/(19\d\d|20\d\d|\d\d)'
+  month_prefixes = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
   month_prefixes_pattern = '|'.join([p + r'\w*' for p in month_prefixes])
   space_pattern = rf'(?:(\d\d) )?({month_prefixes_pattern}) (\d\d\d\d)'
   year_pattern = r'(19\d\d|20\d\d)'
@@ -204,7 +207,7 @@ def parse_date(line):
     for p in patterns:
       m = re.search(p, line)
       if m: return [p for p in m.groups() if p]
-  parts = first_match([numeric_pattern, space_pattern, year_pattern])
+  parts = first_match([day_pattern, month_pattern, space_pattern, year_pattern])
   def parse_month(month):
     prefixes = [p for p in month_prefixes if str(month).startswith(p)]
     if prefixes:
@@ -231,10 +234,11 @@ def parse_date(line):
         month, day, year = parts
       else:
         day, month, year = parts
-    # print(f'line={line}')
-    # print(f'parts={parts} len={len(parts)} year={year} month={month} day={day}')
     try:
-      return datetime.date(parse_year(year), parse_month(month), int(day))
+      result = datetime.date(parse_year(year), parse_month(month), int(day))
+      #print(f'line={line}')
+      #print(f'result={result} parts={parts} len={len(parts)} year={year} month={month} day={day}')
+      return result
     except:
       return None
 
