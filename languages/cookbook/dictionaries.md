@@ -9,6 +9,24 @@ my_dict = {'foo': 1, 'bar': 2}
 {k: 2*v for k, v in my_dict.items()} # => {'bar': 4, 'foo': 2}
 ```
 
+## Converting a Dictionary to a Sequence/List
+
+Getting a sequence of key/value tuples from a dictionary.
+
+Python:
+
+```python
+my_dict = {'foo': 1, 'bar': 2}
+my_dict.items() # => dict_items([('foo', 1), ('bar', 2)])
+```
+
+Clojure:
+
+```clojure
+(def my-dict {:foo 1 :bar 2})
+(seq my-dict) ; => ([:foo 1] [:bar 2])
+```
+
 ## Merging Dictionaries
 
 Python:

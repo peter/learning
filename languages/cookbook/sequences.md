@@ -115,3 +115,13 @@ def flatten(list):
     return [item for sublist in list for item in sublist]
 flatten([[1], [2]]) # => [1, 2]
 ```
+
+Clojure:
+
+```clojure
+(def nested-vector [[[1 2]] [[3 4]]])
+; Flatten one level:
+(apply concat nested-vector) ; => ([1 2] [3 4])
+; Flatten all levels (completely):
+(flatten nested-vector) ; => (1 2 3 4)
+```

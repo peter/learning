@@ -2,6 +2,34 @@
 
 Notes from the book Computer Science Distilled.
 
+"Computer science is not about machines in the same way that astronomy is not about telescopes" - Dijkstra
+
+Computers need us to break down problems into chunks they can crunch.
+
+## Flowcharts
+
+Example: Wikipedia edition process
+
+* State and instruction steps in rectangles (i.e. Edit page)
+* Decision steps in diamonds (i.e. do you agree with the change?)
+* Connect sequential steps with arrows
+* Mark the start and end of the process
+
+## Math
+
+N Factorial is the number of ways N items can be ordered (permutations). If r of the items
+are identical then the number of orderings should be divided by r factorial.
+
+"n choose m" - the number of ways you can select m from n regardless of order.
+
+# Complexity
+
+The first person to find a non-exponential algorithm to an NP-complete problem
+gets a million dollars from the Clay Mathematics Institute. Factorial time
+algorithms are even worse than exponential time.
+
+
+
 ## Appendix
 
 ### Numerical Basis
