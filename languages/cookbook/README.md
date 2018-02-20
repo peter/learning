@@ -17,6 +17,7 @@
 * [Regular Expressions](regex.md)
 * [Time and Dates](time.md)
 * [JSON](json.md)
+* [Security](security.md)
 * [Files/IO](files.md)
 * [Processes](processes.md)
 * [Dynamic Access to Functions/Variables](dynamic.md)

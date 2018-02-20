@@ -43,3 +43,9 @@ d = defaultdict(list)
 for k, v in s:
   d[k].append(v)
 ```
+
+Clojure:
+
+```clojure
+(let [my-var (or my-var "some-default-value")])
+```
