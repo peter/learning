@@ -31,11 +31,21 @@ let twoToFive = [2;3;4;5]
 let oneToFive = 1 :: twoToFive
 let zeroToFive = [0;1] @ twoToFive
 
+let x = 50
+if x.GetType() = typeof<int> then "is int" else "is not int" // => "is int"
+
+let mutable x = 100
+x <- 200
+
 // The "let" keyword also defines a named function.
 let square x = x * x
 square 3
 let add x y = x + y
 add 2 3
+
+// parameterless functions take unit as their argument
+let sayHello() =
+    "hello"
 
 let evens list =
    let isEven x = x%2 = 0
@@ -74,8 +84,87 @@ optionPatternMatch invalidValue
 let twoTuple = 1,2
 let threeTuple = "a",2,true
 
+let twoItems = ("apple", "dog")
+fst twoItems // => "apple"
+snd twoItems // => "dog"
+
+let items = ("apple", "dog", "Mustang")
+let fruit, animal, car = items
+
 type Person = {First:string; Last:string}
 let person1 = {First="john"; Last="Doe"}
+
+let isEven x =
+    if x % 2 = 0 then
+        "it's even!"
+    else
+        "it's odd!"
+
+let isApple x =
+    match x with
+    | "apple" -> true
+    | _ -> false
+
+let getDinnerIf x =
+    let name, foodChoice = x
+
+    if foodChoice = "veggies" || foodChoice ="fish" ||
+       foodChoice = "chicken" then
+        sprintf "%s doesn't want red meat" name
+    else
+        sprintf "%s wants 'em some %s" name foodChoice
+
+let getDinner x =
+    match x with
+    | (name, "veggies")
+    | (name, "fish")
+    | (name, "chicken") -> sprintf "%s doesn't want red meat" name
+    | (name, foodChoice) -> sprintf "%s wants 'em some %s" name foodChoice
+
+let list = ["apple"; "pear"; "grape"; "peach"]
+list.Head
+list.Tail
+list.Length
+
+let result =
+    [0..5]
+    |> List.filter isEven
+    |> List.map square
+
+// arrays are mutable
+let fruits = [| "apple"; "pear"; "peach"|]
+fruits.[0]
+fruits.[1] <- "peach"
+
+// you can create arrays with comprehensions
+let numbers =
+    [| for i in 0..10 do
+           if i % 2 = 0 then yield i |]
+
+let translate score =
+    match score with
+    | 5 -> "Great"
+    | 4 -> "Good"
+    | 3 -> "Decent"
+    | 2 -> "Bad"
+    | 1 -> "Awful"
+    | _ -> "Unknown"
+
+// mutable class
+type Person2(name:string) =
+    let mutable internalName = name
+
+    member this.Name
+        with get() = internalName
+        and set(value) = internalName <- value
+
+    member this.Speak() =
+        "Hi my name is " + this.Name
+
+let person = new Person2("Shaun")
+let firstPhrase = person.Speak()
+person.Name <- "Shaun of the Dead"
+let secondPhrase = person.Speak()
 ```
 
 ## Currying
@@ -105,6 +194,8 @@ See [Railway oriented programming](https://fsharpforfunandprofit.com/posts/recip
 * [Get Programming with F# (Book)](https://www.manning.com/books/get-programming-with-f-sharp)
 * [Why you should use F# - Phillip Carter (Video)](https://youtu.be/Mu39vtwKWpg)
 
+* [Type Extensions](https://docs.microsoft.com/en-us/dotnet/fsharp/language-reference/type-extensions)
+
 * [PDC 2008 An Introduction to Microsoft F# - Luca Bolognese](https://www.youtube.com/watch?v=Dfnr05mgGzE&feature=youtu.be)
 
 * [Eight reasons to learn F#](https://medium.com/real-world-fsharp/eight-reasons-to-learn-f-fcb2bef64d7a)
@@ -114,6 +205,20 @@ See [Railway oriented programming](https://fsharpforfunandprofit.com/posts/recip
 
 * [REST API with MongoDB and F# on .NET Core (and Giraffe)](https://medium.com/@leocavalcante/rest-api-with-mongodb-and-f-on-net-core-605a2336f264)
 * [Giraffe Example App](https://github.com/cartermp/GiraffeSample)
+* [Azure Functions in F# (For Real)](https://spin.atomicobject.com/2018/05/17/azure-functions-f-sharp/)
+* [Build your first Web API with F#, Giraffe and host it on Azure Cloud](https://koukia.ca/build-your-first-web-api-with-f-giraffe-and-host-it-on-azure-cloud-1d9dc07dc248)
+
+* [Saturn Web Framework](https://github.com/SaturnFramework/Saturn)
+* [FSharp.Data.GraphQL](https://github.com/fsprojects/FSharp.Data.GraphQL)
+
+* [Training With Tomas Petricek at fsharpWorks](http://tomasp.net)
+* [F# Workshop - Course Material](https://www.fsharpworkshop.com)
+* [F# Koans](https://github.com/ChrisMarinos/FSharpKoans)
+* [F# Koans Snippts](http://fssnip.net/bG)
+
+* [Why Isn’t F# the King of .NET?](https://hackernoon.com/why-isnt-f-the-king-of-net-2a9a1963e087)
+
+* [F# Programming Wikibook](https://en.wikibooks.org/wiki/F_Sharp_Programming/Print_version)
 
 * [F# Guide](https://docs.microsoft.com/en-us/dotnet/fsharp)
 * [F# Style Guide](https://docs.microsoft.com/en-us/dotnet/fsharp/style-guide/)
