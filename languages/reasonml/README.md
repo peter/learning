@@ -109,8 +109,18 @@ type point = {x: int, mutable y: int}
 point.x
 point.y = 30;
 {...point, x: 30}
+/* you can't nest type declarations like you can in flow or typescript.
+   For example, this is illegal: */
+type state = {
+  /* won't compile! */
+  items: list({
+    title: string,
+    completed: bool,
+  })
+}
 
 /* Arrays, Tuples, Lists */
+/* An array is fixed-length & mutable, with O(1) random access, in comparison to a List, which is singly linked & immutable, with O(n) random access. */
 [|1, 2, 3|]
 myArray[1] = 10
 (1, "Bob", true)
@@ -178,11 +188,21 @@ let abcabc = {
 /* Unit type (not an element of any other type) */
 ();
 
-/* Everything is camel-cased in ReasonML */
+/* Creating an alias (short name) for a function */
+let str = ReasonReact.stringToElement;
+
+/* Everything is camel-cased in ReasonML
+  type names (and indeed variable names) must start with a lower-case letter. Variant (enum) cases and Module names must start with an upper-case letter.
+*/
 
 /* ReasonML does not prevent you from redefining variables (shadowing, useful in the REPL) */
 
 /* Currying - automatic and built in */
+
+/* No require or import statement at the beginning of files. In OCaml, inter-file (and indeed inter-package) dependencies are all inferred from your code. Basically, the compiler sees
+TodoApp isn't defined anywhere in this file, so there must be a file TodoApp.re (or .ml) somewhere that this depends on. There is namespace support for modules. */
+
+/* In Reason, like OCaml, Haskell, and Lisps in general, there is no explicit return statement for designating the result of a function. The value of any block is equal to the value of the last expression in it. In fact, a block is nothing more than a sequence of expressions where we ignore all but the last value. */
 ```
 
 ## Pattern Matching
@@ -231,11 +251,23 @@ http://reasonmlhub.com/exploring-reasonml/ch_records.html
 
 http://reasonmlhub.com/exploring-reasonml/ch_functors.html
 
+## Recursion
+
+http://reasonmlhub.com/exploring-reasonml/ch_recursion.html
+
 ## Ad-Hoc Polymorphism
 
 "ReasonML does not currently support ad hoc polymorphism where the same operation is implemented differently depending on the types of the parameters. Haskell, another functional programming language supports ad hoc polymorphism via type classes. ReasonML may eventually support it via the similar modular implicits.
 
 ReasonML not supporting ad hoc polymorphism means that most operators such as + (int addition), +. (float addition) and ++ (string concatenation) only support a single type. Therefore, it is your responsibility to convert operands to proper types. On the plus side, ReasonML will warn you at compile time if you forget to do so. That’s a benefit of static typing."
+
+## JSON
+
+TODO
+
+https://itnext.io/decoding-nested-json-objects-in-reasonml-with-bs-json-4cab75fbe308
+https://medium.com/@DmytroGladkyi/decode-and-encode-json-in-reasonml-2d484c65cf4e
+https://medium.com/@sharifsbeat/fetching-data-in-reasonml-pt-1-c06f3cc6b250
 
 ## Resources
 
@@ -249,3 +281,7 @@ ReasonML not supporting ad hoc polymorphism means that most operators such as + 
 * [Awesome ReasonML - List of Resources](https://github.com/vramana/awesome-reasonml)
 * [reason-cli (REPL)](https://github.com/reasonml/reason-cli)
 * [Discussion on Semicolons in Reason](https://github.com/facebook/reason/issues/1613)
+* [A ReasonReact Tutorial](https://jaredforsyth.com/posts/a-reason-react-tutorial)
+* [Reason.Town Podcast](https://reason.town)
+* [Sate of Reason Survey 2018](https://jaredforsyth.com/posts/state-of-reason-survey-preliminary-results)
+* [Real World Ocaml Book](https://realworldocaml.org/)
