@@ -617,8 +617,6 @@ class NameForm extends React.Component {
 }
 ```
 
-
-
 ## Lifting State Up
 
 TODO
