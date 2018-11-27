@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>React Examples: BasicForm</title>
+
+    <!-- From https://raw.githubusercontent.com/reactjs/reactjs.org/master/static/html/single-file-example.html -->
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <!-- Don't use this in production: -->
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root">
+    </div>
+    <script type="text/babel">
+      class BasicForm extends React.Component {
+        constructor (props) {
+          super(props)
+          this.state = {name: '', flavor: ''}
+          this.handleChange = this.handleChange.bind(this)
+          this.handleSubmit = this.handleSubmit.bind(this)
+        }
+
+        handleChange (e) {
+          const target = event.target
+          const value = target.type === 'checkbox' ? target.checked : target.value
+          const name = target.name
+          this.setState({
+            [name]: value
+          })
+        }
+
+        handleSubmit (e) {
+          e.preventDefault()
+          console.log('handleSubmit', e, this.state)
+        }
+
+        render () {
+          return (
+            <form onSubmit={this.handleSubmit}>
+              <div>
+                <input type="text" name="name" value={this.state.name} onChange={this.handleChange} />
+              </div>
+              <div>
+                <label>
+                  Pick your favorite flavor:
+                  <select name="flavor" value={this.state.flavor} onChange={this.handleChange}>
+                    <option value="grapefruit">Grapefruit</option>
+                    <option value="lime">Lime</option>
+                    <option value="coconut">Coconut</option>
+                    <option value="mango">Mango</option>
+                  </select>
+                </label>
+              </div>
+              <input type="submit" value="Submit" />
+            </form>
+          )
+        }
+      }
+      ReactDOM.render(
+        <BasicForm/>,
+        document.getElementById('root')
+      )
+    </script>
+  </body>
+</html>

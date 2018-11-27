@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>React Examples: TodoApp</title>
+
+    <!-- From https://raw.githubusercontent.com/reactjs/reactjs.org/master/static/html/single-file-example.html -->
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <!-- Don't use this in production: -->
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root">
+    </div>
+    <script type="text/babel">
+      function inheritedProperties(obj) {
+          var props = []
+          let currentObj = obj
+          do {
+              props = props.concat(Object.getOwnPropertyNames(currentObj))
+          } while (currentObj = Object.getPrototypeOf(currentObj))
+          return props.sort().filter((prop, i) => prop !== props[i + 1])
+      }
+
+      function handlerFunctions (obj) {
+        return inheritedProperties(obj).filter(property => {
+          return typeof obj[property] === 'function' && property.startsWith('handle')
+        })
+      }
+
+      function bindHandlerFunctions (obj) {
+        handlerFunctions(obj).forEach(handler => obj[handler] = obj[handler].bind(obj))
+      }
+
+      class TodoApp extends React.Component {
+        constructor (props) {
+          super(props)
+          this.state = {items: [], text: ''}
+          bindHandlerFunctions(this)
+        }
+
+        render () {
+          return (
+            <div>
+              <h3>TODO</h3>
+              <TodoList items={this.state.items} />
+              <form onSubmit={this.handleSubmit}>
+                <label htmlFor="new-todo">What needs to be done?</label>
+                <input
+                  id="new-todo"
+                  onChange={this.handleChange}
+                  value={this.state.text}
+                />
+                <button>
+                  Add #{this.state.items.length + 1}
+                </button>
+              </form>
+            </div>
+          )
+        }
+
+        handleChange (e) {
+          this.setState({text: e.target.value})
+        }
+
+        handleSubmit (e) {
+          e.preventDefault()
+          if (this.state.text.length === 0) return
+          const newItem = {
+            text: this.state.text,
+            id: Date.now()
+          }
+          this.setState(state => ({
+            items: state.items.concat(newItem),
+            text: ''
+          }))
+        }
+      }
+
+      const TodoList = (props) => (
+        <ul>
+          {props.items.map(item => (
+            <li key={item.id}>{item.text}</li>
+          ))}
+        </ul>
+      )
+
+      ReactDOM.render(
+        <TodoApp/>,
+        document.getElementById('root')
+      )
+    </script>
+  </body>
+</html>
