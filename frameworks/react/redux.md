@@ -52,8 +52,103 @@ A React component under the Flux architecture should not directly modify any pro
 
 This pattern is sometimes expressed as "properties flow down, actions flow up". Many implementations of Flux have been created since its inception, perhaps the most well-known being Redux which features a single store, often called a single source of truth"
 
+## Redux Tutorial
+
+Project setup:
+
+```
+npx create-react-app redux-tutorial
+cd redux-tutorial
+yarn add redux react-redux
+```
+
+Create basic store and action:
+
+```babel
+// index.js
+import { createStore } from 'redux'
+function reducer (state, action) {
+  if (action.type === 'CHANGE_STATE') {
+    return action.payload.newState
+  }
+  return 'STATE'
+}
+const store = createStore(reducer)
+const action = {
+  type: 'CHANGE_STATE',
+  payload: {
+    newState: 'NEW STATE'
+  }
+}
+console.log('store.getState() before action', store.getState());
+
+store.dispatch(action)
+
+console.log('store.getState() after action', store.getState());
+```
+
+We can put the user actions in their own file:
+
+```babel
+// actions/user_actions.js
+export const UPDATE_USER = 'users.updateUser'
+
+export function updateUser (newUser) {
+  return {
+    type: UPDATE_USER,
+    payload: {
+      user: newUser
+    }
+  }
+}
+```
+
+Ans use [connect](https://react-redux.js.org/docs/api#connect) to hook up Redux with the App via
+the props passed to components:
+
+```babel
+// App.js
+import { connect } from 'react-redux'
+import { updateUser } from './actions/user_actions'
+
+class App extends Component {
+  constructor (props) {
+    super(props)
+    this.onUpdateUser = this.onUpdateUser.bind(this)
+  }
+
+  onUpdateUser () {
+    this.props.onUpdateUser('Sammy')
+  }
+
+  render() {
+    return (
+      <div className="App">
+        <div onClick={this.onUpdateUser}>
+          Update user
+        </div>
+        {this.props.user}
+      </div>
+    );
+  }
+}
+
+const mapStateToProps = state => {
+  return state
+}
+
+const mapDispatchToProps = {
+  onUpdateUser: updateUser
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
+```
+
 ## Resources
 
 * [React on Wikipedia](https://en.wikipedia.org/wiki/React_(JavaScript_library))
 * [Redux Homepage - Motivation](https://redux.js.org/introduction/motivation)
 * [Redux DevTools - Chrome Extension](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd)
+* [Redux Tutorial - Learn React/Redux in one video](https://www.youtube.com/watch?v=OSSpVLpuVWA&t=606s)
+* [react-redux-realworld-example-app](https://github.com/gothinkster/react-redux-realworld-example-app)
+* [The react-redux connect function](https://react-redux.js.org/docs/api#connect)
