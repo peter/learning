@@ -87,6 +87,30 @@ store.dispatch(action)
 console.log('store.getState() after action', store.getState());
 ```
 
+More advanced example where we connect Redux to React:
+
+```babel
+import { createStore, combineReducers } from 'redux'
+import { Provider } from 'react-redux'
+import productsReducer from './reducers/products_reducer'
+import userReducer from './reducers/user_reducer'
+
+const allReducers = combineReducers({
+  products: productsReducer,
+  user: userReducer
+})
+
+const initialState = {
+  products: [{name: 'iPhone'}],
+  user: 'Peter'
+}
+const enhancer = window.devToolsExtension && window.devToolsExtension() // For Redux Chrome extension
+// https://redux.js.org/api/createstore
+const store = createStore(allReducers, initialState, enhancer)
+
+ReactDOM.render(<Provider store={store}><App /></Provider>, document.getElementById('root'));
+```
+
 We can put the user actions in their own file:
 
 ```babel
@@ -103,7 +127,7 @@ export function updateUser (newUser) {
 }
 ```
 
-Ans use [connect](https://react-redux.js.org/docs/api#connect) to hook up Redux with the App via
+And use [connect](https://react-redux.js.org/docs/api#connect) to hook up Redux with the App via
 the props passed to components:
 
 ```babel
@@ -144,6 +168,60 @@ const mapDispatchToProps = {
 export default connect(mapStateToProps, mapDispatchToProps)(App);
 ```
 
+To use Ajax with Redux:
+
+```
+yarn add redux-thunk
+```
+
+A thunk is a function that wraps an expression to delay its evaluation.
+
+```babel
+import { createStore, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
+import rootReducer from './reducers/index';
+
+// Note: this API requires redux@>=3.1.0
+const store = createStore(
+  rootReducer,
+  applyMiddleware(thunk)
+);
+```
+
+Direct approach:
+
+```babel
+import { createStore } from 'redux'
+
+const UPDATE_USER = 'UPDATE_USER'
+const INITIAL_STATE = {
+  user: 'peter'
+}
+function reducer (state = INITIAL_STATE, {type, payload}) {
+  switch (type) {
+    case UPDATE_USER:
+      return {
+        ...state,
+        user: payload.user
+      }
+    default:
+      return state
+  }
+}
+const enhancer = window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+const store = createStore(reducer, enhancer)
+
+const action = {
+  type: 'UPDATE_USER',
+  payload: {
+    user: 'Joe'
+  }
+}
+console.log('pm debug before dispatch', store.getState())
+store.dispatch(action)
+console.log('pm debug after dispatch', store.getState());
+```
+
 ## Resources
 
 * [React on Wikipedia](https://en.wikipedia.org/wiki/React_(JavaScript_library))
@@ -152,3 +230,4 @@ export default connect(mapStateToProps, mapDispatchToProps)(App);
 * [Redux Tutorial - Learn React/Redux in one video](https://www.youtube.com/watch?v=OSSpVLpuVWA&t=606s)
 * [react-redux-realworld-example-app](https://github.com/gothinkster/react-redux-realworld-example-app)
 * [The react-redux connect function](https://react-redux.js.org/docs/api#connect)
+* [redux-thunk](https://github.com/reduxjs/redux-thunk)
