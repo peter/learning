@@ -149,6 +149,8 @@ function clone(objOrArray) {
 function empty(value) {
   if (nil(value)) {
     return true
+  } else if (isNaN(value)) {
+    return true
   } else if (Array.isArray(value) || typeof value === 'string') {
     return value.length === 0
   } else if (typeof value === 'object') {

@@ -16,16 +16,38 @@ function compose (...fns) {
   })
 }
 
-function reverseCompose (...fns) {
+function rCompose (...fns) {
   const reverseFns = [...fns].reverse()
   return compose(...reverseFns)
 }
 
-function pipe (args, ...fns) {
-  const makeArray = v => Array.isArray(v) ? v : [v]
-  return reverseCompose(...fns).apply(null, makeArray(args))
+function pipe (args, fns) {
+  return rCompose(...fns).apply(null, args)
 }
 
 compose(a, b, c)('v') // => 'vcba'
-pipe('v', a, b, c) // => 'vabc'
+pipe(['v'], [a, b, c]) // => 'vabc'
+```
+
+Pipeline with abort/shortcutting:
+
+```javascript
+function callIf (condition, fn) {
+  return (arg) => condition(arg) ? fn(arg) : arg
+}
+
+const notNull = v => v != null
+
+const trim = v => v.trim()
+const upperCase = v => v.toUpperCase()
+
+callIf(notNull, trim)(' foobar ') // => 'foobar'
+callIf(notNull, trim)(null) // => null
+
+function pipeIf (condition, arg, fns) {
+  const fnsWithIf = fns.map(fn => callIf(condition, fn))
+  return pipe([arg], fnsWithIf)
+}
+
+pipeIf(notNull, ' foobar ', [trim, upperCase]) // => 'FOOBAR'
 ```
