@@ -29,7 +29,7 @@ compose(a, b, c)('v') // => 'vcba'
 pipe(['v'], [a, b, c]) // => 'vabc'
 ```
 
-Pipeline with abort/shortcutting:
+Pipeline with abort (i.e. short circuiting):
 
 ```javascript
 function callIf (condition, fn) {
@@ -37,7 +37,6 @@ function callIf (condition, fn) {
 }
 
 const notNull = v => v != null
-
 const trim = v => v.trim()
 const upperCase = v => v.toUpperCase()
 
@@ -50,4 +49,5 @@ function pipeIf (condition, arg, fns) {
 }
 
 pipeIf(notNull, ' foobar ', [trim, upperCase]) // => 'FOOBAR'
+pipeIf(notNull, null, [trim, upperCase]) // => 'FOOBAR'
 ```
