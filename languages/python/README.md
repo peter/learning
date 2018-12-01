@@ -845,7 +845,7 @@ re.match(r'[a-z]{2}', 'foobar')
 ## Decorators
 
 A [decorator](http://www.artima.com/weblogs/viewpost.jsp?thread=240845) for type checks
-(see the [type_spec library](https://github.com/peter/type_spec) for more):
+(see the [type_spec library](https://github.com/peter/type_spec), the [typeguard library](https://github.com/agronholm/typeguard), and in particular [the Python 3 typing module](https://docs.python.org/3/library/typing.html)):
 
 ```python
 def Maybe(required_type):
