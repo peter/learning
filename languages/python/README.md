@@ -844,7 +844,8 @@ re.match(r'[a-z]{2}', 'foobar')
 
 ## Decorators
 
-A [decorator](http://www.artima.com/weblogs/viewpost.jsp?thread=240845) for type checks:
+A [decorator](http://www.artima.com/weblogs/viewpost.jsp?thread=240845) for type checks
+(see the [type_spec library](https://github.com/peter/type_spec) for more):
 
 ```python
 def Maybe(required_type):
@@ -984,6 +985,8 @@ add_safe_numbers(SafeNumber(5), SafeNumber(5)) # => 10
 * [Video: What Does It Take To Be An Expert At Python?](https://www.youtube.com/watch?v=7lmCu8wz8ro&feature=youtu.be)
 * [Underscores in Python](https://shahriar.svbtle.com/underscores-in-python)
 * [Python data model (dunder methods)](https://docs.python.org/3.6/reference/datamodel.html)
+* [10 Basic Python Examples](https://www.makeuseof.com/tag/basic-python-examples-learn-fast)
+* [Replacing Bash with Python](https://medium.com/capital-one-tech/bashing-the-bash-replacing-shell-scripts-with-python-d8d201bc0989)
 
 ## Style and Idioms
 
@@ -1006,6 +1009,7 @@ add_safe_numbers(SafeNumber(5), SafeNumber(5)) # => 10
 
 * [Code for Fluent Python Book](https://github.com/fluentpython/example-code)
 * [Code for Python Cookbook](https://github.com/dabeaz/python-cookbook)
+* [realpython/python-scripts](https://github.com/realpython/python-scripts/tree/master/scripts)
 
 ## Resources: Functional Programming
 
