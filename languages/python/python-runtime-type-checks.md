@@ -54,6 +54,48 @@ The general rule is that `False`, `None`, numerical `0`, and empty collections/s
 {'foo': 1} == {'foo': 1} # => True
 ```
 
+## Using Python Meta Classes for Custom Type Checks
+
+```python
+class PredicateMeta(type):
+    """Metaclass for a predicate.
+    An object is an instance of a predicate if applying the predicate to the
+    object returns True.
+    >>> Positive = predicate(lambda x: x > 0)
+    >>> isinstance(1, Positive)
+    True
+    >>> isinstance(0, Positive)
+    False
+    """
+    def __new__(mcls, name, bases, namespace):
+        return super().__new__(mcls, name, bases, namespace)
+
+    def __instancecheck__(cls, instance):
+        try:
+            return cls.__predicate__(instance)
+        except AttributeError:
+            return False
+
+    def __subclasscheck__(cls, subclass):
+        return False
+
+
+def predicate(function, name=None):
+    """Convenience function to create predicates. See PredicateMeta.
+    >>> Even = predicate(lambda x: x % 2 == 0)
+    >>> isinstance(2, Even)
+    True
+    >>> isinstance(1, Even)
+    False
+    """
+    name = name or function.__name__
+    return PredicateMeta(name, (), {'__predicate__': function})
+
+LargeInt = predicate(lambda v: isinstance(v, int) and v >= 1000)
+isinstance(5, LargeInt) # => False
+isinstance(1000, LargeInt) # => True
+```
+
 ## Resources
 
 * [Python Documentation: Built-in Types](https://docs.python.org/3/library/stdtypes.html)
