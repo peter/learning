@@ -7,7 +7,7 @@ const config = {
   databaseURL: 'https://frontendmasters-course.firebaseio.com',
   projectId: 'frontendmasters-course',
   storageBucket: 'frontendmasters-course.appspot.com',
-  messagingSenderId: '98218894562',
+  messagingSenderId: "219916097571"
 };
 
 firebase.initializeApp(config);

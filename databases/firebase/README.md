@@ -21,7 +21,41 @@ npm install -g firebase-tools
 
 Repo: https://github.com/stevekinney/think-piece
 
+## Creating and Deploying a Firebase App with the CLI
+
+```
+npm install -g firebase-tools
+firebase login
+mkdir my-firebase-project && cd my-firebase-project
+firebase init hosting # creates firebase.json and index.html
+firebase serve # open http://localhost:5000
+firebase deploy # deploys app to a public URL with https
+```
+
+## Authentication
+
+TODO, see: https://angularfirebase.com/lessons/the-ultimate-beginners-guide-to-firebase/
+
+## Listening for Realtime Database Updates
+
+TODO: see https://angularfirebase.com/lessons/the-ultimate-beginners-guide-to-firebase/
+
+## File Storage
+
+TODO, see: ## Listening for Realtime Database Updates
+
+TODO: see https://angularfirebase.com/lessons/the-ultimate-beginners-guide-to-firebase/
+
+## Cloud Functions (Node.js Backend Code)
+
+TODO, see: https://angularfirebase.com/lessons/the-ultimate-beginners-guide-to-firebase/
+
+```
+firebase init functions
+```
+
 ## Resources
 
 * [Firebase with React (Frontend Masters Course)](https://frontendmasters.com/courses/firebase-react-v2/)
+* [Firebase - Ultimate Beginner's Guide (Youtube Video)](https://www.youtube.com/watch?v=9kRgVxULbag)
 * [Heroku Alternatives](https://blog.back4app.com/2018/03/13/heroku-alternatives/)
