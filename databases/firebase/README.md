@@ -24,3 +24,4 @@ Repo: https://github.com/stevekinney/think-piece
 ## Resources
 
 * [Firebase with React (Frontend Masters Course)](https://frontendmasters.com/courses/firebase-react-v2/)
+* [Heroku Alternatives](https://blog.back4app.com/2018/03/13/heroku-alternatives/)
