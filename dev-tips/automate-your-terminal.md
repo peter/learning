@@ -14,7 +14,7 @@ Dependencies:
 This particular example uses these technologies:
 
 * [VS Code](https://code.visualstudio.com) with shell command installed
-* Git
+* [Git](https://git-scm.com/)
 
 Add a script `~/bin/start` that knows how to start a service in a particular source code directory:
 
