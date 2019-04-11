@@ -44,6 +44,8 @@ Make sure your startup file is sourced on login by `~/.bash_profile`:
 source ~/.bashrc
 ```
 
+You can set environment variables in `~/.bashrc` and inline when executing commands and you can execute a command with `env -i` to block out environment variables.
+
 ## Resources
 
 * [What is a shell?](https://www.gnu.org/software/bash/manual/html_node/What-is-a-shell_003f.html#What-is-a-shell_003f)
