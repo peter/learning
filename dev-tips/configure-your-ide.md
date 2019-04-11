@@ -33,8 +33,10 @@ From the command palette - run "Open Keyboard Shortcuts (JSON)":
 ]
 ```
 
-Recommended [extensions](https://marketplace.visualstudio.com) to install:
+Recommended [extensions](https://marketplace.visualstudio.com) to install in your IDE:
 
 * GitLens
 * ESLint
+* Visual Studio IntelliCode
 * Debugger for Chrome
+* GitHub Extension for Visual Studio
