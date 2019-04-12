@@ -1,4 +1,4 @@
-# Learn Your Shell
+# Write Command Line Scripts with Bash
 
 ## Loops
 
