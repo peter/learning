@@ -1019,6 +1019,7 @@ add_safe_numbers(SafeNumber(5), SafeNumber(5)) # => 10
 * [Single Quotes vs Double Quotes](http://stackoverflow.com/questions/56011/single-quotes-vs-double-quotes-in-python)
 * [Reserved Words](https://docs.python.org/2.5/ref/keywords.html)
 * [Assignments in Conditionals](http://stackoverflow.com/questions/2603956/can-we-have-assignment-in-a-condition)
+* [Automate the Boring Stuff with Python](https://automatetheboringstuff.com/)
 
 ## Resources: Modules
 
