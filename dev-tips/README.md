@@ -3,6 +3,7 @@
 A set of developer tips that I am collecting in my work as a web developer.
 
 * [Configure Your Shell](configure-your-shell.md)
+* [Learn Your Shell](learn-your-shell.md)
 * [Configure Your IDE](configure-your-ide.md)
 * Configure Your Browser
 * Use Your Browser Dev Tools
