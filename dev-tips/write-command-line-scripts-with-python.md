@@ -72,6 +72,8 @@ cat file1.txt | stdin
 ```python
 #!/usr/bin/env python3
 #
+# Basic sed/awk/grep replacement in Python.
+#
 # Examples:
 #
 # Get first character:
@@ -92,6 +94,16 @@ cat file1.txt | stdin
 #
 # Get first column (process ID) in first row matching pattern "npm.*start":
 # ps | extract --split --sep \\n --filter 'node.*start' --index 0 | extract --split --index 0
+#
+# Replace all occurence of one word with another
+# ps|extract --split --sep \\n --replace node python
+#
+# Replace entire text to extract a word
+# ps|extract --split --sep \\n --from 1 --replace '^.*ttys(\d+).*$' '\1'
+#
+# Evaluate python code:
+# ps|extract --split --sep \\n --from 1 --eval '"yes" if "bash" in data else "no"'
+# ps|extract --split --sep \\n --from 1 --eval 'data.upper()'
 
 import argparse
 import sys
@@ -105,8 +117,16 @@ def arg_parser():
     parser.add_argument('--from', type=int, default=None, help='start index to return when using split')
     parser.add_argument('--to', type=int, default=None, help='end index (exclusive) to return when using split')
     parser.add_argument('--filter', help='regex pattern to filter by when using split')
+    parser.add_argument('--replace', nargs='*', help='from and to regex patterns for replacing parts or all of the text')
+    parser.add_argument('--eval', help='eval python code on data variable')
     parser.add_argument('text', nargs='?', help='text to select data from (can come from stdin)')
     return parser
+
+def apply(transform, data):
+        if isinstance(data, list):
+            return [transform(i) for i in data]
+        else:
+            return transform(data)
 
 def extract(args):
     result = args['text']
@@ -121,7 +141,19 @@ def extract(args):
     elif args['from'] != None or args['to'] != None:
         result = result[args['from']:args['to']]
 
+    if args['replace']:
+        def do_replace(data):
+            from_pattern, to_pattern = args['replace']
+            return re.sub(from_pattern, to_pattern, data)
+        result = apply(do_replace, result)
+
+    if args['eval']:
+        def do_eval(data):
+            return eval(args['eval'])
+        result = apply(do_eval, result)
+
     if args['split'] and isinstance(result, list):
+        result = [i for i in result if i]
         result = args['sep'].join(result)
 
     return result
