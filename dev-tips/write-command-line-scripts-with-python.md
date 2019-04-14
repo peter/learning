@@ -102,8 +102,8 @@ cat file1.txt | stdin
 # ps|extract --split --sep \\n --from 1 --replace '^.*ttys(\d+).*$' '\1'
 #
 # Evaluate python code:
-# ps|extract --split --sep \\n --from 1 --eval '"yes" if "bash" in data else "no"'
-# ps|extract --split --sep \\n --from 1 --eval 'data.upper()'
+# ps|extract --split --sep \\n --from 1 --eval '"yes" if "bash" in _ else "no"'
+# ps|extract --split --sep \\n --from 1 --eval '_.upper()'
 
 import argparse
 import sys
@@ -118,7 +118,7 @@ def arg_parser():
     parser.add_argument('--to', type=int, default=None, help='end index (exclusive) to return when using split')
     parser.add_argument('--filter', help='regex pattern to filter by when using split')
     parser.add_argument('--replace', nargs='*', help='from and to regex patterns for replacing parts or all of the text')
-    parser.add_argument('--eval', help='eval python code on data variable')
+    parser.add_argument('--eval', help='eval python code on the _ (underscore) variable')
     parser.add_argument('text', nargs='?', help='text to select data from (can come from stdin)')
     return parser
 
@@ -148,7 +148,7 @@ def extract(args):
         result = apply(do_replace, result)
 
     if args['eval']:
-        def do_eval(data):
+        def do_eval(_):
             return eval(args['eval'])
         result = apply(do_eval, result)
 
@@ -188,3 +188,7 @@ class Calculator(object):
 if __name__ == '__main__':
   fire.Fire(Calculator)
 ```
+
+## Resources
+
+* [Python One-Liners](https://wiki.python.org/moin/Powerful%20Python%20One-Liners)
