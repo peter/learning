@@ -1,6 +1,6 @@
 # Dev Tips
 
-A set of developer tips that I am collecting in my work as a web developer.
+Some notes on my developer setup as a web developer.
 
 * [Configure Your Shell](configure-your-shell.md)
 * [Configure Your IDE](configure-your-ide.md)
