@@ -4,6 +4,7 @@ A set of developer tips that I am collecting in my work as a web developer.
 
 * [Configure Your Shell](configure-your-shell.md)
 * [Configure Your IDE](configure-your-ide.md)
+* [Configure Git](configure-git.md)
 * Configure Your Browser
 * Use Your Browser Dev Tools
 * [Write Command Line Scripts with Python](write-command-line-scripts-with-python.md)
