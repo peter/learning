@@ -1,0 +1,165 @@
+#!/usr/bin/env node
+//
+// Script to migrate tags from arke-configuration to the Contentful CMS.
+// Takes the JSON output file of arke-configuration as input. See README for usage details.
+
+const axios = require('axios')
+const fs = require('fs')
+const path = require('path')
+const {get, compact, mapValues} = require('lodash')
+
+const ENV_KEYS = ['CONTENTFUL_URL', 'CONTENTFUL_SPACE_ID', 'CONTENTFUL_ENV', 'CONTENTFUL_ACCESS_TOKEN']
+
+function getConfig () {
+    const config = ENV_KEYS.reduce((acc, key) => {
+        acc[key] = process.env[key]
+        return acc
+    }, {})    
+    if (!ENV_KEYS.every(key => config[key])) throw new Error(`You need to provide the following environment variables: ${ENV_KEYS.join(', ')}`)
+    return config
+}
+
+function resolvePath (filePath) {
+    if (filePath && filePath[0] === '~') {
+        return path.join(process.env.HOME, filePath.slice(1))
+    } else {
+        return filePath
+    }
+}
+
+function json (value) {
+    return JSON.stringify(value, null, 4)
+}
+
+function withLocale (fields) {
+    return mapValues(fields, (v) => ({sv: v}))
+}
+
+function entryLink (entry) {
+    return {
+        sys: {
+            id: get(entry, 'sys.id'),
+            linkType: 'Entry',
+            type: 'Link'
+        }
+    }
+}
+
+function readTags (filePath) {
+    const data = JSON.parse(fs.readFileSync(filePath).toString())
+    return data.tag
+}
+
+async function request ({method, url, options, data}) {
+    method = method || 'get'
+    console.log(`request: ${method} ${url} options=${json(options)} data=${json(data)}`)
+    try {
+        const axiosArgs = (method === 'get' ? [url, data, options] : [url, data, options])
+        return await axios[method](...axiosArgs)
+    } catch (error) {
+        console.log(`request error ${error.request.method} ${error.request.path} status=${error.response.status} error=${error.message} response.data=${json(error.response.data)}`, error)
+        throw error
+    }
+}
+
+function postEntry (contentType, fields, config) {
+    const url = `${config.CONTENTFUL_URL}/spaces/${config.CONTENTFUL_SPACE_ID}/environments/${config.CONTENTFUL_ENV}/entries`
+    const headers = {
+        'Authorization': `Bearer ${config.CONTENTFUL_ACCESS_TOKEN}`,
+        'X-Contentful-Content-Type': contentType
+    }
+    const options = {headers}
+    const data = {fields: withLocale(fields)}
+    return request({method: 'post', url, options, data})
+}
+
+function putEntry (contentType, id, fields, config) {    
+    const url = `${config.CONTENTFUL_URL}/spaces/${config.CONTENTFUL_SPACE_ID}/environments/${config.CONTENTFUL_ENV}/entries/${id}`
+    const headers = {
+        'Authorization': `Bearer ${config.CONTENTFUL_ACCESS_TOKEN}`,
+        'X-Contentful-Content-Type': contentType
+    }
+    const options = {headers}
+    const data = {fields: withLocale(fields)}
+    return request({method: 'put', url, options, data})
+}
+
+function publishEntry (id, version, config) {
+    const url = `${config.CONTENTFUL_URL}/spaces/${config.CONTENTFUL_SPACE_ID}/environments/${config.CONTENTFUL_ENV}/entries/${id}/published`
+    const headers = {
+        'Authorization': `Bearer ${config.CONTENTFUL_ACCESS_TOKEN}`,
+        'X-Contentful-Version': version
+    }
+    const options = {headers}
+    return request({method: 'put', url, options})
+}
+
+async function createSponsorLogoUrl (url, {config, created}) {
+    console.log('createSponsorLogoUrl')
+    const contentType = 'sponsorLogoUrl'
+    const key = `${contentType}-${url.url}`
+    if (created[key]) return created[key]
+    const {data} = await postEntry(contentType, url, config)
+    await publishEntry(get(data, 'sys.id'), get(data, 'sys.version'), config)
+    created[key] = data
+    return created[key]
+}
+
+async function createSponsorLogo (logo, context) {
+    const {config, created} = context
+    console.log('createSponsorLogo')
+    const contentType = 'sponsorLogo'
+    const key = `${contentType}-${logo.id}`
+    if (created[key]) return created[key]
+    const urls = await Promise.all(logo.urls.map(url => createSponsorLogoUrl(url, context)))
+    const fields = {...logo, urls: urls.map(entryLink)}
+    const {data} = await postEntry(contentType, fields, config)
+    await publishEntry(get(data, 'sys.id'), get(data, 'sys.version'), config)
+    created[key] = data
+    return created[key]
+}
+
+async function createSponsor (sponsor, context) {
+    const {config, created} = context
+    console.log('createSponsor')
+    const contentType = 'sponsor'
+    const key = `${contentType}-${sponsor.url}`
+    if (created[key]) return created[key]
+    const logo = await createSponsorLogo(sponsor.logo, context)
+    const fields = {...sponsor, logo: entryLink(logo)}
+    const {data} = await postEntry(contentType, fields, config)
+    await publishEntry(get(data, 'sys.id'), get(data, 'sys.version'), config)
+    created[key] = data
+    return created[key]
+}
+
+async function createTag (id, tag, context) {
+    const {config, created} = context
+    console.log(`createTag ${id}`)
+    const contentType = 'tag'
+    const key = `${contentType}-${id}`
+    if (created[key]) return created[key]
+    const sponsors = await Promise.all(get(tag, 'streamer.sponsors', []).map(sponsor => createSponsor(sponsor, context)))
+    const fields = {pageTitle: tag.pageTitle, sponsors: sponsors.map(entryLink)}
+    const {data} = await putEntry(contentType, id, fields, config)
+    await publishEntry(get(data, 'sys.id'), get(data, 'sys.version'), config)
+    created[key] = data
+    return created[key]
+}
+
+async function main () {
+    const filePath = resolvePath(process.argv[2])
+    const tags = readTags(filePath)
+    const config = getConfig()
+    const created = {} // keep track of already created docs to avoid creating duplicates
+    const context = {config, created}
+
+    console.log(`Number of tags to migrate: ${Object.keys(tags).length}`)
+    for (let id in tags) {
+        const tag = await createTag(id, tags[id], context)
+    }
+    console.log('\nDONE!\n')
+    console.log(`Created ${Object.keys(created).length} entries in Contentful:\n\n${Object.keys(created).sort().join("\n")}`)
+}
+
+main()
