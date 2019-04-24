@@ -15,6 +15,7 @@ Add a `~/.bashrc` [startup file](https://www.gnu.org/software/bash/manual/html_n
 ```sh
 alias l='ls -l'
 alias git='git --no-pager'
+alias chrome="/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"
 
 export HISTSIZE=50000
 export PS1='\u@\h \w]\$ '
@@ -44,7 +45,11 @@ Make sure your startup file is sourced on login by `~/.bash_profile`:
 source ~/.bashrc
 ```
 
-You can set environment variables in `~/.bashrc` and inline when executing commands and you can execute a command with `env -i` to block out environment variables.
+You can set environment variables in `~/.bashrc` and inline when executing commands and you can execute a command with `env -i` to block out environment variables. To run a command with environment variables specified as `KEY=VALUE` in an `.env` file (one entry per line) you can do something like this:
+
+```sh
+env $(cat .env | xargs) my-command
+```
 
 ## Resources
 

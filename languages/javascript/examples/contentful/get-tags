@@ -1,0 +1,74 @@
+#!/usr/bin/env node
+//
+// Script to fetch migrated tags from the Contentful CDN and transform the data to the structure
+// we currently have.
+
+const axios = require('axios')
+const {get, mapValues, isPlainObject, isArray, fromPairs} = require('lodash')
+
+const ENV_KEYS = ['CONTENTFUL_CDN_URL', 'CONTENTFUL_SPACE_ID', 'CONTENTFUL_ENV', 'CONTENTFUL_CDN_ACCESS_TOKEN']
+
+function getConfig () {
+    const config = ENV_KEYS.reduce((acc, key) => {
+        acc[key] = process.env[key]
+        return acc
+    }, {})    
+    if (!ENV_KEYS.every(key => config[key])) throw new Error(`You need to provide the following environment variables: ${ENV_KEYS.join(', ')}`)
+    return config
+}
+
+function json (value) {
+    return JSON.stringify(value, null, 4)
+}
+
+async function fetchTags (config) {
+    const path = `/spaces/${config.CONTENTFUL_SPACE_ID}/environments/${config.CONTENTFUL_ENV}/entries`
+    const query = `content_type=tag&include=10&order=sys.createdAt&access_token=${config.CONTENTFUL_CDN_ACCESS_TOKEN}`
+    const url = `${config.CONTENTFUL_CDN_URL}${path}?${query}`
+    const result = await axios.get(url)
+    return result.data
+}
+
+
+function resolveLinks (value, data) {
+    if (get(value, 'sys.type') === 'Link') {
+        const linkId = get(value, 'sys.id')
+        const linkItem = get(data, 'includes.Entry').find(item => item.sys.id === linkId)
+        if (!linkItem) throw new Error(`Could not find Entry ${linkId}`)
+        return resolveLinks(linkItem.fields, data)
+    } else if (isPlainObject(value)) {
+        return mapValues(value, v => resolveLinks(v, data))
+    } else if (isArray(value)) {
+        return value.map(v => resolveLinks(v, data))
+    } else {
+        return value
+    }
+}
+
+function addStreamer (tag) {
+    return Object.entries(tag).reduce((acc, [key, value]) => {
+        if (key === 'sponsors') {
+            acc['streamer'] = {[key]: value}
+        } else {
+            acc[key] = value
+        }
+        return acc
+    }, {})
+}
+
+function transformTags (data) {
+    return fromPairs(data.items.map(item => {
+        const tag = addStreamer(resolveLinks(item.fields, data))
+        return [get(item, 'sys.id'), tag]
+    }))
+}
+
+async function main () {
+    const config = getConfig()
+    const data = await fetchTags(config)
+    const tags = transformTags(data)
+    if (data.limit < data.total) throw new Error(`You need pagination to fetch all ${data.total} tags (limit=${data.limit})`)
+    console.log(json(tags))
+}
+
+main()

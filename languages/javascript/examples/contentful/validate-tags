@@ -1,0 +1,74 @@
+#!/usr/bin/env node
+//
+// Script to validate tags in contentful, i.e. check that they are identical to the imported tags
+// and that they validate agasinst the JSON shema
+
+const fs = require('fs')
+const path = require('path')
+const exec = require('child_process').exec
+const {isEqual} = require('lodash')
+const Ajv = require('ajv')
+
+function validateSchema(schema, data) {
+    const ajv = new Ajv()
+    var validate = ajv.compile(schema);
+    validate(data);
+    return validate.errors && validate.errors.map(e => `${e.dataPath} ${e.message}`);
+}
+
+function json (value) {
+    return JSON.stringify(value, null, 4)
+}
+
+function resolvePath (filePath) {
+    if (filePath && filePath[0] === '~') {
+        return path.join(process.env.HOME, filePath.slice(1))
+    } else {
+        return filePath
+    }
+}
+
+function readJsonFile (filePath) {
+    return JSON.parse(fs.readFileSync(resolvePath(filePath)).toString())
+}
+
+function readTags (filePath) {
+    const data = readJsonFile(filePath)
+    return data.tag
+}
+
+function getMigratedTags () {
+    return new Promise((resolve, reject) => {
+        exec('./get-tags', (error, stdout) => {
+            error ? reject(error) : resolve(JSON.parse(stdout))
+        })
+    })
+}
+
+async function main () {
+    const filePath = resolvePath(process.argv[2])
+    const sourceTags = readTags(filePath)
+    const migratedTags = await getMigratedTags()
+    const schema = readJsonFile('json-schema/tag.json')
+    // console.log(`sourceTags (${Object.keys(sourceTags).length}):\n${json(sourceTags)}`)
+    // console.log(`\n\n\nmigratedTags (${Object.keys(migratedTags).length}):\n${json(migratedTags)}`)
+    if (!isEqual(Object.keys(sourceTags).sort(), Object.keys(migratedTags).sort())) {
+        console.log(`sourceTags IDs ${Object.keys(sourceTags).sort().join(', ')}`)
+        console.log(`migratedTags IDs ${Object.keys(migratedTags).sort().join(', ')}`)
+        throw new Error('IDs in sourceTags and migratedTags differ')
+    }
+
+    for (let id in sourceTags) {
+        if (!isEqual(sourceTags[id], migratedTags[id])) {
+            console.log(`DIFF ERROR: tag with ID ${id} is not identical:`)
+            console.log(`sourceTag:\n${json(sourceTags[id])}`)
+            console.log(`migratedTag:\n${json(migratedTags[id])}`)
+        }
+        const schemaErrors = validateSchema(schema, migratedTags[id])
+        if (schemaErrors) {
+            console.log(`SCHEMA ERRORs: tag with ID ${id} has invalid schema: ${schemaErrors.join(', ')}`)
+        }
+    }    
+}
+
+main()
