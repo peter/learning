@@ -1,0 +1,45 @@
+#!/usr/bin/env python
+
+import json
+import argparse
+from kazoo.client import KazooClient # pip install kazoo
+
+def arg_parser():
+    parser = argparse.ArgumentParser(
+        description='Look up the URL of a service/API (HTTP port and IP) in Zookeeper. Requires kazoo library (pip install kazoo)')
+    parser.add_argument('service', help='Name of service to look up')
+    parser.add_argument('--prod', action='store_true', help='Use production environment instead of integration')
+    parser.add_argument('--all', action='store_true', help='Print URLs of all nodes, not just first one')
+    return parser
+
+args = arg_parser().parse_args()
+
+zookeeper_address = 'zookeeper.service.com1_eu-west-1.consul:2181' if args.prod else 'zookeeper.service.test-com_eu-west-1.consul:2181'
+zk = KazooClient(hosts=zookeeper_address)
+zk.start()
+
+def service_path(service):
+    return '/my-app/servers/%s' % service
+
+def server_keys(service):
+    return zk.get_children(service_path(service))
+
+def server_path(service, server_key):
+    return service_path(service) + '/' + server_key
+
+def server_paths(service):
+    return [server_path(service, key) for key in server_keys(service)]
+
+def server_info(server_path):
+    return json.loads(zk.get(server_path)[0].decode('utf-8'))
+
+def server_url(server_path):
+    endpoint = server_info(server_path)['serviceEndpoint']
+    return 'http://%s:%s' % (endpoint['host'], endpoint['port'])
+
+def server_urls(service):
+    return [server_url(server_path(service, key)) for key in server_keys(service)]
+
+urls = server_urls(args.service)
+result = ' '.join(urls) if args.all else urls[0]
+print(result)
