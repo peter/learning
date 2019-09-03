@@ -38,13 +38,6 @@ TypeScript support for Jest:
 yarn add -D ts-jest
 ```
 
-Add linting with the Standard style:
-
-```sh
-yarn add -D tslint
-yarn add -D tslint-config-standard
-```
-
 Run `tsc --init` to generate a `tsconfig.json` file and edit it:
 
 ```json
@@ -93,4 +86,10 @@ Example scripts in package.json:
 
 * [TypeScript in 5 minutes](https://www.typescriptlang.org/docs/handbook/typescript-in-5-minutes.html)
 * [TypeScript Official Examples](https://www.typescriptlang.org/samples)
-* [TypeScript Basic Types](https://www.typescriptlang.org/docs/handbook/basic-types.html)
+* [TypeScript Handbook](https://www.typescriptlang.org/docs/handbook/basic-types.html)
+* [tsconfig.json](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html)
+
+* [Course: TypeScript 3 Fundamentals, v2](https://frontendmasters.com/courses/typescript-v2/)
+
+* [Interface vs Type alias in TypeScript 2.7](https://medium.com/@martin_hotell/interface-vs-type-alias-in-typescript-2-7-2a8f1777af4c)
+* [How to get around property does not exist on 'Object'](https://stackoverflow.com/questions/36607979/how-to-get-around-property-does-not-exist-on-object)
