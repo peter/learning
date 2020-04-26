@@ -56,10 +56,10 @@ A distribution with two peaks is called bimodal.
 ### Mode, median, and mean
 
 * Mode - value that occurs most frequently. The only measure for nominal variables.
-* Mean - the dividing middle value (50% of observations are below and 50% above)
+* Median - the dividing middle value (50% of observations are below and 50% above)
 * Mean - the average value that "balances the scale"
 
-Outliers can cause the mean and median to diverge since they can have a strong effect on the mean but leave the median fairly unchanged. If the outliers are influential or if the distribution is skewed then the mean may be a better measure of the center than the mean.
+Outliers can cause the mean and median to diverge since they can have a strong effect on the mean but leave the median fairly unchanged. If the outliers are influential or if the distribution is skewed then the median may be a better measure of the center than the mean.
 
 ### Range, interquartile range and box plot
 
