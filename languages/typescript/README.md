@@ -2,51 +2,37 @@
 
 Notes in learning Typescript
 
-## Install
+## Installation
 
 ```sh
 npm install -g typescript
 ```
 
-## Hello World
-
-```sh
-cd examples
-tsc hello_world.ts
-node hello_world.js
-```
-
 ## Recommended IDE/Editor
 
-Visual Studio Code with these extensions:
+Visual Studio Code
 
-* TSLint
+## Project Configuration
 
-## Configuring TypesScript with Node.js
-
-Add typescript and any relevant types to your project:
+Create a sample tsconfig.json file and edit it:
 
 ```sh
-yarn add -D typescript
-yarn add -D @types/node
-yarn add -D @types/jest
+tsc --init
 ```
 
-TypeScript support for Jest:
+## Node Configuration
 
-```sh
-yarn add -D ts-jest
-```
-
-Run `tsc --init` to generate a `tsconfig.json` file and edit it:
+Example `tsconfig.json` for Node (also see [tsconfig.json](https://github.com/microsoft/TypeScript-Node-Starter/blob/master/tsconfig.json) in the TypeScript Node Starter app):
 
 ```json
 {
   "compilerOptions": {
-    "target": "es6",
     "module": "commonjs",
-    "outDir": "dist",
     "esModuleInterop": true,
+    "target": "ES2019",
+    "outDir": "dist",
+    "baseUrl": ".",
+    "scrict": true,
     "moduleResolution": "node",
     "sourceMap": true,
     "noImplicitAny": true,
@@ -57,14 +43,6 @@ Run `tsc --init` to generate a `tsconfig.json` file and edit it:
   ]
 }
 ```
-
-Example script to change extension of source files:
-
-```sh
-for file in $(find src -iname '*.js'); do git mv "$file" "${file%.js}.ts"; done
-```
-
-You may want to change your code from using Node modules (requires) to using ES6 modules (imports).
 
 Example scripts in package.json:
 
@@ -82,14 +60,24 @@ Example scripts in package.json:
 }
 ```
 
-## Resources
+An alternative to Nodemon for hot-reloading is [ts-node-dev](https://www.npmjs.com/package/ts-node-dev)
+
+## Migration from JavaScript
+
+Example script to change extension of source files:
+
+```sh
+for file in $(find src -iname '*.js'); do git mv "$file" "${file%.js}.ts"; done
+```
+
+You may want to change your code from using Node modules (requires) to using ES6 modules (imports).
+
+## Reousrces
+
+Official [TypeScript Documentation](https://www.typescriptlang.org/docs/home.html):
 
 * [TypeScript in 5 minutes](https://www.typescriptlang.org/docs/handbook/typescript-in-5-minutes.html)
-* [TypeScript Official Examples](https://www.typescriptlang.org/samples)
-* [TypeScript Handbook](https://www.typescriptlang.org/docs/handbook/basic-types.html)
-* [tsconfig.json](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html)
+* [TypeScript Project Configuration (tsconfig.json)](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html)
+* [Handbook - Basic Types](https://www.typescriptlang.org/docs/handbook/basic-types.html)
 
-* [Course: TypeScript 3 Fundamentals, v2](https://frontendmasters.com/courses/typescript-v2/)
-
-* [Interface vs Type alias in TypeScript 2.7](https://medium.com/@martin_hotell/interface-vs-type-alias-in-typescript-2-7-2a8f1777af4c)
-* [How to get around property does not exist on 'Object'](https://stackoverflow.com/questions/36607979/how-to-get-around-property-does-not-exist-on-object)
+* [TypeScript Example/Starter Projects (React, Express, Migration Guide etc.)](https://www.typescriptlang.org/Samples)
