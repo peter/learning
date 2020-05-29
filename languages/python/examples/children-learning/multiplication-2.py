@@ -2,7 +2,7 @@ from random import randint
 import re
 import time
 
-N_MULTIPLICATIONS = 10
+N_MULTIPLICATIONS = 5
 DIFFICULTY_RANGE = 4
 MAX_DIFFICULTY = 5
 
@@ -42,7 +42,7 @@ def ask_multiplication(n, a, b):
     print("Rätt!!!")
     return 1
   else:
-    print("Fel, kom igen nu!!!")
+    print(f"Fel, kom igen nu!!! Rätt svar är {a * b}")
     return 0
 
 def main():
