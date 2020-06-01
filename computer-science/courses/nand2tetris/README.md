@@ -32,6 +32,25 @@ Some of these functions are arithmetic and some of these functions are logical. 
 
 "if for some reason you decide that the ALU will not include multiplication or division, presumably at a later point when you build your software layer you will deal, you will complete this functionality with software."
 
+least significant bits (LSB)
+
+First,
+we add the two right-most digits, also called the least significant bits (LSB) of the two
+binary numbers. Next, we add the resulting carry bit (which is either 0 or 1) to the
+sum of the next pair of bits up the significance ladder. We continue the process until
+the two most significant bits (MSB) are added. If the last bit-wise addition generates a
+carry of 1, we can report overflow; otherwise, the addition completes successfully:
+
+The ALU is the centerpiece chip that executes all the arithmetic and logical operations performed by the computer.
+
+A particularly attractive feature of this representation is that addition of any two
+signed numbers in 2’s complement is exactly the same as addition of positive numbers.
+
+The codes of all positive numbers begin with a 0.
+The codes of all negative numbers begin with a 1
+The system can code a total of 2n signed numbers, of which the maximal and
+minimal numbers are 2n1  1 and 2n1, respectively
+
 the Hack ALU
 
 the ALU has two 16-bit data inputs which we call x and y. It outputs a single 16-bit output which we call out, which function to compute is determined by six control bits that have strange names like zx and nx and so on
