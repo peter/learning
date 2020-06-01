@@ -8,6 +8,8 @@
 * [Pygame Zero Helper](https://www.aposteriori.com.sg/pygame-zero-helper/)
 * [Intro to Pygame Zero (Course)](https://aposteriori.trinket.io/game-development-with-pygame-zero#/intro-to-pygame-zero/intro-and-installation)
 
+* [Code with Mu: a simple Python editor for beginner programmers](https://codewith.mu/)
+
 * [JavaScript for Kids (Udemy Course)](https://www.udemy.com/course/javascript-for-kids/)
 
 * [Codemonkey - Coding for Kids](https://www.codemonkey.com)
