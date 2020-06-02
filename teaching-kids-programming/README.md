@@ -9,23 +9,31 @@ pip3 install pygame==2.0.0.dev10
 
 ## Resources
 
+* [Codemonkey - Coding for Kids](https://www.codemonkey.com)
+
+JavaScript:
+
 * [Phaser (JavaScript Framework)](https://github.com/photonstorm/phaser)
+* [Phaser Bouncing Ball Game](https://www.emanueleferonato.com/2019/05/31/build-a-html5-hyper-casual-game-like-bouncing-ball-by-ketchapp-studio-using-phaser-3-and-arcade-physics/)
+* [JavaScript for Kids (Udemy Course)](https://www.udemy.com/course/javascript-for-kids/)
+
+Python:
+
+* [Code with Mu: a simple Python editor for beginner programmers](https://codewith.mu/)
+
+Pygame Zero:
 
 * [Pygame Zero (Python Framework)](https://pygame-zero.readthedocs.io/en/stable/)
 * [Pygame Zero Helper](https://www.aposteriori.com.sg/pygame-zero-helper/)
 * [Intro to Pygame Zero (Course)](https://aposteriori.trinket.io/game-development-with-pygame-zero#/intro-to-pygame-zero/intro-and-installation)
-
+* [Beginning Game Programming with Pygame Zero (Book)](https://www.apress.com/gp/book/9781484256497)
 * [Pygame Zero Invaders](https://magpi.raspberrypi.org/articles/pygame-zero-invaders)
 * [Pygame Zero Invaders 2](https://magpi.raspberrypi.org/articles/pygame-zero-space-invaders-ii)
-
 * [Tutorial Code for Pygame Zero](https://github.com/TechnoVisual/Pygame-Zero)
+* [Pygame Zero : Flappy Bird Tutorial](https://pygamezero-bird.readthedocs.io/en/latest/)
+
+* [Intro to Turtle - An Hour of Code](https://hourofpython.trinket.io/a-visual-introduction-to-python#/welcome/an-hour-of-code)
+
+Pygame:
 
 * [Space Invaders Pygame Tutorial](https://www.youtube.com/watch?v=Q-__8Xw9KTM&feature=youtu.be)
-
-* [Code with Mu: a simple Python editor for beginner programmers](https://codewith.mu/)
-
-* [JavaScript for Kids (Udemy Course)](https://www.udemy.com/course/javascript-for-kids/)
-
-* [Codemonkey - Coding for Kids](https://www.codemonkey.com)
-
-* [Phaser Bouncing Ball Game](https://www.emanueleferonato.com/2019/05/31/build-a-html5-hyper-casual-game-like-bouncing-ball-by-ketchapp-studio-using-phaser-3-and-arcade-physics/)
