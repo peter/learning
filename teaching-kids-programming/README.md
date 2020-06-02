@@ -20,10 +20,12 @@ JavaScript:
 Python:
 
 * [Code with Mu: a simple Python editor for beginner programmers](https://codewith.mu/)
+* [repl.it (Code Online)](https://repl.it)
 
 Pygame Zero:
 
 * [Pygame Zero (Python Framework)](https://pygame-zero.readthedocs.io/en/stable/)
+* [Pygame Zero Examples](https://github.com/lordmauve/pgzero/tree/master/examples)
 * [Pygame Zero Helper](https://www.aposteriori.com.sg/pygame-zero-helper/)
 * [Intro to Pygame Zero (Course)](https://aposteriori.trinket.io/game-development-with-pygame-zero#/intro-to-pygame-zero/intro-and-installation)
 * [Beginning Game Programming with Pygame Zero (Book)](https://www.apress.com/gp/book/9781484256497)
