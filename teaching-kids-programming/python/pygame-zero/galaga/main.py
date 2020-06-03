@@ -35,8 +35,9 @@ def init_enemies():
     enemies.append(enemy)
 
 def init_game():
-  global score
+  global score, game_over
   score = 0
+  game_over = False
   init_ship()
   init_enemies()
 
@@ -48,6 +49,11 @@ def on_key_down(key):
     shoot()
 
 def update():
+  global game_over
+  if keyboard[keys.RETURN]:
+    init_game()
+  if game_over:
+    return
   global score
   if keyboard.left:
     ship.x -= config['ship_move']
@@ -59,6 +65,9 @@ def update():
       bullets.remove(bullet)
   for enemy in enemies:
     enemy.y += config['enemy_move']
+    if ship.colliderect(enemy):
+      game_over = True
+      return
     for bullet in bullets:
       if enemy.colliderect(bullet):
         score += config['enemy_score']
@@ -68,6 +77,9 @@ def update():
     init_enemies()
 
 def draw():
+  if game_over:
+    screen.draw.text(f"Game Over (press return to restart)", centerx=WIDTH/2, centery=HEIGHT/2, color=(255,255,255), fontsize=30)
+    return
   screen.clear()
   screen.draw.text(str(score), (5, 5), color=(255,255,255), fontsize=30)
   for enemy in enemies:

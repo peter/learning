@@ -62,29 +62,29 @@ def move_ball():
   ball['y'] += ball['dy']
   ball['dy'] += gravity
 
-def update_score(ball):
+def update_score():
   global score
-  if ball['dy'] > 0 or ball['dx'] > 0:
-    score += (HEIGHT - ball['radius'] - ball['y'])
-  print(score)
+  def ball_above_obstacle(obstacle):
+    in_x_interval = ball['x'] >= (obstacle['x'] - abs(ball['dx'])) and ball['x'] <= (obstacle['x'] + abs(ball['dx']))
+    return in_x_interval and (ball['y'] + ball['radius']) < obstacle['y']
+  for obstacle in obstacles:
+    if ball_above_obstacle(obstacle) and not obstacle.get('scored'):
+      score += 1
+      obstacle['scored'] = True
 
 def bounce_ball():
   if ball['x'] + ball['radius'] >= WIDTH: # bounce right wall
     ball['x'] = WIDTH - ball['radius']
     ball['dx'] = -1 * slow(ball['dx'], ball['slow'])
-    update_score(ball)
   if ball['x'] - ball['radius'] <= 0: # bounce left wall
     ball['x'] = ball['radius']
     ball['dx'] = -1 * slow(ball['dx'], ball['slow'])
-    update_score(ball)
   if ball['y'] - ball['radius'] <= 0: # bounce top wall
     ball['y'] = ball['radius']
     ball['dy'] = -1 * slow(ball['dy'], ball['slow'])
-    update_score(ball)
   if ball['y'] + ball['radius'] >= HEIGHT: # bounce bottom wall
     ball['y'] = HEIGHT - ball['radius']
     ball['dy'] = -1 * slow(ball['dy'], ball['slow'])
-    update_score(ball)
 
 def control_ball():
   if keyboard.up:
@@ -126,6 +126,7 @@ def update():
   control_ball()
   scroll_obstacles()
   game_over = any(ball_collision(ball, obstacle) for obstacle in obstacles)
+  update_score()
 
 def draw():
   if game_over:
