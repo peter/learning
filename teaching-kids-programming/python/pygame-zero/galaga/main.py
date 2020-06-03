@@ -1,13 +1,15 @@
 import pgzrun
+from random import randint
 
 config = {
   'title': 'Galaga',
   'width': 800,
   'height': 600,
-  'n_enemies': 3,
+  'n_enemies': 5,
   'ship_move': 5,
   'bullet_move': 10,
-  'enemy_move': 3
+  'enemy_move': 3,
+  'enemy_score': 100
 }
 
 TITLE = config['title']
@@ -24,9 +26,11 @@ def init_ship():
 def init_enemies():
   global enemies
   enemies = []
+  imageName = 'enemy1'
+  width = getattr(images, imageName).get_width() + 5
+  x_first = randint(0, WIDTH - config['n_enemies'] * width)
   for n in range(0, config['n_enemies']):
-    imageName = 'enemy1'
-    x = WIDTH/2 + n * (getattr(images, imageName).get_width() + 5)
+    x = x_first + n * width
     enemy = Actor(imageName, (x, 0))
     enemies.append(enemy)
 
@@ -57,7 +61,7 @@ def update():
     enemy.y += config['enemy_move']
     for bullet in bullets:
       if enemy.colliderect(bullet):
-        score += 100
+        score += config['enemy_score']
         enemies.remove(enemy)
         bullets.remove(bullet)
   if not enemies or enemies[0].y > HEIGHT:
