@@ -5,11 +5,12 @@ config = {
   'title': 'Galaga',
   'width': 800,
   'height': 600,
-  'n_enemies': 5,
+  'n_enemies': 8,
   'ship_move': 5,
   'bullet_move': 10,
   'enemy_move': 3,
-  'enemy_score': 100
+  'enemy_score': 3,
+  'bullet_score': -1
 }
 
 TITLE = config['title']
@@ -27,9 +28,10 @@ def init_enemies():
   global enemies
   enemies = []
   imageName = 'enemy1'
+  n_enemies = randint(1, config['n_enemies'])
   width = getattr(images, imageName).get_width() + 5
-  x_first = randint(0, WIDTH - config['n_enemies'] * width)
-  for n in range(0, config['n_enemies']):
+  x_first = randint(0, WIDTH - n_enemies * width)
+  for n in range(0, n_enemies):
     x = x_first + n * width
     enemy = Actor(imageName, (x, 0))
     enemies.append(enemy)
@@ -42,7 +44,10 @@ def init_game():
   init_enemies()
 
 def shoot():
+  global score
   bullets.append(Actor('bullet', (ship.x, ship.y)))
+  if score > 0:
+    score += config['bullet_score']
 
 def on_key_down(key):
   if key == keys.SPACE:
@@ -55,16 +60,20 @@ def update():
   if game_over:
     return
   global score
-  if keyboard.left:
+  if keyboard.left and ship.left >= 0:
     ship.x -= config['ship_move']
-  elif keyboard.right:
+  elif keyboard.right and ship.right <= WIDTH:
     ship.x += config['ship_move']
+  elif keyboard.up and ship.top >= 0:
+    ship.y -= config['ship_move']
+  elif keyboard.down and ship.bottom < HEIGHT:
+    ship.y += config['ship_move']
   for bullet in bullets:
     bullet.y -= config['bullet_move']
     if bullet.y < 0:
       bullets.remove(bullet)
   for enemy in enemies:
-    enemy.y += config['enemy_move']
+    enemy.y += config['enemy_move'] + score / 10
     if ship.colliderect(enemy):
       game_over = True
       return
