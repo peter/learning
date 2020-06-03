@@ -27,11 +27,11 @@ def sign(value):
 def update():
   dx = math.cos(bird.angle) * bird.speed
   if bird.last_dx and sign(bird.last_dx) != sign(dx):
-    print(f'dx inflection at x={bird.actor.x} y={bird.actor.y}')
+    print(f'dx inflection at x={bird.actor.x} y={bird.actor.y} angle={bird.angle}')
     print(f"x max={bird.max['x']} min={bird.min['x']} radius={(bird.max['x'] - bird.min['x'])/2}")
   dy = math.sin(bird.angle) * bird.speed
   if bird.last_dy and sign(bird.last_dy) != sign(dy):
-    print(f'dy inflection at x={bird.actor.x} y={bird.actor.y}')
+    print(f'dy inflection at x={bird.actor.x} y={bird.actor.y} angle={bird.angle}')
     print(f"y max={bird.max['y']} min={bird.min['y']} radius={(bird.max['y'] - bird.min['y'])/2}")
   bird.actor.x += dx
   bird.actor.y += dy
@@ -41,7 +41,7 @@ def update():
   bird.min['x'] = min(bird.min['x'], bird.actor.x)
   bird.max['y'] = max(bird.max['y'], bird.actor.y)
   bird.min['y'] = min(bird.min['y'], bird.actor.y)
-  bird.angle += bird.angle_update
+  bird.angle = (bird.angle + bird.angle_update) % (2 * math.pi)
 
 def draw():
   screen.fill('blue')
