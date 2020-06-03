@@ -2,18 +2,19 @@ from math import sqrt
 import pgzrun
 from random import randint
 
+# TODO: don't update score if last score was at the same position
+# TODO: randomize number of obstacles
+# TODO: make obstacles have different speed
+# TODO: make obstacles have x movement
+# TODO: init_obstacles when all(obstacle['y'] >= HEIGHT for obstacle in obstacles)
+# TODO: oscillate radius of obstacles
+# TODO: sound effect on score
+# TODO: sound effect on game over
+# TODO: allow bounce against obstacle three times before game over?
+
 TITLE = 'Bounce Ball'
 WIDTH = 800
 HEIGHT = 600
-
-def init_game():
-  global ball, obstacles, score, game_over, gravity, control
-  ball = make_ball()
-  obstacles = [make_obstacle() for _ in range(0, 2)]
-  game_over = False
-  score = 0
-  gravity = 1
-  control = 1
 
 def make_ball():
   return {
@@ -35,6 +36,19 @@ def make_obstacle():
     'color': 'yellow'
   }
 
+def init_obstacles():
+  global obstacles
+  obstacles = [make_obstacle() for _ in range(0, 2)]
+
+def init_game():
+  global ball, obstacles, score, game_over, gravity, control
+  ball = make_ball()
+  init_obstacles()
+  game_over = False
+  score = 0
+  gravity = 1
+  control = 1
+
 def slow(velocity, amount):
   if velocity > 0:
     return max(0, velocity - amount)
@@ -50,7 +64,6 @@ def move_ball():
 
 def update_score(ball):
   global score
-  # TODO: don't update score if last score was at the same position
   if ball['dy'] > 0 or ball['dx'] > 0:
     score += (HEIGHT - ball['radius'] - ball['y'])
   print(score)
