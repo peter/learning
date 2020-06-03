@@ -73,6 +73,7 @@ WIDTH = 800
 HEIGHT = 600
 
 gravity = 1
+control = 1
 
 ball = {
   'x': WIDTH / 2,
@@ -113,9 +114,20 @@ def bounce_ball():
     ball['y'] = HEIGHT - ball['radius']
     ball['dy'] = -1 * slow(ball['dy'], ball['slow'])
 
+def control_ball():
+  if keyboard.up:
+    ball['dy'] -= control
+  if keyboard.down:
+    ball['dy'] += control
+  if keyboard.left:
+    ball['dx'] -= control
+  if keyboard.right:
+    ball['dx'] += control
+
 def update():
   move_ball()
   bounce_ball()
+  control_ball()
 
 def draw():
   screen.fill('blue')
