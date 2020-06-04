@@ -24,6 +24,8 @@ bird = SimpleNamespace(**{
   'actor': Actor('bird0', start_pos)
 })
 
+print(f'radius={bird.radius} speed={bird.speed}')
+
 def sign(value):
   return 1 if value >= 0 else -1
 
@@ -44,13 +46,13 @@ def update():
   dx = new_pos[0] - bird.actor.x
   if bird.last_dx and sign(bird.last_dx) != sign(dx):
     x_radius = (bird.max['x'] - bird.min['x'])/2
-    print(f'dx inflection at x={bird.actor.x} y={bird.actor.y} angle={bird.angle}')
-    print(f"x max={bird.max['x']} min={bird.min['x']} radius={x_radius}")
+    # print(f'dx inflection at x={bird.actor.x} y={bird.actor.y} angle={bird.angle}')
+    # print(f"x max={bird.max['x']} min={bird.min['x']} radius={x_radius}")
   dy = new_pos[1] - bird.actor.y
   if bird.last_dy and sign(bird.last_dy) != sign(dy):
     y_radius = (bird.max['y'] - bird.min['y'])/2
-    print(f'dy inflection at x={bird.actor.x} y={bird.actor.y} angle={bird.angle}')
-    print(f"y max={bird.max['y']} min={bird.min['y']} radius={y_radius}")
+    # print(f'dy inflection at x={bird.actor.x} y={bird.actor.y} angle={bird.angle}')
+    # print(f"y max={bird.max['y']} min={bird.min['y']} radius={y_radius}")
     if dy > 0:
       laps += 1
       seconds = time.time() - start_time
@@ -68,6 +70,7 @@ def update():
 
 def draw():
   screen.fill('blue')
+  screen.draw.circle((start_pos[0], start_pos[1] + bird.radius), bird.radius, 'red')
   bird.actor.draw()
 
 pgzrun.go() # Must be last line
