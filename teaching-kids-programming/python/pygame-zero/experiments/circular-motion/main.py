@@ -15,8 +15,8 @@ start_y = HEIGHT/2
 start_pos = (start_x, start_y)
 bird = SimpleNamespace(**{
   'angle': 0,
-  'radius': 80,
-  'speed': 15,
+  'radius': 120,
+  'speed': 5,
   'last_dx': None,
   'last_dy': None,
   'max': {'x': start_x, 'y': start_y},
