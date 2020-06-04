@@ -5,23 +5,25 @@ WIDTH = 600
 HEIGHT = 600
 
 config = {
-  'wave_length': 80,
-  'amplitude': 30
+  'wave_length': 120,
+  'amplitude': 100
 }
 
 frames = 0
 start_pos = (WIDTH/2, HEIGHT/2)
-pos = start_pos
+positions = [start_pos]
 
 def update():
-  global frames, pos
+  global frames, positions
   frames += 1
+  pos = positions[-1]
   x = (pos[0] + 3) % WIDTH
-  y = start_pos[1] + math.sin((x - start_pos[0])/600 * 4 * math.pi) * 100
-  pos = (x, y)
+  y = start_pos[1] + math.sin(2 * math.pi * (x - start_pos[0])/config['wave_length']) * config['amplitude']
+  positions.append((x, y))
 
 def draw():
   screen.fill('blue')
-  screen.draw.filled_circle(pos, 10, 'red')
+  for pos in positions:
+    screen.draw.filled_circle(pos, 3, 'red')
 
 pgzrun.go() # Must be last line
