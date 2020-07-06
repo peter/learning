@@ -1,3 +1,4 @@
+import argparse
 import random
 from collections import defaultdict
 
@@ -71,8 +72,16 @@ STRATEGIES = {
 def computer_choice():
   return STRATEGIES[CONFIG['strategy']]()
 
-def set_strategy():
-  if not 'strategy' in CONFIG:
+def parse_args():
+  parser = argparse.ArgumentParser(description='Spela sten sax påse mot datorn')
+  parser.add_argument('--strategy', choices=list(STRATEGIES))
+  args = parser.parse_args()
+  return args
+
+def set_strategy(args):
+  if 'strategy' in args:
+    CONFIG['strategy'] = args.strategy
+  else:
     CONFIG['strategy'] = random.choice(list(STRATEGIES))
 
 def game_loop():
@@ -97,7 +106,8 @@ def print_winner():
     print('\nDatorn vann...')
 
 def main():
-  set_strategy()
+  args = parse_args()
+  set_strategy(args)
   game_loop()
   print_winner()
 
