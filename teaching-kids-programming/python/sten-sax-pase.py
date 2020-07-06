@@ -10,7 +10,8 @@ CONFIG = {
 
 STATE = {
   'round': 0,
-  'points': defaultdict(lambda: 0)
+  'points': defaultdict(lambda: 0),
+  'history': []
 }
 
 def get_winner(points, points_to_win):
@@ -42,8 +43,8 @@ def random_strategy():
   return random.choice(CONFIG['choices'])
 
 def cycle_strategy():
-  if 'last_choices' in STATE:
-    last_index = CONFIG['choices'].index(STATE['last_choices']['dator'])
+  if STATE['history']:
+    last_index = CONFIG['choices'].index(STATE['history'][-1]['dator'])
     new_index = (last_index + 1) % len(CONFIG['choices'])
     print(f'last_index={last_index} new_index={new_index}')
     return CONFIG['choices'][new_index]
@@ -51,14 +52,14 @@ def cycle_strategy():
     return random_strategy()
 
 def imitate_strategy():
-  if 'last_choices' in STATE:
-    return STATE['last_choices']['spelare']
+  if STATE['history']:
+    return STATE['history'][-1]['spelare']
   else:
     return random_strategy()
 
 def repeat_strategy():
-  if 'last_choices' in STATE:
-    return STATE['last_choices']['dator']
+  if STATE['history']:
+    return STATE['history'][-1]['dator']
   else:
     return random_strategy()
 
@@ -97,7 +98,7 @@ def game_loop():
       print(f'Ogiltigt val... Du måste välja ett av {valid_choices}')
       continue
     update_points(choices)
-    STATE['last_choices'] = choices
+    STATE['history'].append(choices)
 
 def print_winner():
   if get_winner(STATE['points'], CONFIG['points_to_win']) == 'spelare':
