@@ -42,6 +42,12 @@ def update_points(choices):
 def random_strategy():
   return random.choice(CONFIG['choices'])
 
+def imitate_strategy():
+  if STATE['history']:
+    return STATE['history'][-1]['spelare']
+  else:
+    return random_strategy()
+
 def cycle_strategy():
   if STATE['history']:
     last_index = CONFIG['choices'].index(STATE['history'][-1]['dator'])
@@ -51,23 +57,27 @@ def cycle_strategy():
   else:
     return random_strategy()
 
-def imitate_strategy():
-  if STATE['history']:
-    return STATE['history'][-1]['spelare']
-  else:
-    return random_strategy()
-
 def repeat_strategy():
   if STATE['history']:
     return STATE['history'][-1]['dator']
   else:
     return random_strategy()
 
+def repeat_cycle_strategy():
+  if STATE['history']:
+    if len(STATE['history']) >= 2 and STATE['history'][-2]['dator'] == STATE['history'][-1]['dator']:
+      return cycle_strategy()
+    else:
+      return repeat_strategy()
+  else:
+    return random_strategy()
+
 STRATEGIES = {
   'random': random_strategy,
-  'cycle': cycle_strategy,
   'imitate': imitate_strategy,
-  'repeat': repeat_strategy
+  'cycle': cycle_strategy,
+  'repeat': repeat_strategy,
+  'repeat_cycle': repeat_cycle_strategy
 }
 
 def computer_choice():
