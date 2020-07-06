@@ -2,125 +2,122 @@ import argparse
 import random
 from collections import defaultdict
 
-CONFIG = {
-  'players': ['spelare', 'dator'],
-  'choices': ["sten", "sax", "påse"],
-  'points_to_win': 3
-}
-
-STATE = {
-  'round': 0,
-  'points': defaultdict(lambda: 0),
-  'history': []
-}
-
 def get_winner(points, points_to_win):
   for player, player_points in points.items():
     if player_points >= points_to_win:
       return player
 
-def other_player(player):
-  for p in CONFIG['players']:
+def other_player(config, player):
+  for p in config['players']:
     if p != player:
       return p
 
-def valid_choice(choice):
-  return choice in CONFIG['choices']
+def valid_choice(config, choice):
+  return choice in config['choices']
 
 def winning_choice(choice, other_choice):
   return (choice == 'sten' and other_choice == 'sax' or
     choice == 'sax' and other_choice == 'påse' or
     choice == 'påse' and other_choice == 'sten')
 
-def update_points(choices):
+def update_points(config, state, choices):
     for player, choice in choices.items():
-      other_choice = choices[other_player(player)]
+      other_choice = choices[other_player(config, player)]
       if winning_choice(choice, other_choice):
-        STATE['points'][player] += 1
-      print(f"{player}: val={choice} poäng={STATE['points'][player]}")
+        state['points'][player] += 1
+      print(f"{player}: val={choice} poäng={state['points'][player]}")
 
-def random_strategy():
-  return random.choice(CONFIG['choices'])
+def random_strategy(config, state):
+  return random.choice(config['choices'])
 
-def imitate_strategy():
-  if STATE['history']:
-    return STATE['history'][-1]['spelare']
+def imitate_strategy(config, state):
+  if state['history']:
+    return state['history'][-1]['spelare']
   else:
-    return random_strategy()
+    return random_strategy(config, state)
 
-def cycle_strategy():
-  if STATE['history']:
-    last_index = CONFIG['choices'].index(STATE['history'][-1]['dator'])
-    new_index = (last_index + 1) % len(CONFIG['choices'])
-    print(f'last_index={last_index} new_index={new_index}')
-    return CONFIG['choices'][new_index]
+def cycle_strategy(config, state):
+  if state['history']:
+    last_index = config['choices'].index(state['history'][-1]['dator'])
+    new_index = (last_index + 1) % len(config['choices'])
+    return config['choices'][new_index]
   else:
-    return random_strategy()
+    return random_strategy(config, state)
 
-def repeat_strategy():
-  if STATE['history']:
-    return STATE['history'][-1]['dator']
+def repeat_strategy(config, state):
+  if state['history']:
+    return state['history'][-1]['dator']
   else:
-    return random_strategy()
+    return random_strategy(config, state)
 
-def repeat_cycle_strategy():
-  if STATE['history']:
-    if len(STATE['history']) >= 2 and STATE['history'][-2]['dator'] == STATE['history'][-1]['dator']:
-      return cycle_strategy()
+def repeat_cycle_strategy(config, state):
+  if state['history']:
+    if len(state['history']) >= 2 and state['history'][-2]['dator'] == state['history'][-1]['dator']:
+      return cycle_strategy(config, state)
     else:
-      return repeat_strategy()
+      return repeat_strategy(config, state)
   else:
-    return random_strategy()
+    return random_strategy(config, state)
 
-STRATEGIES = {
-  'random': random_strategy,
-  'imitate': imitate_strategy,
-  'cycle': cycle_strategy,
-  'repeat': repeat_strategy,
-  'repeat_cycle': repeat_cycle_strategy
-}
+def computer_choice(config, state):
+  return config['strategy'](config, state)
 
-def computer_choice():
-  return STRATEGIES[CONFIG['strategy']]()
-
-def parse_args():
+def parse_args(strategies):
   parser = argparse.ArgumentParser(description='Spela sten sax påse mot datorn')
-  parser.add_argument('--strategy', choices=list(STRATEGIES))
+  parser.add_argument('--strategy', choices=list(strategies))
   args = parser.parse_args()
   return args
 
-def set_strategy(args):
+def get_strategy(strategies, args):
   if 'strategy' in args:
-    CONFIG['strategy'] = args.strategy
+    return strategies[args.strategy]
   else:
-    CONFIG['strategy'] = random.choice(list(STRATEGIES))
+    return random.choice(strategies.values())
 
-def game_loop():
-  while not get_winner(STATE['points'], CONFIG['points_to_win']):
-    STATE['round'] += 1
-    print(f'\nOmgång {STATE["round"]}')
+def game_loop(config):
+  state = {
+    'round': 0,
+    'points': defaultdict(lambda: 0),
+    'history': []
+  }
+  while not get_winner(state['points'], config['points_to_win']):
+    state['round'] += 1
+    print(f'\nOmgång {state["round"]}')
     choices = {
       'spelare': input("sten sax påse? "),
-      'dator': computer_choice()
+      'dator': computer_choice(config, state)
     }
-    if not valid_choice(choices['spelare']):
-      valid_choices = ", ".join(CONFIG['choices'])
+    if not valid_choice(config, choices['spelare']):
+      valid_choices = ", ".join(config['choices'])
       print(f'Ogiltigt val... Du måste välja ett av {valid_choices}')
       continue
-    update_points(choices)
-    STATE['history'].append(choices)
+    update_points(config, state, choices)
+    state['history'].append(choices)
+  return state
 
-def print_winner():
-  if get_winner(STATE['points'], CONFIG['points_to_win']) == 'spelare':
+def print_winner(config, state):
+  if get_winner(state['points'], config['points_to_win']) == 'spelare':
     print('\nDu vann!!')
   else:
     print('\nDatorn vann...')
 
 def main():
-  args = parse_args()
-  set_strategy(args)
-  game_loop()
-  print_winner()
+  strategies = {
+    'random': random_strategy,
+    'imitate': imitate_strategy,
+    'cycle': cycle_strategy,
+    'repeat': repeat_strategy,
+    'repeat_cycle': repeat_cycle_strategy
+  }
+  args = parse_args(strategies)
+  config = {
+    'players': ['spelare', 'dator'],
+    'choices': ["sten", "sax", "påse"],
+    'points_to_win': 3,
+    'strategy': get_strategy(strategies, args)
+  }
+  state = game_loop(config)
+  print_winner(config, state)
 
 if __name__ == '__main__':
   main()
