@@ -2,7 +2,6 @@ import random
 from collections import defaultdict
 
 CONFIG = {
-  'strategy': 'cycle',
   'players': ['spelare', 'dator'],
   'choices': ["sten", "sax", "påse"],
   'points_to_win': 3
@@ -50,20 +49,31 @@ def cycle_strategy():
   else:
     return random_strategy()
 
-def repeat_strategy():
+def imitate_strategy():
   if 'last_choices' in STATE:
     return STATE['last_choices']['spelare']
+  else:
+    return random_strategy()
+
+def repeat_strategy():
+  if 'last_choices' in STATE:
+    return STATE['last_choices']['dator']
   else:
     return random_strategy()
 
 STRATEGIES = {
   'random': random_strategy,
   'cycle': cycle_strategy,
+  'imitate': imitate_strategy,
   'repeat': repeat_strategy
 }
 
 def computer_choice():
   return STRATEGIES[CONFIG['strategy']]()
+
+def set_strategy():
+  if not 'strategy' in CONFIG:
+    CONFIG['strategy'] = random.choice(list(STRATEGIES))
 
 def game_loop():
   while not get_winner(STATE['points'], CONFIG['points_to_win']):
@@ -87,6 +97,7 @@ def print_winner():
     print('\nDatorn vann...')
 
 def main():
+  set_strategy()
   game_loop()
   print_winner()
 
