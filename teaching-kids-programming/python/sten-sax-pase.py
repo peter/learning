@@ -2,6 +2,11 @@ import argparse
 import random
 from collections import defaultdict
 
+def first(the_iterable, condition = lambda x: True):
+    for i in the_iterable:
+        if condition(i):
+            return i
+
 def get_winner(points, points_to_win):
   for player, player_points in points.items():
     if player_points >= points_to_win:
@@ -54,6 +59,13 @@ def cycle_strategy(config, state):
 def repeat_strategy(config, state):
   if state['history']:
     return state['history'][-1]['dator']
+  else:
+    return random_strategy(config, state)
+
+def opposite_strategy(config, state):
+  if state['history']:
+    last_choice = state['history'][-1]['dator']
+    return first(config['choices'], lambda c: winning_choice(c, last_choice))
   else:
     return random_strategy(config, state)
 
@@ -116,6 +128,7 @@ def main():
     'imitate': imitate_strategy,
     'cycle': cycle_strategy,
     'repeat': repeat_strategy,
+    'opposite': opposite_strategy,
     'repeat_cycle': repeat_cycle_strategy
   }
   args = parse_args(strategies)
