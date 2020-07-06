@@ -33,9 +33,12 @@ Pygame Zero:
 * [Pygame Zero Invaders 2](https://magpi.raspberrypi.org/articles/pygame-zero-space-invaders-ii)
 * [Tutorial Code for Pygame Zero](https://github.com/TechnoVisual/Pygame-Zero)
 * [Pygame Zero : Flappy Bird Tutorial](https://pygamezero-bird.readthedocs.io/en/latest/)
+* [Pygame Zero: Pacman Tutorial](https://pygamezero-pacman.readthedocs.io/en/latest)
+* [Pygame Zero: Pacman Tutorial Source Code](https://github.com/ericclack/pygamezero_pacman)
 
 * [Intro to Turtle - An Hour of Code](https://hourofpython.trinket.io/a-visual-introduction-to-python#/welcome/an-hour-of-code)
 
 Pygame:
 
 * [Space Invaders Pygame Tutorial](https://www.youtube.com/watch?v=Q-__8Xw9KTM&feature=youtu.be)
+* [Pygame Poker](https://github.com/drewtorg/poker)
