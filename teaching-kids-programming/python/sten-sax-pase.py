@@ -20,12 +20,19 @@ def winning_choice(choice, other_choice):
     choice == 'sax' and other_choice == 'påse' or
     choice == 'påse' and other_choice == 'sten')
 
-def update_points(config, state, choices):
-    for player, choice in choices.items():
-      other_choice = choices[other_player(config, player)]
-      if winning_choice(choice, other_choice):
-        state['points'][player] += 1
-      print(f"{player}: val={choice} poäng={state['points'][player]}")
+def update_points(config, points, choices):
+  new_points = {}
+  for player, choice in choices.items():
+    other_choice = choices[other_player(config, player)]
+    if winning_choice(choice, other_choice):
+      new_points[player] = points[player] + 1
+    else:
+      new_points[player] = points[player]
+    print(f"{player}: val={choice} poäng={new_points[player]}")
+  return new_points
+
+def update_state(state, updates):
+  return {**state, **updates}
 
 def random_strategy(config, state):
   return random.choice(config['choices'])
@@ -76,12 +83,11 @@ def get_strategy(strategies, args):
 
 def game_loop(config):
   state = {
-    'round': 0,
+    'round': 1,
     'points': defaultdict(lambda: 0),
     'history': []
   }
   while not get_winner(state['points'], config['points_to_win']):
-    state['round'] += 1
     print(f'\nOmgång {state["round"]}')
     choices = {
       'spelare': input("sten sax påse? "),
@@ -91,8 +97,11 @@ def game_loop(config):
       valid_choices = ", ".join(config['choices'])
       print(f'Ogiltigt val... Du måste välja ett av {valid_choices}')
       continue
-    update_points(config, state, choices)
-    state['history'].append(choices)
+    state = update_state(state, {
+      'round': (state['round'] + 1),
+      'points': update_points(config, state['points'], choices),
+      'history': (state['history'] + [choices])
+    })
   return state
 
 def print_winner(config, state):
