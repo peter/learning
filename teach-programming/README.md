@@ -19,6 +19,10 @@ JavaScript:
 
 Python:
 
+* [Book: Computer Coding for Kids - Carol Vorderman](https://www.amazon.com/Computer-Coding-Kids-Carol-Vorderman/dp/140934701X)
+* [Python Summer Camp Curriculum](https://github.com/konaraddio/LearnPython)
+* [Simple Drawing with Turtle](https://opentechschool.github.io/python-beginners/en/simple_drawing.html)
+
 * [Code with Mu: a simple Python editor for beginner programmers](https://codewith.mu/)
 * [repl.it (Code Online)](https://repl.it)
 
