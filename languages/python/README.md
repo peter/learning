@@ -254,6 +254,9 @@ print("My name is %s and I'm %s years old" % ('Joe', 5))
 ## Lists
 
 ```python
+# Converting a string to a list
+list('Foo') # => ['F', 'o', 'o']
+
 grocery_list = ['Juice', 'Tomatoes', 'Potatoes', 'Bananas']
 first = grocery_list[0]
 grocery_list[0] = 'Green Juice'
