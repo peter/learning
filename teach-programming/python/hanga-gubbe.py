@@ -64,11 +64,9 @@ h6 = [" _________",
 hangmans = [h1,h2,h3,h4,h5,h6]
 
 ordlista = ["äpple",
- "apriks",
  "avokado",
  "banan",
  "björnbär",
- "blodapelsin",
  "blåbär",
  "svarta vinbär",
  "körsbär",
@@ -76,34 +74,23 @@ ordlista = ["äpple",
  "kokosnöt",
  "tranbär",
  "röda vinbär",
- "drakfrukt",
- "dadlar",
- "durian",
  "fikon",
- "gojibär",
  "grapefrukt",
  "vindruva",
- "guava",
  "kiwi",
- "kumquat",
  "citron",
  "lime",
- "lychee",
  "mandarin",
  "mango",
  "nektarin",
  "apelsin",
- "pomelo",
- "papaya",
  "passionsfrukt",
  "persika",
  "päron",
- "physalis",
  "ananas",
  "plommon",
  "hallon",
  "satsuma",
- "stjärnfrukt",
  "jordgubbe",
  "vattenmelon"]
 
@@ -118,10 +105,10 @@ def print_word(word, guesses):
       available.remove(c)
     else:
       result.append('_')
-  print(f'ord: {"".join(result)}')
+  print(f'frukt ({len(result)} bokstäver): {"".join(result)}')
 
 def check_guesses(word, guesses):
-  available = word.copy()
+  available = [w for w in word if w != ' ']
   mistakes_count = 0
   for guess in guesses:
     if guess in available:
@@ -142,7 +129,6 @@ def game_result(word, guesses):
 
 def print_hangman(word, guesses):
   mistakes, _ = check_guesses(word, guesses)
-  print(f'word={word} guesses={guesses} mistakes={mistakes}')
   index = min(mistakes, len(hangmans)) - 1
   if index < 0:
     return
@@ -168,6 +154,7 @@ def main():
     print_word(word, guesses)
     print_guesses(guesses)
     guesses += get_guess()
+  print_word(word, word)
   if game_result(word, guesses) == 'success':
     print('Du vann!!!')
   else:
