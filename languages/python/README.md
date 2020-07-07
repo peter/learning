@@ -12,6 +12,8 @@ Python is optimized for programmer productivity, code readability, and software 
 
 ## Tour
 
+Python on the command line:
+
 ```
 which python
 python --version
@@ -39,7 +41,7 @@ def foo():
   bar = 12
   return bar
 
-print foo()
+print(foo())
 
 # Implicit return value of a function is None
 
@@ -347,6 +349,8 @@ Tuple `count()`:
 ## Set
 
 ```python
+type({1, 2, 3}) == set # => True
+
 a = {1, 2, 3, 4, 5}
 b = {3, 4, 5, 6, 7, 8}
 
@@ -358,6 +362,17 @@ a ^ b # symmetric difference (xor)
 a_set = {1, 2, 3, 4, 5}
 {1, 2, 3}.issubset(a_set) # => True
 a_set.issuperset({1, 2, 3}) # => True
+
+list({1, 2, 3} # => [1, 2, 3]
+set([1, 2, 3]) # => {1, 2, 3}
+
+def difference(list1, list2):
+    set2 = set(list2)
+    return [item for item in list1 if item not in set2]
+
+def intersection(list1, list2):
+    set2 = set(list2)
+    return [item for item in list1 if item in set2]
 ```
 
 Set methods: add, remove, union, intersection, difference, symmetric_difference, issubset, issuperset, isdisjoint.
@@ -381,9 +396,12 @@ my_dict['foo'] = 3
 len(my_dict)
 
 d1 = {'a' : 'some value', 'b' : [1, 2, 3, 4]}
+d1.keys() # => dict_keys(['a', 'b'])
+d1.values() # => dict_values(['some value', [1, 2, 3, 4]])
 d1[7] = 'an integer'
 d1['b']
 'b' in d1 # => True
+d1.get('foobar', 'default')  # => 'default'
 
 d1[5] = 'some value'
 d1['dummy'] = 'another value'
@@ -405,6 +423,8 @@ for key, value in zip(key_list, value_list):
 
 # dict type function accepts a list of 2-tuples:
 mapping = dict(zip(range(5), reversed(range(5)))) # => {0: 4, 1: 3, 2: 2, 3: 1, 4: 0}
+
+dict([['foo', 1], ['bar', 2]]) # => {'foo': 1, 'bar': 2}
 ```
 
 Dicts with default values
@@ -475,6 +495,12 @@ if (age > 16 and not(age > 21)):
 ```python
 for x in range(0, 10):
   print(x)
+
+my_dict = {'foo': 1, 'bar': 2}
+for k, v in my_dict.items():
+  print(k, v)
+for k in my_dict:
+  print(k, my_dict[k])
 
 import random
 random_num = random.randrange(0, 100)
@@ -593,7 +619,7 @@ def f():
   a = 5
   b = 6
   c = 7
-  return a, b, c
+  return a, b, c # returns a tuple (a, b, c)
 
 a, b, c = f()
 return_value = f() # => 3 tuple
@@ -971,6 +997,77 @@ def add_safe_numbers(a, b):
 add_safe_numbers(SafeNumber(5), SafeNumber(5)) # => 10
 ```
 
+## JSON
+
+```python
+import json
+
+def generate(value):
+    return json.dumps(value)
+
+def generate_pretty(value):
+  return json.dumps(value, indent=4, sort_keys=True)
+
+def parse(json_str):
+    return json.loads(json_str)
+```
+
+## PostgreSQL/Redshift
+
+```python
+import psycopg2
+import psycopg2.extras
+
+def get_conn(db_config):
+    conn = psycopg2.connect(**db_config)
+    conn.autocommit = True
+    return conn
+
+def execute(conn, *args):
+    cur = conn.cursor()
+    cur.execute(*args)
+
+def query_tuple(conn, *args):
+    cur = conn.cursor()
+    cur.execute(*args)
+    return cur.fetchall()
+
+def query_dict(conn, *args):
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    cur.execute(*args)
+    return map(dict, cur.fetchall())
+
+def query_values(conn, *args):
+    result = query_tuple(conn, *args)
+    return list(map(lambda r: r[0], result))
+
+conn = get_conn(merge(DB_CONFIG_DEFAULTS, {
+    'host': env('DATABASE_HOST1', 'foobar.eu-west-1.redshift.amazonaws.com')
+}))
+
+query_values(conn, 'select foo from bar')
+query_dict(conn, 'select foo1, foo2 from bar')
+```
+
+See [psycopg2 docs](https://www.psycopg.org/docs/usage.html)
+
+## TODO
+
+* Virtual Env (https://docs.python.org/3/library/venv.html, http://packaging.python.org/guides/installing-using-pip-and-virtual-environments)
+* S3 Uploads (https://devcenter.heroku.com/articles/s3-upload-python)
+* Heroku (https://devcenter.heroku.com/articles/getting-started-with-python)
+* Read/write file
+* Parsing CLI args
+* Env vars
+* Dot notation for dicts https://stackoverflow.com/questions/16279212/how-to-use-dot-notation-for-dict-in-python
+* http client with requests library
+* Web server with Flask
+* Talking to postgresql
+* iPython
+* Jupyter Notebook
+* numpy
+* pandas
+
 ## Resources: General
 
 * [Python Tutorial](https://docs.python.org/3.6/tutorial)
@@ -987,12 +1084,20 @@ add_safe_numbers(SafeNumber(5), SafeNumber(5)) # => 10
 * [10 Basic Python Examples](https://www.makeuseof.com/tag/basic-python-examples-learn-fast)
 * [Replacing Bash with Python](https://medium.com/capital-one-tech/bashing-the-bash-replacing-shell-scripts-with-python-d8d201bc0989)
 
-## Style and Idioms
+## Resources: Computer Science
+
+* [Conceptual Programming with Python](http://www.cs.nott.ac.uk/~pszit/cp.html#Videos)
+
+## Resources: Data Science
+
+* [Python Data Science Handbook](https://jakevdp.github.io/PythonDataScienceHandbook/)
+
+## Resources: Style and Idioms
 
 * [Transforming Code into Beautiful, Idiomatic Python - Raymond Hettinger](https://www.youtube.com/watch?v=OSGv2VnC0go&feature=youtu.be)
 * [Raymond Hettinger - Beyond PEP 8 -- Best practices for beautiful intelligible code - PyCon 2015 - Raymond Hettinger](https://www.youtube.com/watch?v=wf-BqAjZb8M&feature=youtu.be)
 
-## Python 2 vs Python 3
+## Resources: Python 2 vs Python 3
 
 * [Porting Code to Python 3 with 2to3](http://www.diveintopython3.net/porting-code-to-python-3-with-2to3.html)
 
@@ -1006,6 +1111,7 @@ add_safe_numbers(SafeNumber(5), SafeNumber(5)) # => 10
 
 ## Resources: Example Code
 
+* [Simple Flask API (including JWT, SQL, virtual env, Heroku)](https://github.com/peter/api-auth-examples/tree/master/flask)
 * [Code for Fluent Python Book](https://github.com/fluentpython/example-code)
 * [Code for Python Cookbook](https://github.com/dabeaz/python-cookbook)
 * [realpython/python-scripts](https://github.com/realpython/python-scripts/tree/master/scripts)
