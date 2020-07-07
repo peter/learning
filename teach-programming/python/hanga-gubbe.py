@@ -138,8 +138,8 @@ def game_result(word, guesses):
     None
 
 def print_hangman(word, guesses):
-  mistakes, _ = check_guesses(word, guesses)
-  index = min(mistakes, len(hangmans)) - 1
+  mistakes_count, _ = check_guesses(word, guesses)
+  index = min(mistakes_count, len(hangmans)) - 1
   if index < 0:
     return
   for line in hangmans[index]:
