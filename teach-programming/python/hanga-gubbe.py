@@ -63,38 +63,48 @@ h6 = [" _________",
 
 hangmans = [h1,h2,h3,h4,h5,h6]
 
-ordlista = ["äpple",
- "avokado",
- "banan",
- "björnbär",
- "blåbär",
- "svarta vinbär",
- "körsbär",
- "klementin",
- "kokosnöt",
- "tranbär",
- "röda vinbär",
- "fikon",
- "grapefrukt",
- "vindruva",
- "kiwi",
- "citron",
- "lime",
- "mandarin",
- "mango",
- "nektarin",
- "apelsin",
- "passionsfrukt",
- "persika",
- "päron",
- "ananas",
- "plommon",
- "hallon",
- "satsuma",
- "jordgubbe",
- "vattenmelon"]
+ordlista = {
+  'frukt': [
+    "äpple",
+    "avokado",
+    "banan",
+    "björnbär",
+    "blåbär",
+    "svarta vinbär",
+    "körsbär",
+    "klementin",
+    "kokosnöt",
+    "tranbär",
+    "röda vinbär",
+    "fikon",
+    "grapefrukt",
+    "vindruva",
+    "kiwi",
+    "citron",
+    "lime",
+    "mandarin",
+    "mango",
+    "nektarin",
+    "apelsin",
+    "passionsfrukt",
+    "persika",
+    "päron",
+    "ananas",
+    "plommon",
+    "hallon",
+    "satsuma",
+    "jordgubbe",
+    "vattenmelon"
+  ],
+  'stad': [
+    'umeå',
+    'stockholm',
+    'boden',
+    'linköping'
+  ]
+}
 
-def print_word(word, guesses):
+def print_word(word_type, word, guesses):
   available = guesses.copy()
   result = []
   for c in word:
@@ -105,7 +115,7 @@ def print_word(word, guesses):
       available.remove(c)
     else:
       result.append('_')
-  print(f'frukt ({len(result)} bokstäver): {"".join(result)}')
+  print(f'{word_type} ({len(result)} bokstäver): {"".join(result)}')
 
 def check_guesses(word, guesses):
   available = [w for w in word if w != ' ']
@@ -147,14 +157,15 @@ def get_guess():
   return list(guess)
 
 def main():
-  word = list(random.choice(ordlista))
+  word_type = random.choice(list(ordlista.keys()))
+  word = list(random.choice(ordlista[word_type]))
   guesses = []
   while not game_result(word, guesses):
     print_hangman(word, guesses)
-    print_word(word, guesses)
+    print_word(word_type, word, guesses)
     print_guesses(guesses)
     guesses += get_guess()
-  print_word(word, word)
+  print_word(word_type, word, word)
   if game_result(word, guesses) == 'success':
     print('Du vann!!!')
   else:
