@@ -1071,6 +1071,15 @@ See [psycopg2 docs](https://www.psycopg.org/docs/usage.html)
 * numpy
 * pandas
 
+## Resources: Example Code
+
+* [Various example code and scripts](/examples)
+* [Python Heroku Kitchensink App](https://github.com/peter/python-heroku-kitchensink)
+* [Simple Flask API (including JWT, SQL, virtual env, Heroku)](https://github.com/peter/api-auth-examples/tree/master/flask)
+* [Code for Fluent Python Book](https://github.com/fluentpython/example-code)
+* [Code for Python Cookbook](https://github.com/dabeaz/python-cookbook)
+* [realpython/python-scripts](https://github.com/realpython/python-scripts/tree/master/scripts)
+
 ## Resources: General
 
 * [Python Tutorial](https://docs.python.org/3.6/tutorial)
@@ -1086,6 +1095,7 @@ See [psycopg2 docs](https://www.psycopg.org/docs/usage.html)
 * [Python data model (dunder methods)](https://docs.python.org/3.6/reference/datamodel.html)
 * [10 Basic Python Examples](https://www.makeuseof.com/tag/basic-python-examples-learn-fast)
 * [Replacing Bash with Python](https://medium.com/capital-one-tech/bashing-the-bash-replacing-shell-scripts-with-python-d8d201bc0989)
+* [Trying to import module with the same name as a built-in module](https://stackoverflow.com/questions/1224741/trying-to-import-module-with-the-same-name-as-a-built-in-module-causes-an-import)
 
 ## Resources: Computer Science
 
@@ -1111,13 +1121,6 @@ See [psycopg2 docs](https://www.psycopg.org/docs/usage.html)
 * [Fluent Python](https://www.amazon.com/Fluent-Python-Concise-Effective-Programming/dp/1491946008)
 * [Effective Python](https://www.amazon.com/Effective-Python-Specific-Software-Development/dp/0134034287)
 * [Python Cookbook](https://www.amazon.com/Python-Cookbook-Third-David-Beazley/dp/1449340377)
-
-## Resources: Example Code
-
-* [Simple Flask API (including JWT, SQL, virtual env, Heroku)](https://github.com/peter/api-auth-examples/tree/master/flask)
-* [Code for Fluent Python Book](https://github.com/fluentpython/example-code)
-* [Code for Python Cookbook](https://github.com/dabeaz/python-cookbook)
-* [realpython/python-scripts](https://github.com/realpython/python-scripts/tree/master/scripts)
 
 ## Resources: Functional Programming
 
