@@ -738,6 +738,10 @@ card == Card(rank='7', suit='diamonds')
 
 ## Python Data Model (dunder methods)
 
+From [Pyton Data model: Special method names](https://docs.python.org/3/reference/datamodel.html):
+
+"A class can implement certain operations that are invoked by special syntax (such as arithmetic operations or subscripting and slicing) by defining methods with special names. This is Python’s approach to operator overloading, allowing classes to define their own behavior with respect to language operators. For instance, if a class defines a method named __getitem__(), and x is an instance of this class, then x[i] is roughly equivalent to type(x).__getitem__(x, i)."
+
 ```python
 import collections
 Card = collections.namedtuple('Card', ['rank', 'suit'])
@@ -1073,7 +1077,7 @@ See [psycopg2 docs](https://www.psycopg.org/docs/usage.html)
 
 ## Resources: Example Code
 
-* [Various example code and scripts](/examples)
+* [Various example code and scripts](https://github.com/peter/learning/tree/master/languages/python/examples)
 * [Python Heroku Kitchensink App](https://github.com/peter/python-heroku-kitchensink)
 * [Simple Flask API (including JWT, SQL, virtual env, Heroku)](https://github.com/peter/api-auth-examples/tree/master/flask)
 * [Code for Fluent Python Book](https://github.com/fluentpython/example-code)
@@ -1096,6 +1100,8 @@ See [psycopg2 docs](https://www.psycopg.org/docs/usage.html)
 * [10 Basic Python Examples](https://www.makeuseof.com/tag/basic-python-examples-learn-fast)
 * [Replacing Bash with Python](https://medium.com/capital-one-tech/bashing-the-bash-replacing-shell-scripts-with-python-d8d201bc0989)
 * [Trying to import module with the same name as a built-in module](https://stackoverflow.com/questions/1224741/trying-to-import-module-with-the-same-name-as-a-built-in-module-causes-an-import)
+* [Python Errors and Exceptions](https://docs.python.org/3/tutorial/errors.html)
+* [Using Python environments in VS Code](https://code.visualstudio.com/docs/python/environments)
 
 ## Resources: Computer Science
 
