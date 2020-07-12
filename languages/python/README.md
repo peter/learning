@@ -10,6 +10,14 @@
 
 Python is optimized for programmer productivity, code readability, and software quality.
 
+## Documentation
+
+The official Python documentation at [python.org](https://www.python.org) is very comprehensive and well written. I recommend checking out:
+
+* [The Python Tutorial](https://docs.python.org/3/tutorial/index.html)
+* [The Python Language Reference](https://docs.python.org/3/reference/index.html)
+* [The Python Standard Library](https://docs.python.org/3/library/index.html)
+
 ## Tour
 
 Python on the command line:
@@ -1078,7 +1086,7 @@ See [psycopg2 docs](https://www.psycopg.org/docs/usage.html)
 ## Resources: Example Code
 
 * [Various example code and scripts](https://github.com/peter/learning/tree/master/languages/python/examples)
-* [Python Heroku Kitchensink App](https://github.com/peter/python-heroku-kitchensink)
+* [Example Python REST API](https://github.com/peter/python-rest-api)
 * [Simple Flask API (including JWT, SQL, virtual env, Heroku)](https://github.com/peter/api-auth-examples/tree/master/flask)
 * [Code for Fluent Python Book](https://github.com/fluentpython/example-code)
 * [Code for Python Cookbook](https://github.com/dabeaz/python-cookbook)
