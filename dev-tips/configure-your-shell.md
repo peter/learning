@@ -10,6 +10,8 @@ You want to be able to:
 
 ## Solution
 
+If you prefer bash over zsh you need to change login shell for your user as zsh is the default shell on Mac as of Catalina (10.15): `chsh -s /bin/bash`.
+
 Add a `~/.bashrc` [startup file](https://www.gnu.org/software/bash/manual/html_node/Bash-Startup-Files.html):
 
 ```sh
