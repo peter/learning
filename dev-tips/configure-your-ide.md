@@ -10,11 +10,13 @@ Install [VS Code](https://code.visualstudio.com/)
 
 Open the Command Palette in VS Code with `cmd-shift-p` and run "Install code command in PATH".
 
-From the command palette - run "Open Settings (JSON)":
+From the command palette - run "Open Settings (JSON)" (see [default settings](https://code.visualstudio.com/docs/getstarted/settings#_default-settings)):
 
 ```json
 {
-    "workbench.editor.enablePreview": false
+    "workbench.editor.enablePreview": false,
+    "editor.copyWithSyntaxHighlighting": false,
+    "files.trimTrailingWhitespace": true
 }
 ```
 

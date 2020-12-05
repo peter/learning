@@ -22,3 +22,4 @@ Some notes on my developer setup as a web developer.
 * [Install Postgresql](https://gist.github.com/ibraheem4/ce5ccd3e4d7a65589ce84f2a3b7c23a3)
 * [Install MongoDB](https://github.com/mongodb/homebrew-brew)
 * [Install Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli)
+* [Install the AWS CLI](aws-cli.md)
