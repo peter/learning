@@ -13,7 +13,7 @@ docutils==0.14
 durationpy==0.5
 Flask==0.12.2
 Flask-Bcrypt==0.7.1
-Flask-Cors==3.0.3
+Flask-Cors==3.0.9
 Flask-Migrate==2.1.1
 Flask-SQLAlchemy==2.3.2
 future==0.16.0
