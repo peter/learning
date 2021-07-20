@@ -171,14 +171,7 @@ while not game_over:
     while not valid_choice:
       choice_input = input('Var vill du lägga dina poäng?')
       choice = next(c for c in all_choices if c['name'] == choice_input)
-      print(f'pm debug player', player)
-      print(f'pm debug keep={keep} choice_input={choice_input} choice={choice}')
-      if choice:
-        print(f"pm debug valid={choice['valid'](keep)}")
-      print("pm debug player points", player['points'])
-      print("pm debug choice_input in player points", choice_input in player['points'])
       if (not choice_input in player['points']) and choice and choice['valid'](keep):
         valid_choice = choice
         player['points'][valid_choice['name']] = choice['points'](keep)
-    print(f'pm debug player {player}')
   # TODO: check if game is over, i.e. if all choices are made
