@@ -172,29 +172,43 @@ def print_board(players):
 def throw_dices(n_dices):
   return [randint(1, 6) for i in range(0, n_dices)]
 
+def throw_dices_three_times(player):
+  dices = []
+  keep = []
+  throws = 0
+  MAX_THROWS = 3
+  while throws < MAX_THROWS and len(keep) < 5:
+    dices = keep + throw_dices(5 - len(keep))
+    throws += 1
+    print(f"{player['name']} - kast {throws} - tärningar: {dices}")
+    if throws < MAX_THROWS:
+      keep_string = input("vilka tärningar vill du behålla?")
+      keep_indexes = [int(value) - 1 for value in re.findall(r'[12345]', keep_string)]
+      keep = [dices[index] for index in keep_indexes]
+      print(f"du behåller följande tärningar: {keep}")
+  return dices
+
+def choose_points(player, dices):
+  valid_choice = False
+  while not valid_choice:
+    choice_input = input('Var vill du lägga dina poäng?')
+    choice = get([c for c in all_choices if c['name'] == choice_input], 0)
+    if not choice:
+      print('Ogiltigt val')
+    elif choice_input in player['points']:
+      print('Du har redan gjort det valet')
+    else:
+      valid_choice = True
+      player['points'][choice['name']] = choice['points'](dices) if choice['valid'](dices) else 0
+
 players = get_players()
 game_over = False
 for round in range(1, 16):
   print(f"runda {round}")
   for player in players:
     print_board(players)
-    dices = []
-    keep = []
-    throws = 0
-    while throws < 3 and len(keep) < 5:
-      dices = keep + throw_dices(5 - len(keep))
-      throws += 1
-      print(f"{player['name']} - kast {throws} - tärningar: {dices}")
-      if throws < 3:
-        keep_string = input("vilka tärningar vill du behålla?")
-        keep_indexes = [int(value) - 1 for value in re.findall(r'[12345]', keep_string)]
-        keep = [dices[index] for index in keep_indexes]
-        print(f"du behåller följande tärningar: {keep}")
-    valid_choice = None
-    while not valid_choice:
-      choice_input = input('Var vill du lägga dina poäng?')
-      choice = get([c for c in all_choices if c['name'] == choice_input], 0)
-      if (not choice_input in player['points']) and choice and choice['valid'](dices):
-        valid_choice = choice
-        player['points'][valid_choice['name']] = choice['points'](dices)
-  # TODO: check if game is over, i.e. if all choices are made
+    dices = throw_dices_three_times(player)
+    choose_points(player, dices)
+print_board(players)
+winner = first(sorted(players, key=total_sum))
+print(f"Vinnare är {winner['name']} med {total_sum(winner)} poäng!")
