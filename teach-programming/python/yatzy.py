@@ -5,6 +5,9 @@ from random import randint
 def first(values):
   return values[0]
 
+def get(values, index, default_value=None):
+  return values[index] if index < len(values) else default_value
+
 def counts(values):
   items = [{'value': v, 'count': values.count(v)} for v in set(values)]
   return sorted(items, key=lambda i: -i['value'])
@@ -129,6 +132,18 @@ def print_lines(lines):
       padded_line.append(padded_value)
     print('| ' + ' | '.join(padded_line) + ' |')
 
+def top_sum(player):
+  return sum([player['points'].get(c['name'], 0) for c in top_choices])
+
+def top_bonus(player):
+  return 50 if top_sum(player) >= 63 else 0
+
+def bottom_sum(player):
+  return sum([player['points'].get(c['name'], 0) for c in bottom_choices])
+
+def total_sum(player):
+  return top_sum(player) + top_bonus(player) + bottom_sum(player)
+
 def print_board(players):
   lines = []
   lines.append([''] + [player['name'] for player in players])
@@ -137,41 +152,49 @@ def print_board(players):
     for player in players:
       line.append(player['points'].get(choice, ''))
     lines.append(line)
-
+  empty_line = [''] + ['' for _ in players]
+  lines.append(empty_line)
+  lines.append(['summa'] + [top_sum(player) for player in players])
+  lines.append(['bonus'] + [top_bonus(player) for player in players])
+  lines.append(empty_line)
   for choice in [c['name'] for c in bottom_choices]:
     line = [choice]
     for player in players:
       line.append(player['points'].get(choice, ''))
     lines.append(line)
+  lines.append(empty_line)
+  lines.append(['summa'] + [total_sum(player) for player in players])
 
   print()
   print_lines(lines)
+  print()
 
 def throw_dices(n_dices):
   return [randint(1, 6) for i in range(0, n_dices)]
 
 players = get_players()
 game_over = False
-while not game_over:
+for round in range(1, 16):
+  print(f"runda {round}")
   for player in players:
     print_board(players)
     dices = []
     keep = []
     throws = 0
     while throws < 3 and len(keep) < 5:
-      dices = throw_dices(5 - len(keep))
+      dices = keep + throw_dices(5 - len(keep))
       throws += 1
-      print(f"{player['name']} - försök {throws} - du slår tärningarna {dices}")
-      keep_string = input("vilka tärningar vill du behålla? ")
-      keep_indexes = [int(value) - 1 for value in re.findall(r'[12345]', keep_string)]
-      keep = keep + [dices[index] for index in keep_indexes]
-      print(f"du behåller följande tärningar: {keep}")
-    keep = keep or dices
+      print(f"{player['name']} - kast {throws} - tärningar: {dices}")
+      if throws < 3:
+        keep_string = input("vilka tärningar vill du behålla?")
+        keep_indexes = [int(value) - 1 for value in re.findall(r'[12345]', keep_string)]
+        keep = [dices[index] for index in keep_indexes]
+        print(f"du behåller följande tärningar: {keep}")
     valid_choice = None
     while not valid_choice:
       choice_input = input('Var vill du lägga dina poäng?')
-      choice = next(c for c in all_choices if c['name'] == choice_input)
-      if (not choice_input in player['points']) and choice and choice['valid'](keep):
+      choice = get([c for c in all_choices if c['name'] == choice_input], 0)
+      if (not choice_input in player['points']) and choice and choice['valid'](dices):
         valid_choice = choice
-        player['points'][valid_choice['name']] = choice['points'](keep)
+        player['points'][valid_choice['name']] = choice['points'](dices)
   # TODO: check if game is over, i.e. if all choices are made
