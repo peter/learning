@@ -172,6 +172,15 @@ def print_board(players):
 def throw_dices(n_dices):
   return [randint(1, 6) for i in range(0, n_dices)]
 
+def keep_dices(keep_values, dices):
+  left = dices.copy()
+  result = []
+  for value in keep_values:
+    if value in left:
+      result.append(value)
+      left.remove(value)
+  return result
+
 def throw_dices_three_times(player):
   dices = []
   keep = []
@@ -182,10 +191,13 @@ def throw_dices_three_times(player):
     throws += 1
     print(f"{player['name']} - kast {throws} - tärningar: {dices}")
     if throws < MAX_THROWS:
-      keep_string = input("vilka tärningar vill du behålla?")
-      keep_indexes = [int(value) - 1 for value in re.findall(r'[12345]', keep_string)]
-      keep = [dices[index] for index in keep_indexes]
-      print(f"du behåller följande tärningar: {keep}")
+      keep_string = input("vilka tärningar vill du behålla (skriv a för alla)? ")
+      if keep_string == 'a':
+        keep = dices
+      else:
+        keep_values = [int(v) for v in re.findall(r'[12345]', keep_string)]
+        keep = keep_dices(keep_values, dices)
+        print(f"du behåller följande tärningar: {keep}")
   return dices
 
 def choose_points(player, dices):
