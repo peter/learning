@@ -85,12 +85,12 @@ bottom_choices = [
   {
     'name': 'liten straight',
     'valid': lambda dices: sorted(dices) == [1, 2, 3, 4, 5],
-    'points': lambda dices: sum(dices),
+    'points': lambda dices: 15,
   },
   {
     'name': 'stor straight',
     'valid': lambda dices: sorted(dices) == [2, 3, 4, 5, 6],
-    'points': lambda dices: sum(dices),
+    'points': lambda dices: 20,
   },
   {
     'name': 'kåk',
@@ -105,7 +105,7 @@ bottom_choices = [
   {
     'name': 'yatzy',
     'valid': lambda dices: len(set(dices)) == 1,
-    'points': lambda dices: sum(dices),
+    'points': lambda dices: 50,
   },
 ]
 all_choices = top_choices + bottom_choices
