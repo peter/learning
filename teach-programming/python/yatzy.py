@@ -214,7 +214,6 @@ def choose_points(player, dices):
       player['points'][choice['name']] = choice['points'](dices) if choice['valid'](dices) else 0
 
 players = get_players()
-game_over = False
 for round in range(1, 16):
   print(f"runda {round}")
   for player in players:
