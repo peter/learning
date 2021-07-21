@@ -84,18 +84,18 @@ bottom_choices = [
   },
   {
     'name': 'liten straight',
-    'valid': lambda dices: len(set(dices)) == len(dices) and sorted(dices)[0] == 1,
-    'points': lambda dices: 1 + 2 + 3 + 4 + 5,
+    'valid': lambda dices: sorted(dices) == [1, 2, 3, 4, 5],
+    'points': lambda dices: sum(dices),
   },
   {
     'name': 'stor straight',
-    'valid': lambda dices: len(set(dices)) == len(dices) and sorted(dices)[0] == 2,
-    'points': lambda dices: 2 + 3 + 4 + 5 + 6,
+    'valid': lambda dices: sorted(dices) == [2, 3, 4, 5, 6],
+    'points': lambda dices: sum(dices),
   },
   {
     'name': 'kåk',
-    'valid': lambda dices: len(set(dices)) == len(dices) and sorted(dices)[0] == 2,
-    'points': lambda dices: 2 + 3 + 4 + 5 + 6,
+    'valid': lambda dices: len(set(dices)) == 2 and len([c for c in counts(dices) if c['count'] == 3]) > 0,
+    'points': lambda dices: sum(dices),
   },
   {
     'name': 'chans',
