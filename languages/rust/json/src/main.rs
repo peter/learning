@@ -45,13 +45,23 @@ fn typed_example() -> Result<()> {
 
     let p: Person = serde_json::from_str(data).unwrap();
 
-    let country = match p.country {
-        Some(c) => c,
-        None => "unknown".to_string(),
-    };
-
     // Array index access out of bounds will yield a panic, i.e. p.phones[99]
-    println!("typed_example: call {} at the number {} in the country {}", p.name, p.phones[1], country);
+    println!("typed_example: call {} at the number {}", p.name, p.phones[1]);
+
+    // let country = match p.country {
+    //     Some(c) => c,
+    //     None => "unknown".to_string(),
+    // };
+    // println!("typed_example: country variable match {}", country);
+
+    // You can inline match expressions
+    // println!("typed_example: country inlined match {}", (match p.country {
+    //     Some(c) => c,
+    //     None => "unknown".to_string(),
+    // }));
+
+    let default_country = "unknown country".to_string();
+    println!("typed_example: country unwrap_or() {}", p.country.unwrap_or(default_country));
 
     Ok(())
 }

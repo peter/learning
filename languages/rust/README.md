@@ -18,10 +18,14 @@
 * [Scalar Types](https://doc.rust-lang.org/book/ch03-02-data-types.html) - integers, floats, booleans
 * [UTF-8 Strings](https://doc.rust-lang.org/book/ch08-02-strings.html#storing-utf-8-encoded-text-with-strings)
 * [Compound Types](https://doc.rust-lang.org/book/ch03-02-data-types.html#compound-types) - tuples and arrays. Arrays are fixed size and and accessing a value out of bounds yields a panic. [Vectors are dynamic arrays](https://www.cs.brandeis.edu/~cs146a/rust/doc-02-21-2015/book/arrays-vectors-and-slices.html)
-* 
-* Aggregate types
+* [Structs](https://doc.rust-lang.org/book/ch05-01-defining-structs.html)
+* [HashMap and Vector literals](https://stackoverflow.com/questions/27582739/how-do-i-create-a-hashmap-literal)
+* [Environment variables](https://doc.rust-lang.org/book/ch12-05-working-with-environment-variables.html)
+* [enum](https://doc.rust-lang.org/std/keyword.enum.html#:~:text=Enums%20in%20Rust%20are%20similar,from%20a%20functional%20programming%20background.)
+* Threads - see [recovering from panic](https://stackoverflow.com/questions/30824258/recovering-from-panic-in-another-thread#:~:text=Putting%20aside%20%22you%20should%20be,isolate%20them%2C%20then%20detect%20them.)
 * Error handling
-* Match expressions
+* Double quotes or single quotes? Rust uses [double quotes for strings and single quotes for chars](https://stackoverflow.com/questions/68231820/difference-between-double-quotes-and-single-quotes-in-rust#:~:text=The%20short%20answer%20is%20it,and%20double%20quotes%20for%20strings.)
+* [Match expressions](https://doc.rust-lang.org/reference/expressions/match-expr.html)
 * Union types
 * Libraries - see [Cargo](https://doc.rust-lang.org/cargo/) and [crates.io](https://crates.io/)
 * What is Rust good for? "Rust works well for processing large amounts of data and other CPU-intensive operations, such as executing algorithms" - see [When to use Rust and when to use Go](https://blog.logrocket.com/when-to-use-rust-when-to-use-golang/)
