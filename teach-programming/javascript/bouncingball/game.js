@@ -4,7 +4,7 @@ var gameOptions = {
     ballGravity: 1200,
     ballPower: 1200,
     obstacleSpeed: 250,
-    obstacleDistanceRange: [100, 250],
+    obstacleDistanceRange: [150, 350],
     localStorageName: 'bestballscore'
 }
 window.onload = function() {
