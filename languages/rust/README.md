@@ -7,6 +7,7 @@
 * To create a new project - use the [Cargo](https://doc.rust-lang.org/cargo/) command `cargo new my-project`. Cargo is Rust’s build system and package manager. [Dependencies](https://doc.rust-lang.org/cargo/guide/dependencies.html) are specified in the `Cargo.toml` [TOML](https://github.com/toml-lang/toml) file. Rust libraries are called "Crates" and can be found at [crates.io](https://crates.io/). Use `cargo build` to build your project and `cargo run` to run it. To get a `.gitignore` file for Rust you can use `curl https://raw.githubusercontent.com/github/gitignore/main/Rust.gitignore > .gitignore`
 * To compile and run a single Rust file - use `rustc my-program.rs && ./my-program`
 * IDE - use VS Code with the [Rust extension](https://code.visualstudio.com/docs/languages/rust)
+* [Naming Conventions](https://rust-lang.github.io/api-guidelines/naming.html) - snake_case for modules, functions and variables and UpperCamelCase for types, traits, and enums.
 * [Parse command line arguments with clap](https://rust-cli.github.io/book/tutorial/cli-args.html)
 * You can try Rust in the Browser at [play.rust-lang.org](https://play.rust-lang.org/)
 * [Modules](https://doc.rust-lang.org/stable/book/ch07-02-defining-modules-to-control-scope-and-privacy.html)
@@ -18,6 +19,8 @@
 * Truth
 * Loops
 * Conditionals
+* Ternary operator - `let a = if x > 5 { 10 } else { 7 }`
+* [Slices](https://doc.rust-lang.org/std/primitive.slice.html)
 * [Scalar Types](https://doc.rust-lang.org/book/ch03-02-data-types.html) - integers, floats, booleans
 * [UTF-8 Strings](https://doc.rust-lang.org/book/ch08-02-strings.html#storing-utf-8-encoded-text-with-strings)
 * [Compound Types](https://doc.rust-lang.org/book/ch03-02-data-types.html#compound-types) - tuples and arrays. Arrays are fixed size and and accessing a value out of bounds yields a panic. [Vectors are dynamic arrays](https://www.cs.brandeis.edu/~cs146a/rust/doc-02-21-2015/book/arrays-vectors-and-slices.html)

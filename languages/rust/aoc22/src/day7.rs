@@ -3,14 +3,14 @@ use crate::util::file::read_lines;
 
 // See: https://adventofcode.com/2022/day/7
 
-pub fn day7(env: &[String]) {
-    let filename = &env[0];
+pub fn day7(env: &[String]) -> Result<(), String> {
+    let filename = match env.get(0) {
+        Some(filename) => filename,
+        None => return Err("Missing filename argument".to_string()),
+    };
     let lines = match read_lines(filename) {
         Ok(lines) => lines,
-        Err(e) => {
-            println!("ERROR: could not read filename {filename}: {e}");
-            return;
-        },
+        Err(e) => return Err("ERROR: could not read filename {filename}: {e}".to_string()),
     };
     let debug = env.contains(&"--debug".to_owned());
 
@@ -89,4 +89,5 @@ pub fn day7(env: &[String]) {
             .map(|(_, v)| v)
             .sum::<usize>()
     );
+    Ok(())
 }

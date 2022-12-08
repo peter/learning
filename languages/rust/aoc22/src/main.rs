@@ -15,34 +15,26 @@ fn parse_day(args: &Vec<String>) -> Result<i32, String> {
     }
 }
 
-fn parse_env(args: &Vec<String>) -> Result<&[String], String> {
-    if args.len() < 3 {
-        return Err("Missing environment argument".to_string());
+fn parse_env(args: &Vec<String>) -> &[String] {
+    if args.len() < 3 { &[] } else { &args[2..] }
+}
+
+fn execute(args: &Vec<String>) -> Result<(), String> {
+    let day = match parse_day(&args) {
+        Ok(day)  => day,
+        Err(e) => return Err(e),
+    };
+    let env = parse_env(args);
+    match day {
+        7 => day7(env),
+        _ => return Err("Have not implemented day {day} - sorry!".to_string())
     }
-    Ok(&args[2..])
 }
 
 fn main() {
     let args: Vec<String> = env::args().collect();
-    let day = match parse_day(&args) {
-        Ok(day)  => day,
-        Err(e) => {
-            println!("ERROR: {}", e);
-            return;
-        },
-    };
-    let env = match parse_env(&args) {
-        Ok(env)  => env,
-        Err(e) => {
-            println!("ERROR: {}", e);
-            return;
-        },
-    };
-    match day {
-        7 => day7(env),
-        _ => {
-            println!("Have not implemented day {day} - sorry!");
-            return;
-        }
+    match execute(&args) {
+        Ok(_) => println!("OK"),
+        Err(e) => println!("ERROR: {e}"),
     }
 }
