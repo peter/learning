@@ -7,7 +7,10 @@
 * To create a new project - use the [Cargo](https://doc.rust-lang.org/cargo/) command `cargo new my-project`. Cargo is Rust’s build system and package manager. [Dependencies](https://doc.rust-lang.org/cargo/guide/dependencies.html) are specified in the `Cargo.toml` [TOML](https://github.com/toml-lang/toml) file. Rust libraries are called "Crates" and can be found at [crates.io](https://crates.io/). Use `cargo build` to build your project and `cargo run` to run it. To get a `.gitignore` file for Rust you can use `curl https://raw.githubusercontent.com/github/gitignore/main/Rust.gitignore > .gitignore`
 * To compile and run a single Rust file - use `rustc my-program.rs && ./my-program`
 * IDE - use VS Code with the [Rust extension](https://code.visualstudio.com/docs/languages/rust)
+* [Parse command line arguments with clap](https://rust-cli.github.io/book/tutorial/cli-args.html)
 * You can try Rust in the Browser at [play.rust-lang.org](https://play.rust-lang.org/)
+* [Modules](https://doc.rust-lang.org/stable/book/ch07-02-defining-modules-to-control-scope-and-privacy.html)
+* For debug printouts you can use the [dbg! macro](https://doc.rust-lang.org/std/macro.dbg.html)
 * Rust can format your code automatically
 * Rust will warn about unused imports and code by default
 * Traits?
