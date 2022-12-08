@@ -10,7 +10,7 @@ pub fn day7(env: &[String]) -> Result<(), String> {
     };
     let lines = match read_lines(filename) {
         Ok(lines) => lines,
-        Err(e) => return Err("ERROR: could not read filename {filename}: {e}".to_string()),
+        Err(e) => return Err(format!("Could not read filename {filename}: {e}")),
     };
     let debug = env.contains(&"--debug".to_owned());
 
