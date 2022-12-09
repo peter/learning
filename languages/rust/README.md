@@ -20,6 +20,8 @@
 * Loops
 * Conditionals
 * Ternary operator - `let a = if x > 5 { 10 } else { 7 }`
+* [Converting between &str and String](https://users.rust-lang.org/t/converting-between-str-and-string/53595). [The str type is called a string slice](https://doc.rust-lang.org/std/primitive.str.html). A &str is made up of two components: a pointer to some bytes, and a length.
+* [String parsing](https://doc.rust-lang.org/rust-by-example/conversion/string.html)
 * [Slices](https://doc.rust-lang.org/std/primitive.slice.html)
 * [Scalar Types](https://doc.rust-lang.org/book/ch03-02-data-types.html) - integers, floats, booleans
 * [UTF-8 Strings](https://doc.rust-lang.org/book/ch08-02-strings.html#storing-utf-8-encoded-text-with-strings)
@@ -79,4 +81,5 @@ export RUSTFLAGS='-L /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/lib
 
 * [The Rust Programming Language (rust-lang.org)](https://doc.rust-lang.org/book/)
 * [Rust by Example](https://doc.rust-lang.org/rust-by-example/)
+* [A half-hour to learn Rust](https://fasterthanli.me/articles/a-half-hour-to-learn-rust)
 * [Rust Tutorial by Derek Banas](https://www.youtube.com/watch?v=ygL_xcavzQ4&t=8113s)
