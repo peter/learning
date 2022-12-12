@@ -8,10 +8,12 @@
 * To compile and run a single Rust file - use `rustc my-program.rs && ./my-program`
 * IDE - use VS Code with the [Rust extension](https://code.visualstudio.com/docs/languages/rust)
 * [Naming Conventions](https://rust-lang.github.io/api-guidelines/naming.html) - snake_case for modules, functions and variables and UpperCamelCase for types, traits, and enums.
-* [Parse command line arguments with clap](https://rust-cli.github.io/book/tutorial/cli-args.html)
+* [Parse command line arguments with clap](https://rust-cli.github.io/book/tutorial/cli-args.html) or do it manually with `use std::env` and `let args: Vec<String> = env::args().collect();`
 * You can try Rust in the Browser at [play.rust-lang.org](https://play.rust-lang.org/)
 * [Modules](https://doc.rust-lang.org/stable/book/ch07-02-defining-modules-to-control-scope-and-privacy.html)
 * For debug printouts you can use the [dbg! macro](https://doc.rust-lang.org/std/macro.dbg.html)
+* Default argument values are not supported in Rust but you can [use Option instead](https://stackoverflow.com/questions/24047686/default-function-arguments-in-rust). Rust [does not support named parameters](https://stackoverflow.com/questions/64642329/is-it-possible-to-call-a-function-in-rust-by-naming-its-arguments#:~:text=Rust%20does%20not%20support%20named%20parameters%20as%20part%20of%20the%20language.&text=In%20cases%20where%20it%20really,structured%20data%2C%20providing%20%22naming%22)
+* [Macros](https://doc.rust-lang.org/reference/procedural-macros.html) (function-like macros, dervice macros, attribute macros)
 * Rust can format your code automatically
 * Rust will warn about unused imports and code by default
 * Traits?
@@ -79,7 +81,8 @@ export RUSTFLAGS='-L /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/lib
 
 ## Resources
 
+* [A half-hour to learn Rust](https://fasterthanli.me/articles/a-half-hour-to-learn-rust)
 * [The Rust Programming Language (rust-lang.org)](https://doc.rust-lang.org/book/)
 * [Rust by Example](https://doc.rust-lang.org/rust-by-example/)
-* [A half-hour to learn Rust](https://fasterthanli.me/articles/a-half-hour-to-learn-rust)
+* [Rust Cookbook](https://rust-lang-nursery.github.io/rust-cookbook/intro.html)
 * [Rust Tutorial by Derek Banas](https://www.youtube.com/watch?v=ygL_xcavzQ4&t=8113s)
