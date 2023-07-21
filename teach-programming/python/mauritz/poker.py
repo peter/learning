@@ -43,12 +43,10 @@ def is_consecutive(card1, card2):
     return VALUES.index(card1[1]) == (VALUES.index(card2[1]) - 1)
 
 def is_straight(hand):
-    return (
-        is_consecutive(hand[0], hand[1]) and
-        is_consecutive(hand[1], hand[2]) and
-        is_consecutive(hand[2], hand[3]) and
-        is_consecutive(hand[3], hand[4])
-    )
+    for index, _ in enumerate(hand):
+        if index > 0 and not is_consecutive(hand[index - 1], hand[index]):
+            return False
+    return True
 
 def is_straight_flush(hand):
     return is_flush(hand) and is_straight(hand)
@@ -115,13 +113,13 @@ def get_computer_changes(hand):
     # If straight or better then keep the hand without changes
     if hand_type > 3:
         return ()
-    suit_counts = get_suit_counts(hand)
     value_counts = get_value_counts(hand)
-    if suit_counts[0][1] == 4:
-        # If four cards of same suit then change the fifth card
-        flush_suit = suit_counts[0][0]
-        return tuple([hand.index(card) for card in hand if get_suit(card) != flush_suit])
-    elif value_counts[0][1] == 2 and value_counts[1][1] == 2:
+    # If four cards straight or flush then change the fifth card
+    for change_index, _ in enumerate(hand):
+        four_cards = [card for index, card in enumerate(hand) if index != change_index]
+        if is_flush(four_cards) or is_straight(four_cards):
+            return tuple([change_index])
+    if value_counts[0][1] == 2 and value_counts[1][1] == 2:
         # If two pairs, then change the fifth card
         value_to_change = value_counts[2][0]
         index_to_change = [get_value(card) for card in hand].index(value_to_change)
