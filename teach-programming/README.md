@@ -25,6 +25,8 @@ Python:
 
 * [Code with Mu: a simple Python editor for beginner programmers](https://codewith.mu/)
 * [repl.it (Code Online)](https://repl.it)
+* [Beginner Python Exercises](https://github.com/swsoyee/Beginner-Python-exercises)
+* [Python Exercises and Notebooks](https://github.com/topics/python-exercises)
 
 Pygame Zero:
 
