@@ -164,12 +164,11 @@ def play_game():
 
         hand_type = get_hand_type(player_hand)
         suggested_changes = ''.join([str(i + 1) for i in get_computer_changes(player_hand)])
-        user_input = input(f"\nVilka kort vill du byta (du har: {get_hand_type_name(hand_type)}, använd siffror 1-5 utan mellanslag, tex. {suggested_changes})? ")
-        if (user_input == ''):
-            break
-        indexes = [int(v) for v in [*user_input]]
-        for index in indexes:
-            player_hand[index - 1] = cards.pop()
+        user_input = input(f"\nVilka kort vill du byta (du har: {get_hand_type_name(hand_type)}, använd siffror 1-5 utan mellanslag, enter om du inte vill byta, tex. {suggested_changes})? ")
+        if (user_input != ''):
+            indexes = [int(v) for v in [*user_input]]
+            for index in indexes:
+                player_hand[index - 1] = cards.pop()
 
         computer_changes = get_computer_changes(computer_hand)
         print(f'Datorn byter {len(computer_changes)} kort')
