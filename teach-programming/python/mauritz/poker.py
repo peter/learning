@@ -156,7 +156,7 @@ def is_winner(rank1, rank2):
             return r1 > r2
     return None
 
-def play_game():
+def play_game(skip_changes = False):
     # Create shuffled deck of cards        
     cards = []
     for suit in SUITS:
@@ -171,7 +171,6 @@ def play_game():
         player_hand.append(cards.pop())
         computer_hand.append(cards.pop())
 
-    skip_changes = False
     for _ in range(2):
         if not skip_changes:
             print("\n####### DINA KORT\n")
@@ -218,7 +217,7 @@ def main():
     computer_hand_types = []
     while True:
         n_games += 1
-        (player_win, player_result, computer_result) = play_game()
+        (player_win, player_result, computer_result) = play_game(skip_changes = False)
         if player_win:
             n_wins += 1
         print('\n!!!!!!!!!!!!!!!!!!')
