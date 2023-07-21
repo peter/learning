@@ -114,11 +114,24 @@ def get_computer_changes(hand):
     if hand_type > 3:
         return ()
     value_counts = get_value_counts(hand)
-    # If four cards straight or flush then change the fifth card
+    # If four cards flush then change the fifth card
     for change_index, _ in enumerate(hand):
         four_cards = [card for index, card in enumerate(hand) if index != change_index]
-        if is_flush(four_cards) or is_straight(four_cards):
+        if is_flush(four_cards):
             return tuple([change_index])
+    # If four cards straight then change the fifth card
+    for change_index, _ in enumerate(hand):
+        four_cards = [card for index, card in enumerate(hand) if index != change_index]
+        if is_straight(four_cards):
+            return tuple([change_index])
+    # If three cards straight flush then change remaining two cards
+    for change_index_0 in range(0, 4):
+        change_index_1 = change_index_0 + 1
+        while change_index_1 < len(hand):
+            three_cards = [card for index, card in enumerate(hand) if index != change_index_0 and index != change_index_1]
+            if is_flush(three_cards) and is_straight(three_cards):
+                return tuple([change_index_0, change_index_1])
+            change_index_1 += 1
     if value_counts[0][1] == 2 and value_counts[1][1] == 2:
         # If two pairs, then change the fifth card
         value_to_change = value_counts[2][0]
@@ -158,17 +171,20 @@ def play_game():
         player_hand.append(cards.pop())
         computer_hand.append(cards.pop())
 
+    skip_changes = False
     for _ in range(2):
-        print("\n####### DINA KORT\n")
-        print_hand(player_hand)
-
-        hand_type = get_hand_type(player_hand)
-        suggested_changes = ''.join([str(i + 1) for i in get_computer_changes(player_hand)])
-        user_input = input(f"\nVilka kort vill du byta (du har: {get_hand_type_name(hand_type)}, använd siffror 1-5 utan mellanslag, enter om du inte vill byta, tex. {suggested_changes})? ")
-        if (user_input != ''):
-            indexes = [int(v) for v in [*user_input]]
-            for index in indexes:
-                player_hand[index - 1] = cards.pop()
+        if not skip_changes:
+            print("\n####### DINA KORT\n")
+            print_hand(player_hand)
+            hand_type = get_hand_type(player_hand)
+            suggested_changes = ''.join([str(i + 1) for i in get_computer_changes(player_hand)])
+            user_input = input(f"\nVilka kort vill du byta (du har: {get_hand_type_name(hand_type)}, använd siffror 1-5 utan mellanslag, enter om du inte vill byta, tex. {suggested_changes})? ")
+            if user_input != '':
+                indexes = [int(v) for v in [*user_input]]
+                for index in indexes:
+                    player_hand[index - 1] = cards.pop()
+            else:
+                skip_changes = True
 
         computer_changes = get_computer_changes(computer_hand)
         print(f'Datorn byter {len(computer_changes)} kort')
@@ -193,19 +209,27 @@ def play_game():
         print('Datorn vann')
     else:
         print('Epic fail - ingen vinnare kunde avgöras (detta är mycket osannolikt)!')
-    return player_wins
+    return (player_wins, player_rank, computer_rank)
 
 def main():
     n_games = 0
     n_wins = 0
+    player_hand_types = []
+    computer_hand_types = []
     while True:
         n_games += 1
-        player_win = play_game()
+        (player_win, player_result, computer_result) = play_game()
         if player_win:
             n_wins += 1
         print('\n!!!!!!!!!!!!!!!!!!')
         print(f'\nDu har vunnit {n_wins}/{n_games} matcher!')
         print('\n!!!!!!!!!!!!!!!!!!\n')
+        player_hand_types.append(get_hand_type_name(player_result[0]))
+        computer_hand_types.append(get_hand_type_name(computer_result[0]))
+        player_counts = Counter(player_hand_types).most_common()
+        computer_counts = Counter(computer_hand_types).most_common()
+        print('Dina stats:', player_counts)
+        print('Datorns stats:', computer_counts)
 
 if __name__ == "__main__":
     main()
