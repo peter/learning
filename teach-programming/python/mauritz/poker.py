@@ -1,3 +1,4 @@
+import os
 from random import randint
 from collections import Counter
 import re
@@ -211,13 +212,14 @@ def play_game(skip_changes = False):
     return (player_wins, player_rank, computer_rank)
 
 def main():
+    skip_changes = os.environ.get('SKIP_CHANGES') == 'true'
     n_games = 0
     n_wins = 0
     player_hand_types = []
     computer_hand_types = []
     while True:
         n_games += 1
-        (player_win, player_result, computer_result) = play_game(skip_changes = False)
+        (player_win, player_result, computer_result) = play_game(skip_changes)
         if player_win:
             n_wins += 1
         print('\n!!!!!!!!!!!!!!!!!!')
