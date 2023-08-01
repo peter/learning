@@ -216,20 +216,24 @@ def print_moves(position_moves, board):
 def main():
     board = init_board()
     turn = "white"
+    move_number = 1
     while True:
         print_board(board)
-        print(f"{turn} turn to move")
+        print(f"{turn} turn to move #{move_number}")
         position_moves = all_position_moves(turn, board)
         if not position_moves:
             print("No possible movies, exiting")
             break
-        print_moves(position_moves, board)
+        # print_moves(position_moves, board)
         (position, moves) = random.choice(position_moves)
         move = random.choice(moves)
+        _new_position = new_position(position, move)
         piece = get_piece(position, board)
-        print(f"position={position} piece={piece} move={move}")
+        take_piece = get_piece(_new_position, board)
+        print(f"{turn} move: piece={piece[1]} position={position} move={move} new_position={_new_position} take_piece={take_piece}")
         make_move(position, move, board)
         turn = "black" if turn == "white" else "white"
+        move_number += 1
     
 if __name__ == "__main__":
     main()
