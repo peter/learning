@@ -29,8 +29,29 @@ def get_piece(position, board):
         return None
     return board[position[0]][position[1]]
 
+def get_take_piece(position, take_position, board):
+    piece = get_piece(position, board)
+    take_piece = get_piece(take_position, board)
+    if take_piece[0] == piece[0] or take_piece[1] == "king":
+        # Cannot take own color piece or a king
+        return None
+    return take_piece
+
+def get_position(piece, board):
+    for column in range(0, 8):
+        for row in range(0, 8):
+            if board[column][row] == piece:
+                return (column, row)
+    return None
+
 def new_position(position, move):
     return (position[0] + move[0], position[1] + move[1])
+
+def new_positions(position, moves):
+    return [new_position(position, move) for move in moves]
+
+def other_turn(turn):
+    return "black" if turn == "white" else "white"
 
 def pawn_moves(position, board):
     piece = get_piece(position, board)
@@ -65,7 +86,32 @@ def bishop_moves(position, board):
     return []
 
 def rook_moves(position, board):
-    return []
+    moves = []
+    piece = get_piece(position, board)
+    steps = [
+        (-1, 0), # left
+        (1, 0), # right
+        (0, 1), # up
+        (0, -1) # down
+    ]
+    for step in steps:
+        n_steps = 1
+        while True:
+            move = (n_steps * step[0], n_steps * step[1])
+            _new_position = new_position(position, move)
+            take_piece = get_piece(_new_position, board)
+            if not is_in_range(_new_position) or (take_piece and take_piece[0] == piece[0]):
+                # we are outside the board or we have hit one of our own pieces (same color)
+                break
+            elif take_piece and take_piece[0] != piece[0]:
+                # different color piece we can take, but we can't proceed
+                moves.append(move)
+                break
+            else:
+                # empty square so we can proceeed
+                moves.append(move)
+            n_steps += 1            
+    return moves
 
 def queen_moves(position, board):
     return []
@@ -92,6 +138,21 @@ def get_moves(position, board):
     else:
         raise(f"Unknown piece={piece[1]}")
 
+def pawn_threats(position, board):
+    return []
+
+def knight_threats(position, board):
+    return []
+
+def bishop_threats(position, board):
+    return []
+
+def rook_threats(position, board):
+    return []
+
+def queen_threats(position, board):
+    return []
+
 def all_position_moves(turn, board):
     result = []
     for row in range(0, 8):
@@ -100,14 +161,40 @@ def all_position_moves(turn, board):
             piece = get_piece(position, board)            
             if piece and piece[0] == turn:
                 moves = get_moves(position, board)
-                if moves:
-                    result.append((position, moves))
+                for move in moves:
+                    board_after_move = make_move(position, move, board)
+                    _is_check = is_check(turn, board_after_move)
+                    # TODO: also need to check that king is not threatened by other king
+                    if not _is_check: # you cannot move into check
+                        result.append((position, move))                    
     return result
 
 def make_move(position, move, board):
+    new_board = [column.copy() for column in board]
     _new_position = new_position(position, move)
-    board[_new_position[0]][_new_position[1]] = board[position[0]][position[1]]
-    board[position[0]][position[1]] = None
+    new_board[_new_position[0]][_new_position[1]] = new_board[position[0]][position[1]]
+    new_board[position[0]][position[1]] = None
+    return new_board
+
+def is_check(turn, board):
+    king_position = get_position((turn, "king"), board)
+    for column in range(0, 8):
+        for row in range(0, 8):
+            position = (column, row)
+            piece = get_piece(position, board)
+            if not piece or piece[0] == turn:
+                continue
+            if piece[1] == "pawn" and king_position in new_positions(position, pawn_moves(position, board)):
+                return True
+            elif piece[1] == "knight" and king_position in new_positions(position, knight_moves(position, board)):
+                return True
+            elif piece[1] == "bishop" and king_position in new_positions(position, bishop_moves(position, board)):
+                return True
+            elif piece[1] == "rook" and king_position in new_positions(position, rook_moves(position, board)):
+                return True
+            elif piece[1] == "queen" and king_position in new_positions(position, queen_moves(position, board)):
+                return True
+    return False
 
 # Board is organized so we can index it by (x, y) coordinates
 # where x is column 0-7 (A-H in letters) and y is row 0-7 (1-7 in numbers on the board)
@@ -231,17 +318,20 @@ def main():
     move_number = 1
     while True:
         print_board(board)
-        print(f"{turn} turn to move #{move_number}")
         position_moves = all_position_moves(turn, board)
+        _is_check = is_check(turn, board)
+        print(f"{turn} turn to move #{move_number}, possible moves: {len(position_moves)}, is check: {_is_check}")
         if not position_moves:
-            print("No possible movies, exiting")
+            if _is_check:
+                print(f"No possible moves for {turn} - check mate - {other_turn(turn)} wins!")
+            else:
+                print(f"No possible moves for {turn} - stale mate - draw!")
             break
         # print_moves(position_moves, board)
-        (position, moves) = random.choice(position_moves)
-        move = random.choice(moves)
+        (position, move) = random.choice(position_moves)
         print_move(turn, position, move, board)
-        make_move(position, move, board)
-        turn = "black" if turn == "white" else "white"
+        board = make_move(position, move, board)
+        turn = other_turn(turn)
         move_number += 1
     
 if __name__ == "__main__":
