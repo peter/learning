@@ -14,7 +14,6 @@ ALL_DIRECTIONS = [
         (0, -1) # down
 ]
 
-
 def empty_row():
     return [None for _ in range(0, 8)]
 
@@ -55,6 +54,12 @@ def new_positions(position, moves):
 
 def other_turn(turn):
     return "black" if turn == "white" else "white"
+
+def count_column_pieces(column):
+    return len([piece for piece in column if piece is not None])
+
+def count_pieces(board):
+    return sum([count_column_pieces(column) for column in board])
 
 # Helper function for pieces that move one or more steps in different
 # directions (rook, bishop, queen)
@@ -360,7 +365,10 @@ def main():
         position_moves = all_position_moves(turn, board)
         _is_check = is_check(turn, board)
         print(f"{turn} turn to move #{move_number}, possible moves: {len(position_moves)}, is check: {_is_check}")
-        if not position_moves:
+        if count_pieces(board) == 2:
+            print(f"Only the kings left - draw!")
+            break
+        elif not position_moves:
             if _is_check:
                 print(f"No possible moves for {turn} - check mate - {other_turn(turn)} wins!")
             else:
