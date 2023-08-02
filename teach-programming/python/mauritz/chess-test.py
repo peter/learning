@@ -3,6 +3,17 @@ import random
 LETTERS = ["A", "B", "C", "D", "E", "F", "G", "H"]
 SQUARE_LENGTH = 8
 BOARD_END = " | "
+ALL_DIRECTIONS = [
+        (-1, -1), # left, down
+        (-1, 0), # left
+        (-1, 1), # left, up
+        (0, 1), # up
+        (1, 1), # right, up
+        (1, 0), # right
+        (1, -1), # right, down
+        (0, -1) # down
+]
+
 
 def empty_row():
     return [None for _ in range(0, 8)]
@@ -136,20 +147,17 @@ def rook_moves(position, board):
     return get_moves_from_directions(position, directions, board)
 
 def queen_moves(position, board):
-    directions = [
-        (-1, -1), # left, down
-        (-1, 0), # left
-        (-1, 1), # left, up
-        (0, 1), # up
-        (1, 1), # right, up
-        (1, 0), # right
-        (1, -1), # right, down
-        (0, -1) # down
-    ]
-    return get_moves_from_directions(position, directions, board)
+    return get_moves_from_directions(position, ALL_DIRECTIONS, board)
 
 def king_moves(position, board):
-    return []
+    piece = get_piece(position, board)
+    moves = []
+    for move in ALL_DIRECTIONS:
+        _new_position = new_position(position, move)
+        take_piece = get_piece(_new_position, board)
+        if is_in_range(_new_position) and (not take_piece or take_piece[0] != piece[0]):
+            moves.append(move)
+    return moves
 
 def get_moves(position, board):
     piece = get_piece(position, board)
