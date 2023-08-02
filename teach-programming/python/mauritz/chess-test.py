@@ -172,11 +172,20 @@ def all_position_moves(turn, board):
                         result.append((position, move))                    
     return result
 
+def should_promote_pawn(position, board):
+    piece = get_piece(position, board)
+    promote_row = 0 if piece[0] == "black" else 7
+    return piece[1] == "pawn" and promote_row == position[1]
+
 def make_move(position, move, board):
+    piece = get_piece(position, board)
     new_board = [column.copy() for column in board]
     _new_position = new_position(position, move)
     new_board[_new_position[0]][_new_position[1]] = new_board[position[0]][position[1]]
     new_board[position[0]][position[1]] = None
+    if should_promote_pawn(_new_position, new_board):
+        # print(f"would promote {piece[0]} pawn to queen at position {position_str(_new_position)}")
+        new_board[_new_position[0]][_new_position[1]] = (piece[0], "queen")
     return new_board
 
 def is_check(turn, board):
