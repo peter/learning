@@ -45,22 +45,6 @@ def new_positions(position, moves):
 def other_turn(turn):
     return "black" if turn == "white" else "white"
 
-# Checks if new position is on the board and either has no
-# piece or a piece of opposite color that is not the king. Does
-# not take into account how the piece can move (the move pattern).
-# Also does not take into account if there are pieces in the way of the move.
-# Also does not take into account that all pieces cannot always take (i.e. pawns are special,
-# sometimes they can't take, and sometimes they must take)
-def can_take_square(position, _new_position, board):
-    piece = get_piece(position, board)
-    take_piece = get_piece(_new_position, board)
-    if not is_in_range(_new_position):
-        return False
-    if not take_piece:
-        return True
-    # You can take piece of opposite color that is not the king
-    return take_piece[0] != piece[0] and take_piece[1] != "king"
-
 # Helper function for pieces that move one or more steps in different
 # directions (rook, bishop, queen)
 def get_moves_from_directions(position, directions, board):
@@ -112,6 +96,7 @@ def pawn_moves(position, board):
     return [m for m in moves if is_in_range(new_position(position, m))]
 
 def knight_moves(position, board):
+    piece = get_piece(position, board)
     moves = []
     all_moves = [
         # Moving up (positive row movement)
@@ -127,7 +112,8 @@ def knight_moves(position, board):
     ]
     for move in all_moves:
         _new_position = new_position(position, move)
-        if can_take_square(position, _new_position, board):
+        take_piece = get_piece(_new_position, board)
+        if is_in_range(_new_position) and (not take_piece or (take_piece[0] != piece[0])):
             moves.append(move)
     return moves
 
@@ -183,21 +169,6 @@ def get_moves(position, board):
         return king_moves(position, board)
     else:
         raise(f"Unknown piece={piece[1]}")
-
-def pawn_threats(position, board):
-    return []
-
-def knight_threats(position, board):
-    return []
-
-def bishop_threats(position, board):
-    return []
-
-def rook_threats(position, board):
-    return []
-
-def queen_threats(position, board):
-    return []
 
 def all_position_moves(turn, board):
     result = []
