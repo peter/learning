@@ -29,14 +29,6 @@ def get_piece(position, board):
         return None
     return board[position[0]][position[1]]
 
-def get_take_piece(position, take_position, board):
-    piece = get_piece(position, board)
-    take_piece = get_piece(take_position, board)
-    if take_piece[0] == piece[0] or take_piece[1] == "king":
-        # Cannot take own color piece or a king
-        return None
-    return take_piece
-
 def get_position(piece, board):
     for column in range(0, 8):
         for row in range(0, 8):
@@ -52,6 +44,46 @@ def new_positions(position, moves):
 
 def other_turn(turn):
     return "black" if turn == "white" else "white"
+
+# Checks if new position is on the board and either has no
+# piece or a piece of opposite color that is not the king. Does
+# not take into account how the piece can move (the move pattern).
+# Also does not take into account if there are pieces in the way of the move.
+# Also does not take into account that all pieces cannot always take (i.e. pawns are special,
+# sometimes they can't take, and sometimes they must take)
+def can_take_square(position, _new_position, board):
+    piece = get_piece(position, board)
+    take_piece = get_piece(_new_position, board)
+    if not is_in_range(_new_position):
+        return False
+    if not take_piece:
+        return True
+    # You can take piece of opposite color that is not the king
+    return take_piece[0] != piece[0] and take_piece[1] != "king"
+
+# Helper function for pieces that move one or more steps in different
+# directions (rook, bishop, queen)
+def get_moves_from_directions(position, directions, board):
+    moves = []
+    piece = get_piece(position, board)
+    for step in directions:
+        n_steps = 1
+        while True:
+            move = (n_steps * step[0], n_steps * step[1])
+            _new_position = new_position(position, move)
+            take_piece = get_piece(_new_position, board)
+            if not is_in_range(_new_position) or (take_piece and take_piece[0] == piece[0]):
+                # we are outside the board or we have hit one of our own pieces (same color)
+                break
+            elif take_piece and take_piece[0] != piece[0]:
+                # different color piece we can take, but we can't proceed
+                moves.append(move)
+                break
+            else:
+                # empty square so we can proceeed
+                moves.append(move)
+            n_steps += 1            
+    return moves
 
 def pawn_moves(position, board):
     piece = get_piece(position, board)
@@ -80,41 +112,55 @@ def pawn_moves(position, board):
     return [m for m in moves if is_in_range(new_position(position, m))]
 
 def knight_moves(position, board):
-    return []
+    moves = []
+    all_moves = [
+        # Moving up (positive row movement)
+        (-1, 2),
+        (-2, 1),
+        (1, 2),
+        (2, 1),
+        # Moving down (negative row movement)
+        (-1, -2),
+        (-2, -1),
+        (1, -2),
+        (2, -1)
+    ]
+    for move in all_moves:
+        _new_position = new_position(position, move)
+        if can_take_square(position, _new_position, board):
+            moves.append(move)
+    return moves
 
 def bishop_moves(position, board):
-    return []
+    directions = [
+        (-1, -1), # left, down
+        (-1, 1), # left, up
+        (1, 1), # right, up
+        (1, -1) # right, down
+    ]
+    return get_moves_from_directions(position, directions, board)
 
 def rook_moves(position, board):
-    moves = []
-    piece = get_piece(position, board)
-    steps = [
+    directions = [
         (-1, 0), # left
         (1, 0), # right
         (0, 1), # up
         (0, -1) # down
     ]
-    for step in steps:
-        n_steps = 1
-        while True:
-            move = (n_steps * step[0], n_steps * step[1])
-            _new_position = new_position(position, move)
-            take_piece = get_piece(_new_position, board)
-            if not is_in_range(_new_position) or (take_piece and take_piece[0] == piece[0]):
-                # we are outside the board or we have hit one of our own pieces (same color)
-                break
-            elif take_piece and take_piece[0] != piece[0]:
-                # different color piece we can take, but we can't proceed
-                moves.append(move)
-                break
-            else:
-                # empty square so we can proceeed
-                moves.append(move)
-            n_steps += 1            
-    return moves
+    return get_moves_from_directions(position, directions, board)
 
 def queen_moves(position, board):
-    return []
+    directions = [
+        (-1, -1), # left, down
+        (-1, 0), # left
+        (-1, 1), # left, up
+        (0, 1), # up
+        (1, 1), # right, up
+        (1, 0), # right
+        (1, -1), # right, down
+        (0, -1) # down
+    ]
+    return get_moves_from_directions(position, directions, board)
 
 def king_moves(position, board):
     return []
@@ -164,11 +210,13 @@ def all_position_moves(turn, board):
                 for move in moves:
                     board_after_move = make_move(position, move, board)
                     _is_check = is_check(turn, board_after_move)
-                    # NOTE: also need to check that king is not threatened by other king
                     king_position = get_position((turn, "king"), board_after_move)
                     other_king_position = get_position((other_turn(turn), "king"), board_after_move)
                     is_king_threat = king_position in new_positions(other_king_position, king_moves(other_king_position, board_after_move))
-                    if not _is_check and not is_king_threat: # you cannot move into check
+                    take_piece = get_piece(new_position(position, move), board)
+                    move_takes_king = take_piece and take_piece[1] == "king"
+                    # NOTE: you cannot move into check
+                    if not _is_check and not is_king_threat and not move_takes_king:
                         result.append((position, move))                    
     return result
 
