@@ -164,8 +164,11 @@ def all_position_moves(turn, board):
                 for move in moves:
                     board_after_move = make_move(position, move, board)
                     _is_check = is_check(turn, board_after_move)
-                    # TODO: also need to check that king is not threatened by other king
-                    if not _is_check: # you cannot move into check
+                    # NOTE: also need to check that king is not threatened by other king
+                    king_position = get_position((turn, "king"), board_after_move)
+                    other_king_position = get_position((other_turn(turn), "king"), board_after_move)
+                    is_king_threat = king_position in new_positions(other_king_position, king_moves(other_king_position, board_after_move))
+                    if not _is_check and not is_king_threat: # you cannot move into check
                         result.append((position, move))                    
     return result
 
