@@ -16,6 +16,11 @@ def piece_str(piece):
     else:
         return f"{piece[0][0]} {piece[1]}"
 
+def position_str(position):
+    pretty_column = LETTERS[position[0]]
+    pretty_row = position[1] + 1
+    return f"{pretty_column}{pretty_row}"
+
 def is_in_range(position):
     return position[0] >= 0 and position[0] <= 7 and position[1] >= 0 and position[1] <= 7
 
@@ -213,6 +218,13 @@ def print_moves(position_moves, board):
             moves = get_moves(position, board)
             print('pm debug moves', position, piece, moves)
 
+def print_move(turn, position, move, board):
+    _new_position = new_position(position, move)
+    piece = get_piece(position, board)
+    take_piece = get_piece(_new_position, board)
+    take_string = f"takes {take_piece}" if take_piece else ""
+    print(f"{turn} move: {piece[1]} {position_str(position)} -> {position_str(_new_position)} {move}  {take_string}")
+
 def main():
     board = init_board()
     turn = "white"
@@ -227,10 +239,7 @@ def main():
         # print_moves(position_moves, board)
         (position, moves) = random.choice(position_moves)
         move = random.choice(moves)
-        _new_position = new_position(position, move)
-        piece = get_piece(position, board)
-        take_piece = get_piece(_new_position, board)
-        print(f"{turn} move: piece={piece[1]} position={position} move={move} new_position={_new_position} take_piece={take_piece}")
+        print_move(turn, position, move, board)
         make_move(position, move, board)
         turn = "black" if turn == "white" else "white"
         move_number += 1
