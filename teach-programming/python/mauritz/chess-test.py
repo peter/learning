@@ -15,6 +15,13 @@ ALL_DIRECTIONS = [
         (1, -1), # right, down
         (0, -1) # down
 ]
+PIECE_VALUES = {
+    'pawn': 1,
+    'knight': 3,
+    'bishop': 3,
+    'rook': 5,
+    'queen': 9
+}
 
 def debug_log(message):
     if os.environ.get('DEBUG') == "true":
@@ -278,6 +285,14 @@ def make_move(position, move, board):
         new_board[_new_position[0]][_new_position[1]] = (piece[0], "queen")
     return new_board
 
+def is_threatened(position, board):
+    piece = get_piece(position, board)
+    turn = piece[0]
+    for (_position, _move) in all_position_moves(other_turn(turn), board):
+        if _position == position:
+            return True
+    return False
+
 def is_check(turn, board):
     king_position = get_position((turn, "king"), board)
     for column in range(0, 8):
@@ -312,13 +327,37 @@ def engine_random(position_moves, board):
     return random.choice(position_moves)
 
 def engine_material(position_moves, board):
-    # make chess mate move if any
-    check_mate_position_move = find_first(position_moves, lambda pm: is_check_mate_move(pm[0], pm[1], board))
-    if check_mate_position_move:
-        print("pm debug making check mate move!!!")
-        return check_mate_position_move
+    max_value = 0
+    max_value_position_move = None
+    max_threat = False
+    for (position, move) in position_moves:
+        # make chess mate move if possible (duh)
+        if is_check_mate_move(position, move, board):
+            debug_log(f"engine_material returning check mate move position={position} move={move}")
+            return (position, move)
+        _new_position = new_position(position, move)
+        take_piece = get_piece(_new_position, board)
+        if take_piece:
+            take_piece_value = PIECE_VALUES[take_piece[1]]
+            new_board = make_move(position, move, board)
+            value = take_piece_value
+            threat = False
+            if is_threatened(_new_position, new_board):
+                piece = get_piece(position, board)
+                piece_value = PIECE_VALUES[piece[1]]
+                value = take_piece_value - piece_value
+                threat = True
+            if value > max_value:
+                max_value = value
+                max_value_position_move = (position, move)
+                max_threat = threat
+    if max_value_position_move:
+        debug_log(f"engine_material returning max_value={max_value} max_threat={max_threat} max_value_position_move={max_value_position_move}")
+        return max_value_position_move
+    # TODO: move away threatened pieces (i.e. consider defense and not just offense)
     # TODO: castle when you can
-    # TODO: find top material gain move
+
+    # Use random move as fallback
     return random.choice(position_moves)
 
 def engine_user(position_moves, board):
