@@ -1,4 +1,5 @@
 import sys
+import os
 import random
 
 LETTERS = ["A", "B", "C", "D", "E", "F", "G", "H"]
@@ -14,6 +15,10 @@ ALL_DIRECTIONS = [
         (1, -1), # right, down
         (0, -1) # down
 ]
+
+def debug_log(message):
+    if os.environ['DEBUG'] == "true":
+        print(message)
 
 def empty_row():
     return [None for _ in range(0, 8)]
@@ -193,6 +198,7 @@ def all_position_moves(turn, board):
             if piece and piece[0] == turn:
                 moves = get_moves(position, board)
                 for move in moves:
+                    _new_position = new_position(position, move)
                     board_after_move = make_move(position, move, board)
                     _is_check = is_check(turn, board_after_move)
                     king_position = get_position((turn, "king"), board_after_move)
@@ -201,7 +207,9 @@ def all_position_moves(turn, board):
                     take_piece = get_piece(new_position(position, move), board)
                     move_takes_king = take_piece and take_piece[1] == "king"
                     # NOTE: you cannot move into check
-                    if not _is_check and not is_king_threat and not move_takes_king:
+                    move_is_valid = not _is_check and not is_king_threat and not move_takes_king
+                    debug_log(f"{turn} all moves {piece[1]} {position_str(position)} -> {position_str(_new_position)} {move} move_is_valid={move_is_valid} is_check={_is_check} is_king_threat={is_king_threat} move_takes_king={move_takes_king}")
+                    if move_is_valid:
                         result.append((position, move))                    
     return result
 
@@ -217,7 +225,6 @@ def make_move(position, move, board):
     new_board[_new_position[0]][_new_position[1]] = new_board[position[0]][position[1]]
     new_board[position[0]][position[1]] = None
     if should_promote_pawn(_new_position, new_board):
-        # print(f"would promote {piece[0]} pawn to queen at position {position_str(_new_position)}")
         new_board[_new_position[0]][_new_position[1]] = (piece[0], "queen")
     return new_board
 
@@ -352,19 +359,12 @@ def print_board(board):
     print_letters()
     print()
 
-def print_moves(position_moves, board):
-    for (position, moves) in position_moves:
-        if moves:
-            piece = get_piece(position, board)
-            moves = get_moves(position, board)
-            print('pm debug moves', position, piece, moves)
-
 def print_move(turn, position, move, board):
     _new_position = new_position(position, move)
     piece = get_piece(position, board)
     take_piece = get_piece(_new_position, board)
     take_string = f"takes {take_piece}" if take_piece else ""
-    print(f"{turn} move: {piece[1]} {position_str(position)} -> {position_str(_new_position)} {move}  {take_string}")
+    print(f"{turn} move: {piece[1]} {position_str(position)} -> {position_str(_new_position)} {move} {take_string}")
 
 def main():
     print(sys.argv)
@@ -387,7 +387,6 @@ def main():
             else:
                 print(f"No possible moves for {turn} - stale mate - draw!")
             break
-        # print_moves(position_moves, board)
         player = player1 if turn == "white" else player2
         (position, move) = player(position_moves)
         print_move(turn, position, move, board)
