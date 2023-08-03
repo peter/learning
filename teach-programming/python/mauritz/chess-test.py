@@ -430,7 +430,14 @@ def print_move(turn, position, move, board):
     take_string = f"takes {take_piece}" if take_piece else ""
     promote_string = f"promotes pawn to queen" if should_promote_pawn(_new_position, piece) else ""    
     castle_string = f"castles" if (piece[1] == "king" and abs(_new_position[0] - position[0]) > 1) else ""
-    print(f"{turn} move: {piece[1]} {position_str(position)} -> {position_str(_new_position)} {move} {take_string} {promote_string} {castle_string}")
+    messages = [
+            f"{turn} move: {piece[1]} {position_str(position)} -> {position_str(_new_position)} {move}",
+            take_string,
+            promote_string,
+            castle_string
+    ]
+    message = ", ".join([m for m in messages if m])
+    print(message)
 
 def main():
     print(sys.argv)
