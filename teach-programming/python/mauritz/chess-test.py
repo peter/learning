@@ -205,7 +205,7 @@ def all_position_moves(turn, board):
                     other_king_position = get_position((other_turn(turn), "king"), board_after_move)
                     is_king_threat = king_position in new_positions(other_king_position, king_moves(other_king_position, board_after_move))
                     take_piece = get_piece(new_position(position, move), board)
-                    move_takes_king = take_piece and take_piece[1] == "king"
+                    move_takes_king = bool(take_piece and take_piece[1] == "king")
                     # NOTE: you cannot move into check
                     move_is_valid = not _is_check and not is_king_threat and not move_takes_king
                     debug_log(f"{turn} all moves {piece[1]} {position_str(position)} -> {position_str(_new_position)} {move} move_is_valid={move_is_valid} is_check={_is_check} is_king_threat={is_king_threat} move_takes_king={move_takes_king}")
@@ -213,8 +213,7 @@ def all_position_moves(turn, board):
                         result.append((position, move))                    
     return result
 
-def should_promote_pawn(position, board):
-    piece = get_piece(position, board)
+def should_promote_pawn(position, piece):
     promote_row = 0 if piece[0] == "black" else 7
     return piece[1] == "pawn" and promote_row == position[1]
 
@@ -224,7 +223,7 @@ def make_move(position, move, board):
     _new_position = new_position(position, move)
     new_board[_new_position[0]][_new_position[1]] = new_board[position[0]][position[1]]
     new_board[position[0]][position[1]] = None
-    if should_promote_pawn(_new_position, new_board):
+    if should_promote_pawn(_new_position, piece):
         new_board[_new_position[0]][_new_position[1]] = (piece[0], "queen")
     return new_board
 
@@ -364,7 +363,8 @@ def print_move(turn, position, move, board):
     piece = get_piece(position, board)
     take_piece = get_piece(_new_position, board)
     take_string = f"takes {take_piece}" if take_piece else ""
-    print(f"{turn} move: {piece[1]} {position_str(position)} -> {position_str(_new_position)} {move} {take_string}")
+    promote_string = f"promotes pawn to queen" if should_promote_pawn(_new_position, piece) else ""
+    print(f"{turn} move: {piece[1]} {position_str(position)} -> {position_str(_new_position)} {move} {take_string} {promote_string}")
 
 def main():
     print(sys.argv)
