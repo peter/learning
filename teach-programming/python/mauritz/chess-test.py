@@ -20,6 +20,9 @@ def debug_log(message):
     if os.environ.get('DEBUG') == "true":
         print(message)
 
+def find_first(values, predicate):
+  return next((value for value in values if predicate(value)), None)
+
 def empty_row():
     return [None for _ in range(0, 8)]
 
@@ -295,14 +298,30 @@ def is_check(turn, board):
                 return True
     return False
 
-def engine_random(position_moves):
+def is_check_mate_move(position, move, board):
+    piece = get_piece(position, board)
+    turn = piece[0]
+    new_board = make_move(position, move, board)
+    new_is_check = is_check(other_turn(turn), new_board)
+    if not new_is_check:
+        return False
+    new_position_moves = all_position_moves(other_turn(turn), new_board)
+    return new_is_check and not new_position_moves
+
+def engine_random(position_moves, board):
     return random.choice(position_moves)
 
-def engine_random_castle(position_moves):
+def engine_material(position_moves, board):
+    # make chess mate move if any
+    check_mate_position_move = find_first(position_moves, lambda pm: is_check_mate_move(pm[0], pm[1], board))
+    if check_mate_position_move:
+        print("pm debug making check mate move!!!")
+        return check_mate_position_move
     # TODO: castle when you can
+    # TODO: find top material gain move
     return random.choice(position_moves)
 
-def engine_user(position_moves):
+def engine_user(position_moves, board):
     try:
         move_str = input("Select your move (i.e. e2 e4) ")
         (position_str, new_position_str) = move_str.split(" ")
@@ -402,7 +421,7 @@ def init_board():
 def get_player(player_name):
     PLAYERS = {
         'random': engine_random,
-        'random_castle': engine_random_castle,
+        'material': engine_material,
         'user': engine_user,
     }
     return PLAYERS[player_name]
@@ -439,10 +458,7 @@ def print_move(turn, position, move, board):
     message = ", ".join([m for m in messages if m])
     print(message)
 
-def main():
-    print(sys.argv)
-    player1 = get_player(sys.argv[1])
-    player2 = get_player(sys.argv[2])
+def play_game(player1, player2):
     board = init_board()
     turn = "white"
     move_number = 1
@@ -453,18 +469,19 @@ def main():
         print(f"{turn} turn to move #{move_number}, possible moves: {len(position_moves)}, is check: {_is_check}")
         if count_pieces(board) == 2:
             print(f"Only the kings left - draw!")
-            break
+            return "draw"
         elif not position_moves:
             if _is_check:
                 print(f"No possible moves for {turn} - check mate - {other_turn(turn)} wins!")
+                return other_turn(turn)
             else:
                 print(f"No possible moves for {turn} - stale mate - draw!")
-            break
+                return "draw"
         player = player1 if turn == "white" else player2
         attempts = 1
         got_valid_move = False
         while attempts < 4:
-            (position, move) = player(position_moves)
+            (position, move) = player(position_moves, board)
             if (position, move) in position_moves:
                 got_valid_move = True
                 break
@@ -475,6 +492,25 @@ def main():
         board = make_move(position, move, board)
         turn = other_turn(turn)
         move_number += 1
+
+def main():
+    print(sys.argv)
+    player1 = get_player(sys.argv[1])
+    player2 = get_player(sys.argv[2])
+    n_games = int(os.environ.get('N_GAMES', '1'))
+    stats = {
+        'white': 0,
+        'black': 0,
+        'draw': 0
+    }
+    for game_index in range(0, n_games):
+        print("\n###########################")
+        print(f"### Game #{game_index + 1}")
+        print("###########################\n")
+        result = play_game(player1, player2)
+        stats[result] += 1
+    if n_games > 1:
+        print("stats:", stats)
     
 if __name__ == "__main__":
     main()
