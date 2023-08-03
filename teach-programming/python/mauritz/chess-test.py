@@ -17,7 +17,7 @@ ALL_DIRECTIONS = [
 ]
 
 def debug_log(message):
-    if os.environ['DEBUG'] == "true":
+    if os.environ.get('DEBUG') == "true":
         print(message)
 
 def empty_row():
@@ -169,6 +169,36 @@ def rook_moves(position, board):
 def queen_moves(position, board):
     return get_moves_from_directions(position, ALL_DIRECTIONS, board)
 
+# How castling works: https://support.chess.com/article/266-how-do-i-castle
+def king_castle_moves(position, board):
+    # TODO: strictly speaking we would need to check the king and rooks have never moved
+    # We could use a move_history variable for that
+    moves = []
+    piece = get_piece(position, board)
+    turn = piece[0]
+    king_row = 0 if turn == "white" else 7
+    king_column = 4
+    king_position = (king_column, king_row)
+    king_in_position = position == king_position
+    if is_check(turn, board) or not king_in_position:
+        # Cannot castle if in check or king not in start position
+        return []
+    left_rook_in_position = get_piece((0, king_row), board) == (turn, "rook")
+    left_positions = [(1, king_row), (king_column - 2, king_row), (king_column - 1, king_row)]
+    left_open = len([p for p in left_positions if get_piece(p, board) != None]) == 0
+    left_board = make_move(king_position, (-1, 0), board)
+    left_not_chess = not is_check(turn, left_board)
+    if left_rook_in_position and left_open and left_not_chess:
+        moves.append((-2, 0))
+    right_rook_in_position = get_piece((7, king_row), board) == (turn, "rook")
+    right_positions = [(6, king_row), (king_column + 2, king_row), (king_column + 1, king_row)]
+    right_open = len([p for p in right_positions if get_piece(p, board) != None]) == 0
+    right_board = make_move(king_position, (1, 0), board)
+    right_not_chess = not is_check(turn, right_board)
+    if right_rook_in_position and right_open and right_not_chess:
+        moves.append((2, 0))
+    return moves
+   
 def king_moves(position, board):
     piece = get_piece(position, board)
     moves = []
@@ -177,6 +207,7 @@ def king_moves(position, board):
         take_piece = get_piece(_new_position, board)
         if is_in_range(_new_position) and (not take_piece or take_piece[0] != piece[0]):
             moves.append(move)
+    moves.extend(king_castle_moves(position, board))
     return moves
 
 def get_moves(position, board):
@@ -228,11 +259,19 @@ def should_promote_pawn(position, piece):
 
 def make_move(position, move, board):
     piece = get_piece(position, board)
+    turn = piece[0]
     new_board = [column.copy() for column in board]
     _new_position = new_position(position, move)
     new_board[_new_position[0]][_new_position[1]] = new_board[position[0]][position[1]]
     new_board[position[0]][position[1]] = None
-    if should_promote_pawn(_new_position, piece):
+    if piece[1] == "king" and abs(_new_position[0] - position[0]) > 1:
+        # It's a castling move, we also need to move the rook
+        castle_row = 0 if turn == "white" else 7
+        rook_column = 0 if (_new_position[0] - position[0]) < 0 else 7
+        direction = -1 if (_new_position[0] - position[0]) < 0 else 1
+        new_board[position[0] + direction][position[1]] = new_board[rook_column][castle_row]
+        new_board[rook_column][castle_row] = None
+    elif should_promote_pawn(_new_position, piece):
         new_board[_new_position[0]][_new_position[1]] = (piece[0], "queen")
     return new_board
 
@@ -257,6 +296,10 @@ def is_check(turn, board):
     return False
 
 def engine_random(position_moves):
+    return random.choice(position_moves)
+
+def engine_random_castle(position_moves):
+    # TODO: castle when you can
     return random.choice(position_moves)
 
 def engine_user(position_moves):
@@ -359,6 +402,7 @@ def init_board():
 def get_player(player_name):
     PLAYERS = {
         'random': engine_random,
+        'random_castle': engine_random_castle,
         'user': engine_user,
     }
     return PLAYERS[player_name]
@@ -384,8 +428,9 @@ def print_move(turn, position, move, board):
     piece = get_piece(position, board)
     take_piece = get_piece(_new_position, board)
     take_string = f"takes {take_piece}" if take_piece else ""
-    promote_string = f"promotes pawn to queen" if should_promote_pawn(_new_position, piece) else ""
-    print(f"{turn} move: {piece[1]} {position_str(position)} -> {position_str(_new_position)} {move} {take_string} {promote_string}")
+    promote_string = f"promotes pawn to queen" if should_promote_pawn(_new_position, piece) else ""    
+    castle_string = f"castles" if (piece[1] == "king" and abs(_new_position[0] - position[0]) > 1) else ""
+    print(f"{turn} move: {piece[1]} {position_str(position)} -> {position_str(_new_position)} {move} {take_string} {promote_string} {castle_string}")
 
 def main():
     print(sys.argv)
