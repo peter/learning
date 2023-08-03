@@ -37,6 +37,12 @@ def position_str(position):
     pretty_row = position[1] + 1
     return f"{pretty_column}{pretty_row}"
 
+def parse_position_str(_position_str):
+    letter = _position_str[0].upper()
+    column = LETTERS.index(letter)
+    row = int(_position_str[1]) - 1
+    return (column, row)
+
 def is_in_range(position):
     return position[0] >= 0 and position[0] <= 7 and position[1] >= 0 and position[1] <= 7
 
@@ -51,6 +57,9 @@ def get_position(piece, board):
             if board[column][row] == piece:
                 return (column, row)
     return None
+
+def get_move(position, _new_position):
+    return (_new_position[0] - position[0], _new_position[1] - position[1])
 
 def new_position(position, move):
     return (position[0] + move[0], position[1] + move[1])
@@ -250,6 +259,14 @@ def is_check(turn, board):
 def engine_random(position_moves):
     return random.choice(position_moves)
 
+def engine_user(position_moves):
+    move_str = input("Select your move (i.e. e2 e4) ")
+    (position_str, new_position_str) = move_str.split(" ")
+    position = parse_position_str(position_str)
+    _new_position = parse_position_str(new_position_str)
+    move = get_move(position, _new_position)
+    return (position, move)
+
 # Board is organized so we can index it by (x, y) coordinates
 # where x is column 0-7 (A-H in letters) and y is row 0-7 (1-7 in numbers on the board)
 def init_board():
@@ -338,7 +355,8 @@ def init_board():
 
 def get_player(player_name):
     PLAYERS = {
-        'random': engine_random
+        'random': engine_random,
+        'user': engine_user,
     }
     return PLAYERS[player_name]
 
@@ -388,7 +406,10 @@ def main():
                 print(f"No possible moves for {turn} - stale mate - draw!")
             break
         player = player1 if turn == "white" else player2
-        (position, move) = player(position_moves)
+        while True:
+            (position, move) = player(position_moves)
+            if (position, move) in position_moves:
+                break
         print_move(turn, position, move, board)
         board = make_move(position, move, board)
         turn = other_turn(turn)
