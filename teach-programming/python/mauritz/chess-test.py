@@ -1,3 +1,4 @@
+import sys
 import random
 
 LETTERS = ["A", "B", "C", "D", "E", "F", "G", "H"]
@@ -240,6 +241,9 @@ def is_check(turn, board):
                 return True
     return False
 
+def engine_random(position_moves):
+    return random.choice(position_moves)
+
 # Board is organized so we can index it by (x, y) coordinates
 # where x is column 0-7 (A-H in letters) and y is row 0-7 (1-7 in numbers on the board)
 def init_board():
@@ -326,6 +330,12 @@ def init_board():
     ])
     return board
 
+def get_player(player_name):
+    PLAYERS = {
+        'random': engine_random
+    }
+    return PLAYERS[player_name]
+
 def print_letters():
     print(square_str(""), end=BOARD_END)
     for letter in LETTERS:
@@ -357,6 +367,9 @@ def print_move(turn, position, move, board):
     print(f"{turn} move: {piece[1]} {position_str(position)} -> {position_str(_new_position)} {move}  {take_string}")
 
 def main():
+    print(sys.argv)
+    player1 = get_player(sys.argv[1])
+    player2 = get_player(sys.argv[2])
     board = init_board()
     turn = "white"
     move_number = 1
@@ -375,7 +388,8 @@ def main():
                 print(f"No possible moves for {turn} - stale mate - draw!")
             break
         # print_moves(position_moves, board)
-        (position, move) = random.choice(position_moves)
+        player = player1 if turn == "white" else player2
+        (position, move) = player(position_moves)
         print_move(turn, position, move, board)
         board = make_move(position, move, board)
         turn = other_turn(turn)
