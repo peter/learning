@@ -260,12 +260,15 @@ def engine_random(position_moves):
     return random.choice(position_moves)
 
 def engine_user(position_moves):
-    move_str = input("Select your move (i.e. e2 e4) ")
-    (position_str, new_position_str) = move_str.split(" ")
-    position = parse_position_str(position_str)
-    _new_position = parse_position_str(new_position_str)
-    move = get_move(position, _new_position)
-    return (position, move)
+    try:
+        move_str = input("Select your move (i.e. e2 e4) ")
+        (position_str, new_position_str) = move_str.split(" ")
+        position = parse_position_str(position_str)
+        _new_position = parse_position_str(new_position_str)
+        move = get_move(position, _new_position)
+        return (position, move)
+    except:
+        return ((0, 0), (0, 0))
 
 # Board is organized so we can index it by (x, y) coordinates
 # where x is column 0-7 (A-H in letters) and y is row 0-7 (1-7 in numbers on the board)
@@ -406,10 +409,16 @@ def main():
                 print(f"No possible moves for {turn} - stale mate - draw!")
             break
         player = player1 if turn == "white" else player2
-        while True:
+        attempts = 1
+        got_valid_move = False
+        while attempts < 4:
             (position, move) = player(position_moves)
             if (position, move) in position_moves:
+                got_valid_move = True
                 break
+            attempts += 1
+        if not got_valid_move:
+            sys.exit(f"Never got a valid move from player {player.__name__} - exiting")
         print_move(turn, position, move, board)
         board = make_move(position, move, board)
         turn = other_turn(turn)
