@@ -3,6 +3,9 @@ import os
 import random
 import time
 
+# USAGE:
+# DEBUG=engine N_GAMES=20 python chess-test.py material random
+
 LETTERS = ["A", "B", "C", "D", "E", "F", "G", "H"]
 SQUARE_LENGTH = 8
 BOARD_END = " | "
@@ -25,7 +28,7 @@ PIECE_VALUES = {
 }
 
 def debug_log(message):
-    if os.environ.get('DEBUG') == "true":
+    if (os.environ.get('DEBUG') == "*") or (os.environ.get('DEBUG') and os.environ.get('DEBUG') in message):
         print(message)
 
 def running_average(current_average, current_count, new_value):
@@ -58,6 +61,12 @@ def parse_position_str(_position_str):
     column = LETTERS.index(letter)
     row = int(_position_str[1]) - 1
     return (column, row)
+
+def position_move_str(position_move, board):
+    (position, move) = position_move
+    _new_position = new_position(position, move)
+    piece = get_piece(position, board)
+    return f"{piece[0]} {piece[1]} {position_str(position)} -> {position_str(_new_position)}"
 
 def is_in_range(position):
     return position[0] >= 0 and position[0] <= 7 and position[1] >= 0 and position[1] <= 7
@@ -346,9 +355,10 @@ def engine_random(turn, position_moves, board):
     return random.choice(position_moves)
 
 def engine_material(turn, position_moves, board):
-    max_value = 0
-    max_value_position_move = None
-    max_threat = False
+    # 1. Offensive - how much material gain can we make by taking an opponent piece?
+    take_value = 0
+    take_position_move = None
+    take_threat = False
     for (position, move) in position_moves:
         # make chess mate move if possible (duh)
         if is_check_mate_move(position, move, board):
@@ -366,30 +376,35 @@ def engine_material(turn, position_moves, board):
                 piece_value = PIECE_VALUES[piece[1]]
                 value = take_piece_value - piece_value
                 threat = True
-            if value > max_value:
-                max_value = value
-                max_value_position_move = (position, move)
-                max_threat = threat
-    if max_value_position_move:
-        debug_log(f"engine_material returning max_value={max_value} max_threat={max_threat} max_value_position_move={max_value_position_move}")
-        return max_value_position_move
-    # TODO: move away threatened pieces (i.e. consider defense and not just offense)
+            if value > take_value:
+                take_value = value
+                take_position_move = (position, move)
+                take_threat = threat
+
+    # 2. How much material can we save by moving away a threatened piece?
+    escape_value = 0
+    escape_position_move = None
     for (other_position, other_move) in all_position_moves(other_turn(turn), board):
         other_new_position = new_position(other_position, other_move)
         threatened_piece = get_piece(other_new_position, board)
         # TODO: check value of threatening piece and threatened piece
         if threatened_piece and not is_protected(other_new_position, other_position, other_move, board):
-            debug_log(f"engine_material defensive threat from {position_str(other_position)} and no protection at piece={threatened_piece} position={position_str(other_new_position)}")
             for (position, move) in position_moves:
                 if position == other_new_position:
                     escape_position = new_position(position, move)
                     escape_board = make_move(position, move, board)
                     if not get_threat(escape_position, escape_board):
-                        debug_log(f"engine_material escaping from {position_str(position)} to {position_str(escape_position)}")
-                        return (position, move)
+                        escape_value = PIECE_VALUES[threatened_piece[1]]
+                        escape_position_move = (position, move)
 
-    # TODO: balance offensive/defensive material gain
-
+    # TODO: select max of any offensive/defensive material gain moves
+    if take_position_move and take_value >= escape_value:
+        debug_log(f"engine_material returning take move {position_move_str(take_position_move, board)} take_value={take_value} escape_value={escape_value}")
+        return take_position_move
+    elif escape_position_move and escape_value > 0:
+        debug_log(f"engine_material returning escape move {position_move_str(escape_position_move, board)} escape_value={escape_value} take_value={take_value}")
+        return escape_position_move
+    
     # TODO: castle when you can
 
     # Use random move as fallback
