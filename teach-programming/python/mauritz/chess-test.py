@@ -1,6 +1,7 @@
 import sys
 import os
 import random
+import time
 
 LETTERS = ["A", "B", "C", "D", "E", "F", "G", "H"]
 SQUARE_LENGTH = 8
@@ -26,6 +27,11 @@ PIECE_VALUES = {
 def debug_log(message):
     if os.environ.get('DEBUG') == "true":
         print(message)
+
+def running_average(current_average, current_count, new_value):
+    if current_count == 0:
+        return new_value
+    return (current_average * current_count + new_value) / (current_count + 1)
 
 def find_first(values, predicate):
   return next((value for value in values if predicate(value)), None)
@@ -523,27 +529,37 @@ def print_move(turn, position, move, board):
 def play_game(player1, player2):
     board = init_board()
     turn = "white"
-    move_number = 1
+    game_info = {
+        "move_number": 1,
+        "white_time": 0,
+        "black_time": 0
+    }
     while True:
         print_board(board)
         position_moves = all_position_moves(turn, board)
         _is_check = is_check(turn, board)
-        print(f"{turn} turn to move #{move_number}, possible moves: {len(position_moves)}, is check: {_is_check}")
+        print(f"{turn} turn to move #{game_info['move_number']}, possible moves: {len(position_moves)}, is check: {_is_check}")
         if count_pieces(board) == 2:
             print(f"Only the kings left - draw!")
-            return "draw"
+            game_info["result"] = "draw"
+            return game_info
         elif not position_moves:
             if _is_check:
                 print(f"No possible moves for {turn} - check mate - {other_turn(turn)} wins!")
-                return other_turn(turn)
+                game_info["result"] = other_turn(turn)
+                return game_info
             else:
                 print(f"No possible moves for {turn} - stale mate - draw!")
-                return "draw"
+                game_info["result"] = "draw"
+                return game_info
         player = player1 if turn == "white" else player2
         attempts = 1
         got_valid_move = False
         while attempts < 4:
+            start_time = time.time()
             (position, move) = player(turn, position_moves, board)
+            elapsed = time.time() - start_time
+            game_info[f"{turn}_time"] += elapsed
             if (position, move) in position_moves:
                 got_valid_move = True
                 break
@@ -553,7 +569,7 @@ def play_game(player1, player2):
         print_move(turn, position, move, board)
         board = make_move(position, move, board)
         turn = other_turn(turn)
-        move_number += 1
+        game_info["move_number"] += 1
 
 def main():
     print(sys.argv)
@@ -563,14 +579,21 @@ def main():
     stats = {
         'white': 0,
         'black': 0,
-        'draw': 0
+        'draw': 0,
+        "move_number": 0,
+        "white_time": 0,
+        "black_time": 0
     }
     for game_index in range(0, n_games):
         print("\n###########################")
         print(f"### Game #{game_index + 1}")
         print("###########################\n")
-        result = play_game(player1, player2)
-        stats[result] += 1
+        game_info = play_game(player1, player2)
+        print(f"game info", game_info)
+        stats[game_info["result"]] += 1
+        for key in ["move_number", "white_time", "black_time"]:
+            stats[key] = running_average(stats[key], game_index, game_info[key])
+
     if n_games > 1:
         print("stats:", stats)
     
