@@ -288,8 +288,9 @@ def make_move(position, move, board):
 def is_threatened(position, board):
     piece = get_piece(position, board)
     turn = piece[0]
-    for (_position, _move) in all_position_moves(other_turn(turn), board):
-        if _position == position:
+    for (other_position, other_move) in all_position_moves(other_turn(turn), board):
+        _new_position = new_position(other_position, other_move)
+        if _new_position == position:
             return True
     return False
 
