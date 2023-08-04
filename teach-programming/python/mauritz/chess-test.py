@@ -374,16 +374,22 @@ def engine_material(turn, position_moves, board):
         debug_log(f"engine_material returning max_value={max_value} max_threat={max_threat} max_value_position_move={max_value_position_move}")
         return max_value_position_move
     # TODO: move away threatened pieces (i.e. consider defense and not just offense)
-    for column in range(0, 8):
-        for row in range(0, 8):
-            position = (column, row)
-            piece = get_piece(position, board)
-            if piece and piece[0] == turn:
-                threat = get_threat(position, board)
-                if threat and not is_protected(position, threat[0], threat[1], board):
-                    # TODO: move away piece to non threatened position if not protected
-                    #print(f"pm debug defensive threat from {position_str(threat[0])} and no protection at piece={piece} position={position_str(position)}")
-                    pass
+    for (other_position, other_move) in all_position_moves(other_turn(turn), board):
+        other_new_position = new_position(other_position, other_move)
+        threatened_piece = get_piece(other_new_position, board)
+        # TODO: check value of threatening piece and threatened piece
+        if threatened_piece and not is_protected(other_new_position, other_position, other_move, board):
+            debug_log(f"engine_material defensive threat from {position_str(other_position)} and no protection at piece={threatened_piece} position={position_str(other_new_position)}")
+            for (position, move) in position_moves:
+                if position == other_new_position:
+                    escape_position = new_position(position, move)
+                    escape_board = make_move(position, move, board)
+                    if not get_threat(escape_position, escape_board):
+                        debug_log(f"engine_material escaping from {position_str(position)} to {position_str(escape_position)}")
+                        return (position, move)
+
+    # TODO: balance offensive/defensive material gain
+
     # TODO: castle when you can
 
     # Use random move as fallback
