@@ -397,8 +397,9 @@ def engine_material(turn, position_moves, board):
 
 def engine_user(turn, position_moves, board):
     try:
-        move_str = input("Select your move (i.e. e2 e4) ")
-        (position_str, new_position_str) = move_str.split(" ")
+        move_str = input("Select your move (i.e. e2e4) ")
+        position_str = move_str[0:2]
+        new_position_str = move_str[2:4]
         position = parse_position_str(position_str)
         _new_position = parse_position_str(new_position_str)
         move = get_move(position, _new_position)
