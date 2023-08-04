@@ -253,6 +253,8 @@ def all_position_moves(turn, board):
                     _is_check = is_check(turn, board_after_move)
                     king_position = get_position((turn, "king"), board_after_move)
                     other_king_position = get_position((other_turn(turn), "king"), board_after_move)
+                    if not other_king_position:
+                        continue
                     is_king_threat = king_position in new_positions(other_king_position, king_moves(other_king_position, board_after_move))
                     take_piece = get_piece(new_position(position, move), board)
                     move_takes_king = bool(take_piece and take_piece[1] == "king")
@@ -285,11 +287,21 @@ def make_move(position, move, board):
         new_board[_new_position[0]][_new_position[1]] = (piece[0], "queen")
     return new_board
 
-def is_threatened(position, board):
+def get_threat(position, board):
     piece = get_piece(position, board)
     turn = piece[0]
-    for (other_position, other_move) in all_position_moves(other_turn(turn), board):
-        _new_position = new_position(other_position, other_move)
+    for (threat_position, threat_move) in all_position_moves(other_turn(turn), board):
+        _new_position = new_position(threat_position, threat_move)
+        if _new_position == position:
+            return (threat_position, threat_move)
+    return None
+
+def is_protected(position, threat_position, threat_move, board):
+    piece = get_piece(position, board)
+    turn = piece[0]
+    new_board = make_move(threat_position, threat_move, board)
+    for (_position, move) in all_position_moves(turn, new_board):
+        _new_position = new_position(_position, move)
         if _new_position == position:
             return True
     return False
@@ -324,10 +336,10 @@ def is_check_mate_move(position, move, board):
     new_position_moves = all_position_moves(other_turn(turn), new_board)
     return new_is_check and not new_position_moves
 
-def engine_random(position_moves, board):
+def engine_random(turn, position_moves, board):
     return random.choice(position_moves)
 
-def engine_material(position_moves, board):
+def engine_material(turn, position_moves, board):
     max_value = 0
     max_value_position_move = None
     max_threat = False
@@ -343,7 +355,7 @@ def engine_material(position_moves, board):
             new_board = make_move(position, move, board)
             value = take_piece_value
             threat = False
-            if is_threatened(_new_position, new_board):
+            if get_threat(_new_position, new_board):
                 piece = get_piece(position, board)
                 piece_value = PIECE_VALUES[piece[1]]
                 value = take_piece_value - piece_value
@@ -356,12 +368,22 @@ def engine_material(position_moves, board):
         debug_log(f"engine_material returning max_value={max_value} max_threat={max_threat} max_value_position_move={max_value_position_move}")
         return max_value_position_move
     # TODO: move away threatened pieces (i.e. consider defense and not just offense)
+    for column in range(0, 8):
+        for row in range(0, 8):
+            position = (column, row)
+            piece = get_piece(position, board)
+            if piece and piece[0] == turn:
+                threat = get_threat(position, board)
+                if threat and not is_protected(position, threat[0], threat[1], board):
+                    # TODO: move away piece to non threatened position if not protected
+                    #print(f"pm debug defensive threat from {position_str(threat[0])} and no protection at piece={piece} position={position_str(position)}")
+                    pass
     # TODO: castle when you can
 
     # Use random move as fallback
     return random.choice(position_moves)
 
-def engine_user(position_moves, board):
+def engine_user(turn, position_moves, board):
     try:
         move_str = input("Select your move (i.e. e2 e4) ")
         (position_str, new_position_str) = move_str.split(" ")
@@ -521,7 +543,7 @@ def play_game(player1, player2):
         attempts = 1
         got_valid_move = False
         while attempts < 4:
-            (position, move) = player(position_moves, board)
+            (position, move) = player(turn, position_moves, board)
             if (position, move) in position_moves:
                 got_valid_move = True
                 break
