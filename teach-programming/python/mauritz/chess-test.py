@@ -358,11 +358,10 @@ def engine_material(turn, position_moves, board):
     # 1. Offensive - how much material gain can we make by taking an opponent piece?
     take_value = 0
     take_position_move = None
-    take_threat = False
     for (position, move) in position_moves:
         # make chess mate move if possible (duh)
         if is_check_mate_move(position, move, board):
-            debug_log(f"engine_material returning check mate move position={position} move={move}")
+            debug_log(f"engine_material returning check mate move {position_move_str((position, move), board)}")
             return (position, move)
         _new_position = new_position(position, move)
         take_piece = get_piece(_new_position, board)
@@ -379,7 +378,6 @@ def engine_material(turn, position_moves, board):
             if value > take_value:
                 take_value = value
                 take_position_move = (position, move)
-                take_threat = threat
 
     # 2. How much material can we save by moving away a threatened piece?
     escape_value = 0
@@ -394,8 +392,9 @@ def engine_material(turn, position_moves, board):
                     escape_position = new_position(position, move)
                     escape_board = make_move(position, move, board)
                     if not get_threat(escape_position, escape_board):
-                        escape_value = PIECE_VALUES[threatened_piece[1]]
-                        escape_position_move = (position, move)
+                        if PIECE_VALUES[threatened_piece[1]] > escape_value:
+                            escape_value = PIECE_VALUES[threatened_piece[1]]
+                            escape_position_move = (position, move)
 
     # TODO: select max of any offensive/defensive material gain moves
     if take_position_move and take_value >= escape_value:
