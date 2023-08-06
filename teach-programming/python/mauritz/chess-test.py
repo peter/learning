@@ -2,6 +2,7 @@ import sys
 import os
 import random
 import time
+import json
 
 # USAGE:
 # DEBUG=engine N_GAMES=20 python chess-test.py material random
@@ -30,6 +31,9 @@ PIECE_VALUES = {
 def debug_log(message):
     if (os.environ.get('DEBUG') == "*") or (os.environ.get('DEBUG') and os.environ.get('DEBUG') in message):
         print(message)
+
+def pretty_json(data):
+    return json.dumps(data, indent=4)
 
 def running_average(current_average, current_count, new_value):
     if current_count == 0:
@@ -515,6 +519,23 @@ def get_player(player_name):
     }
     return PLAYERS[player_name]
 
+def update_move_history(position, move, take_piece, game):
+    piece = get_piece(position, game["board"])
+    _new_position = new_position(position, move)
+    item = {
+        "piece": piece,
+        "position": position,
+        "new_position": _new_position,        
+        "move": move,
+    }
+    if take_piece:
+        item["take_piece"] = take_piece
+    game["move_history"].append(item)
+
+def update_move_result(game, result):
+    latest_move = game["move_history"][-1]
+    latest_move["result"] = result
+
 def print_letters():
     print(square_str(""), end=BOARD_END)
     for letter in LETTERS:
@@ -548,31 +569,39 @@ def print_move(turn, position, move, board):
     print(message)
 
 def play_game(player1, player2):
-    board = init_board()
-    turn = "white"
-    game_info = {
+    game = {
+        "turn": "white",
+        "board": init_board(),
         "move_number": 1,
+        "move_history": [],
+        "has_moved": {},
         "white_time": 0,
-        "black_time": 0
+        "black_time": 0,
+        "result": None
     }
     while True:
+        board = game["board"]
+        turn = game["turn"]
         print_board(board)
         position_moves = all_position_moves(turn, board)
         _is_check = is_check(turn, board)
-        print(f"{turn} turn to move #{game_info['move_number']}, possible moves: {len(position_moves)}, is check: {_is_check}")
+        if _is_check:
+            update_move_result(game, "check")
+        print(f"{turn} turn to move #{game['move_number']}, possible moves: {len(position_moves)}, is check: {_is_check}")
         if count_pieces(board) == 2:
             print(f"Only the kings left - draw!")
-            game_info["result"] = "draw"
-            return game_info
+            game["result"] = "draw"
+            return game
         elif not position_moves:
             if _is_check:
                 print(f"No possible moves for {turn} - check mate - {other_turn(turn)} wins!")
-                game_info["result"] = other_turn(turn)
-                return game_info
+                update_move_result(game, "check_mate")
+                game["result"] = other_turn(turn)
+                return game
             else:
                 print(f"No possible moves for {turn} - stale mate - draw!")
-                game_info["result"] = "draw"
-                return game_info
+                game["result"] = "draw"
+                return game
         player = player1 if turn == "white" else player2
         attempts = 1
         got_valid_move = False
@@ -580,7 +609,7 @@ def play_game(player1, player2):
             start_time = time.time()
             (position, move) = player(turn, position_moves, board)
             elapsed = time.time() - start_time
-            game_info[f"{turn}_time"] += elapsed
+            game[f"{turn}_time"] += elapsed
             if (position, move) in position_moves:
                 got_valid_move = True
                 break
@@ -588,9 +617,11 @@ def play_game(player1, player2):
         if not got_valid_move:
             sys.exit(f"Never got a valid move from player {player.__name__} - exiting")
         print_move(turn, position, move, board)
-        board = make_move(position, move, board)
-        turn = other_turn(turn)
-        game_info["move_number"] += 1
+        take_piece = get_piece(new_position(position, move), board)
+        update_move_history(position, move, take_piece, game)
+        game["board"] = make_move(position, move, board)
+        game["turn"] = other_turn(turn)
+        game["move_number"] += 1
 
 def main():
     print(sys.argv)
@@ -609,11 +640,10 @@ def main():
         print("\n###########################")
         print(f"### Game #{game_index + 1}")
         print("###########################\n")
-        game_info = play_game(player1, player2)
-        print(f"game info", game_info)
-        stats[game_info["result"]] += 1
+        game = play_game(player1, player2)
+        stats[game["result"]] += 1
         for key in ["move_number", "white_time", "black_time"]:
-            stats[key] = running_average(stats[key], game_index, game_info[key])
+            stats[key] = running_average(stats[key], game_index, game[key])
 
     if n_games > 1:
         print("stats:", stats)
