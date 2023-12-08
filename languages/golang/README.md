@@ -14,6 +14,31 @@
 * Comprehensive standard library with http/networking, testing etc.
 * Created and backed by Google and is very popular
 
+## Hello World
+
+From the [getting started page]((https://go.dev/doc/tutorial/getting-started)):
+
+```sh
+mkdir hello
+cd hello
+go mod init example/hello
+```
+
+```golang
+// file hello.go
+package main
+
+import "fmt"
+
+func main() {
+    fmt.Println("Hello, World!")
+}
+```
+
+```sh
+go run .
+```
+
 ## Resources
 
 Learning Go:
