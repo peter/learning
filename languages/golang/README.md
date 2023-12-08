@@ -1,4 +1,4 @@
-# The Go (Golang) Language
+# The Go Language
 
 ## The Pitch for Go
 
