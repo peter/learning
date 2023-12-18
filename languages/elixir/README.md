@@ -27,6 +27,51 @@ Features:
 * Support for Python like doc strings
 * UTF-8 Support
 
+## Elixir and Phoenix Installation
+
+```sh
+brew install elixir
+
+mix local.hex
+mix archive.install hex phx_new
+
+# PostgreSQL is a relational database server. Phoenix configures applications to use it by default
+mix phx.new sound_recommender --database postgres --no-live --no-assets --no-html --no-dashboard
+cd sound_recommender
+mix ecto.create
+mix phx.server
+# You can also run your app inside IEx (Interactive Elixir)
+iex -S mix phx.server
+
+# Postgres database
+psql -U postgres sound_recommender_dev
+\d
+schema_migrations
+
+# The Phoenix Live Dashboard
+open http://localhost:4000/dev/dashboard/home
+
+# List routes
+mix phx.routes
+
+mix help
+
+# Run tests
+mix test
+
+# Interactive Elixir
+iex -S mix
+```
+
+## IDE: VS Code
+
+https://fly.io/phoenix-files/setup-vscode-for-elixir-development/
+
+Extensions:
+
+* ElixirLS: Elixir support and debugger
+* Phoenix Framework
+
 ## Erlang
 
 [Notes on Erlang](topics/erlang/README.md)
@@ -552,6 +597,8 @@ GenServer.call(pid, :next)
 
 ## Resources
 
+Elixir language:
+
 * [Wikipedia: Elixir](https://en.wikipedia.org/wiki/Elixir_(programming_language))
 * [Elixir Lang](http://elixir-lang.org)
 * [Elixir Lang: Crash Course](http://elixir-lang.org/crash-course.html)
@@ -559,6 +606,23 @@ GenServer.call(pid, :next)
 * [Elixir Lang: Typespecs](https://hexdocs.pm/elixir/typespecs.html#content)
 * [Elixir Lang: Documentation](https://hexdocs.pm/elixir/writing-documentation.html#content)
 * [Elixir Lang: Documentation (PDF)](https://media.readthedocs.org/pdf/elixir-lang/latest/elixir-lang.pdf)
+
+Phoenix:
+  
+* [2. Using Phoenix Framework to Create an Elixir REST API Project](https://www.youtube.com/watch?v=s3WNCjN4Pes)
+* [3. Using Phoenix Framework to Generate JSON Resources for Elixir REST API Project](https://www.youtube.com/watch?v=DRsKmU3Sytw&list=PL2Rv8vpZJz4yEd_cTbBV7X2ZK6J4KCg3w&index=38)
+
+Libraries/packages (see [hex.pm](https://hex.pm)):
+
+* [Ecto SQL - ORM with migrations](https://github.com/elixir-ecto/ecto_sql)
+* [postgrex - Postgres driver](https://github.com/elixir-ecto/postgrex)
+* [jason - fast JSON](https://github.com/michalmuskala/jason)
+* [swoosh - emails](https://github.com/swoosh/swoosh)
+* [finch - http client](https://github.com/sneako/finch)
+* [cowboy - http server](https://github.com/ninenines/cowboy)
+* [gettext - I18n](https://github.com/elixir-gettext/gettext)
+
+Books:
 
 * [Book: Programming Elixir (Dave Thomas)](https://pragprog.com/book/elixir/programming-elixir)
 * [Book: Elixir in Action (Sasa Juric)](https://www.manning.com/books/elixir-in-action)
