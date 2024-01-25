@@ -606,9 +606,13 @@ Elixir language:
 * [Elixir Lang: Typespecs](https://hexdocs.pm/elixir/typespecs.html#content)
 * [Elixir Lang: Documentation](https://hexdocs.pm/elixir/writing-documentation.html#content)
 * [Elixir Lang: Documentation (PDF)](https://media.readthedocs.org/pdf/elixir-lang/latest/elixir-lang.pdf)
+* [6 Best Elixir Courses For Beginners](https://medium.com/quick-code/6-best-elixir-courses-for-beginners-learn-elixir-online-f966872ef7da)
+* [ElixirCasts](https://elixircasts.io)
+* [Introduction to Erlang](https://serokell.io/blog/introduction-to-erlang)
 
 Phoenix:
   
+* [Building a REST API with Elixir and Phoenix (LogRocket)](https://blog.logrocket.com/build-rest-api-elixir-phoenix/)
 * [2. Using Phoenix Framework to Create an Elixir REST API Project](https://www.youtube.com/watch?v=s3WNCjN4Pes)
 * [3. Using Phoenix Framework to Generate JSON Resources for Elixir REST API Project](https://www.youtube.com/watch?v=DRsKmU3Sytw&list=PL2Rv8vpZJz4yEd_cTbBV7X2ZK6J4KCg3w&index=38)
 
@@ -621,6 +625,7 @@ Libraries/packages (see [hex.pm](https://hex.pm)):
 * [finch - http client](https://github.com/sneako/finch)
 * [cowboy - http server](https://github.com/ninenines/cowboy)
 * [gettext - I18n](https://github.com/elixir-gettext/gettext)
+* [Open API Spex](https://github.com/open-api-spex/open_api_spex)
 
 Books:
 

@@ -39,6 +39,35 @@ func main() {
 go run .
 ```
 
+## nil
+
+The value `nil` is the zero-value for pointers, interfaces, and some other types.
+
+## Propagating Errors instead of Ignoring them
+
+[Errors](https://go.dev/ref/spec#Errors) returned from functions can be ignored:
+
+```go
+func loadPage(title string) *Page {
+	filename := title + ".txt"
+	body, _ := os.ReadFile(filename)
+	return &Page{Title: title, Body: body}
+}
+```
+
+They can also be propagated:
+
+```go
+func loadPage(title string) (*Page, error) {
+    filename := title + ".txt"
+    body, err := os.ReadFile(filename)
+    if err != nil {
+        return nil, err
+    }
+    return &Page{Title: title, Body: body}, nil
+}
+```
+
 ## Debug Printouts
 
 ```golang
@@ -84,6 +113,7 @@ Learning Go:
 
 * [Tutorial: Get started with Go](https://go.dev/doc/tutorial/getting-started)
 * [Official Go Learning Portal](https://go.dev/learn/)
+* [Tutorial: Build a Wiki (go.dev)](https://go.dev/doc/articles/wiki/)
 * [Learn Go in Y minutes](https://learnxinyminutes.com/docs/go/)
 * [The Golang Handbook – A Beginner's Guide to Learning Go](https://www.freecodecamp.org/news/learn-golang-handbook/)
 * [Go by Example](https://gobyexample.com/)
