@@ -85,9 +85,14 @@ go help
 
 ## Learning Path
 
+* [Official Go Documentation](https://go.dev/doc/#learning)
+
+* [A Tour of Go](https://go.dev/tour/list)
+* [How to Write Go Code](https://go.dev/doc/code)
+* [Effective Go](https://go.dev/doc/effective_go)
+
 [Best Resources to Learn Golang (Video by Melkey)](https://www.youtube.com/watch?v=qT14b1pxtiI):
 
-* [A Tour of Go](https://go.dev/tour)
 * [Go by Example](https://gobyexample.com)
 * [Effective Go](https://go.dev/doc/effective_go)
 * [Let's Go Book](https://lets-go.alexedwards.net)
@@ -97,6 +102,15 @@ go help
 * [Generics tutorial](https://go.dev/doc/tutorial/generics)
 
 * [Go Course on FreeCodeCamp/boot.dev](https://youtu.be/un6ZyFkqFKo?si=xUiY4_MwbDZ_SUXN) (with [source code on Github](git@github.com:bootdotdev/fcc-learn-golang-assets.git))
+* [Golang Web Server and RSS Scraper | Full Tutorial / boot.dev](https://www.youtube.com/watch?v=dpXhDzgUSe4&t=3364s)
+* [Learn HTTP Servers in Go / boot.dev](https://www.boot.dev/courses/learn-http-servers-golang)
+* [DIY Golang Web Server: No Dependencies Needed - with thread safe mutex cache](https://www.youtube.com/watch?v=eqvDSkuBihs)
+* [Go from Zero to Hero: Learn Golang in 15 minutes](https://www.youtube.com/watch?v=P7dCWOjRwJA&t=0s)
+
+* [Awesome Go](https://awesome-go.com)
+* [Awesome Go with Popularity](https://github.com/amanbolat/awesome-go-with-stars?tab=readme-ov-file)
+
+* [Building a NoSQL database in Go](https://betterprogramming.pub/build-a-nosql-database-from-the-scratch-in-1000-lines-of-code-8ed1c15ed924)
 
 TODO:
 
@@ -111,6 +125,193 @@ Tutorials:
 
 * How to Build a CLI App in Go - Tutorial: [Video](https://www.youtube.com/watch?v=g16Zf0KQEWI) / [Code](https://github.com/patni1992/CLI-Todo-App-In-Go) / [Blog Post](https://codingwithpatrik.dev/posts/how-to-build-a-cli-todo-app-in-go/)
 * [How to Code Hangman in Go](https://codingwithpatrik.dev/posts/go-golang-hangman)
+
+## Making Parallel HTTP Requests
+
+https://medium.com/insiderengineering/concurrent-http-requests-in-golang-best-practices-and-techniques-f667e5a19dea
+
+Here is the equivalent of a JavaScript Promise.allSettled implementation in Go:
+
+```go
+package main
+
+import (
+	"errors"
+	"fmt"
+	"sync"
+	"time"
+)
+
+// Result holds the outcome of each task
+type Result struct {
+	Value interface{}
+	Error error
+}
+
+// Task is a function type that returns a result and an error
+type Task func() (interface{}, error)
+
+// allSettled runs tasks concurrently and collects all results, regardless of success or failure.
+func allSettled(tasks []Task) []Result {
+	var wg sync.WaitGroup
+	results := make([]Result, len(tasks))
+
+	// Execute each task in a goroutine
+	for i, task := range tasks {
+		wg.Add(1)
+
+		go func(i int, task Task) {
+			defer wg.Done()
+			value, err := task()
+			results[i] = Result{Value: value, Error: err}
+		}(i, task)
+	}
+
+	// Wait for all tasks to complete
+	wg.Wait()
+	return results
+}
+
+func main() {
+	tasks := []Task{
+		func() (interface{}, error) {
+			time.Sleep(1 * time.Second)
+			return "Task 1 result", nil
+		},
+		func() (interface{}, error) {
+			time.Sleep(2 * time.Second)
+			return nil, errors.New("Task 2 failed")
+		},
+		func() (interface{}, error) {
+			time.Sleep(1 * time.Second)
+			return "Task 3 result", nil
+		},
+	}
+
+	// Run all tasks concurrently and gather results
+	results := allSettled(tasks)
+
+	// Print results
+	for i, result := range results {
+		if result.Error != nil {
+			fmt.Printf("Task %d failed with error: %v\n", i+1, result.Error)
+		} else {
+			fmt.Printf("Task %d succeeded with result: %v\n", i+1, result.Value)
+		}
+	}
+}
+```
+
+## HTTP Requests with Retries
+
+https://kdthedeveloper.medium.com/golang-http-retries-fbf7abacbe27
+
+https://brandur.org/fragments/go-http-retry
+
+https://github.com/avast/retry-go
+
+```go
+err := retry.Do(
+	func() error {
+		resp, err := http.Get(url)
+		if err != nil {
+			return err
+		}
+		defer resp.Body.Close()
+		body, err = ioutil.ReadAll(resp.Body)
+		if err != nil {
+			return err
+		}
+		return nil
+	},
+)
+
+const RetryCount = 3
+
+func backoff(retries int) time.Duration {
+	return time.Duration(math.Pow(2, float64(retries))) * time.Second
+}
+
+func shouldRetry(err error, resp *http.Response) bool {
+	if err != nil {
+		return true
+	}
+
+	if resp.StatusCode == http.StatusBadGateway ||
+		resp.StatusCode == http.StatusServiceUnavailable ||
+		resp.StatusCode == http.StatusGatewayTimeout {
+		return true
+	}
+
+	return false
+}
+```
+
+## Routing with Go Standard Library
+
+* [Release Notes](https://go.dev/blog/routing-enhancements)
+* [http ServeMux API Docs](https://pkg.go.dev/net/http#ServeMux)
+
+```go
+http.HandleFunc("GET /posts/{id}", handlePost2)
+idString := req.PathValue("id")
+```
+
+## Libraries for Postgres
+
+* [pgx - PostgreSQL Driver and Toolkit](https://github.com/jackc/pgx)
+* [Goose - a database migration tool](https://github.com/pressly/goose)
+* [sqlc - generates type-safe code from SQL](https://github.com/sqlc-dev/sqlc)
+
+The pgx driver is a low-level, high performance interface that exposes PostgreSQL-specific features such as LISTEN / NOTIFY and COPY. It also includes an adapter for the standard database/sql interface.
+
+## JSON Logging
+
+https://www.highlight.io/blog/5-best-logging-libraries-for-go
+
+* https://github.com/uber-go/zap and https://github.com/maoueh/zap-pretty
+* https://github.com/rs/zerolog
+* https://github.com/Sirupsen/logrus
+
+You can also do JSON logging with the Go standard library (probably less performant):
+
+```go
+import (
+	"encoding/json"
+	"fmt"
+	"log"
+	"os"
+)
+
+type LogLevel string
+
+const (
+	InfoLevel  LogLevel = "info"
+	ErrorLevel LogLevel = "error"
+)
+
+func StructuredLog(level LogLevel, message string, data map[string]interface{}) {
+	// Add common log fields
+	data["level"] = level
+	data["message"] = message
+
+	// Serialize to JSON
+	entryJSON, err := json.Marshal(data)
+	if err != nil {
+		log.Printf("Error marshalling JSON: %v", err)
+		return
+	}
+
+	// Output the log entry
+	log.Println(string(entryJSON))
+}
+
+StructuredLog(InfoLevel, "User login", map[string]interface{}{
+		"userID": 12345,
+		"source": "main.go",
+})
+```
+
 
 ## Creating a Hello World Project (Go Module)
 
@@ -135,6 +336,219 @@ func main() {
 
 ```sh
 go run .
+```
+
+## What is a Go Package?
+
+From [How to Write Go Code](https://go.dev/doc/code):
+
+Go programs are organized into packages. A package is a collection of source files in the same directory that are compiled together. Functions, types, variables, and constants defined in one source file are visible to all other source files within the same package.
+
+## What is a Go Module?
+
+From [How to Write Go Code](https://go.dev/doc/code):
+
+A repository contains one or more modules. A module is a collection of related Go packages that are released together. A Go repository typically contains only one module, located at the root of the repository. A file named go.mod there declares the module path: the import path prefix for all packages within the module. The module contains the packages in the directory containing its go.mod file as well as subdirectories of that directory, up to the next subdirectory containing another go.mod file (if any).
+
+## Import Paths
+
+From [How to Write Go Code](https://go.dev/doc/code):
+
+An import path is a string used to import a package. A package's import path is its module path joined with its subdirectory within the module. For example, the module github.com/google/go-cmp contains a package in the directory cmp/. That package's import path is github.com/google/go-cmp/cmp. Packages in the standard library do not have a module path prefix.
+
+## Slices
+
+[Go By Example - Slices](https://gobyexample.com/slices):
+
+Unlike arrays, slices are typed only by the elements they contain (not the number of elements). An uninitialized slice equals to nil and has length 0.
+
+```go
+// Using a Slice Literal
+s := []int{1, 2, 3, 4, 5}
+
+// Using make
+s := make([]int, 5)  // Creates a slice of length 5, capacity 5, with all elements initialized to 0.
+s := make([]int, 3, 5)  // Creates a slice of length 3 and capacity 5.
+
+// Slicing an Array or Another Slice
+arr := [5]int{1, 2, 3, 4, 5}
+s := arr[1:4]  // Creates a slice from elements 2, 3, 4 of the array.
+```
+
+Slices are dynamic: They can grow or shrink as needed.
+Slices do not store data directly: They are references to arrays.
+
+## Go Workspaces
+
+n earlier versions of Go (before Go Modules were introduced), a Go workspace had a specific structure. It usually consisted of three main directories: src (go source code), pkg (compiled package objects), bin (compiled binaries).
+
+Go Modules (Introduced in Go 1.11+):
+Starting from Go 1.11, Go introduced Go Modules, which modernized dependency management and reduced the need for a strict workspace structure. With Go Modules:
+
+You no longer need to keep your Go code inside the GOPATH directory.
+A module is a collection of related Go packages, and it's defined by a go.mod file, which tracks the module's dependencies.
+
+## Strings and Single Quotes vs Double Quotes vs Backticks
+
+* Double quotes (") for strings
+* Backticks (`) for raw string literals
+* Single quotes (') for runes (characters)
+
+```go
+name := "Go programming"
+
+query := `SELECT * FROM "users" WHERE "name" = 'John'`
+
+letter := 'A'  // Rune for the letter A
+```
+
+# Naming Convention for Go Files
+
+https://stackoverflow.com/questions/25161774/what-are-conventions-for-filenames-in-go
+
+* File names that begin with "." or "_" are ignored by the go tool
+* Files with the suffix _test.go are only compiled and run by the go test tool.
+* Files with os and architecture specific suffixes automatically follow those same constraints, e.g. name_linux.go will only build on linux, name_amd64.go will only build on amd64. This is the same as having a //+build amd64 line at the top of the file
+
+In addition to the answer provided by JimB, regular file names are lower case, short, and without any sort of underscore or space. Generally, file names follow the same convention as package names. See the Package Names section of Effective Go.
+
+## Having Several Go Scripts in the Same Folder with package main and main function
+
+Yields warning "main redeclared in this block".
+
+https://github.com/golangci/golangci-lint/issues/1370
+
+https://stackoverflow.com/questions/66970531/vs-code-go-main-redeclared-in-this-block/66970599
+
+Separating them into their own directories is the only solution.
+
+In Go, a directory is a package, and a package can only have one function with a given name (with the exception of init(), which is a special case). You think of all your .go files in a directory as separate, but Go does not; it sees a single package, and that package declares multiple functions called main, which is not permitted.
+
+## What is a valid package name in go?
+
+* Lowercase letters
+* Short, meaningful, and simple
+* Avoid special characters
+* Avoid collisions with Go standard library
+* Singular
+* Package name same as directory name
+* Package names cannot contain dashes or underscores
+* If you need to separate words in a package name, the common convention is to use camelCase or concatenated lowercase words without any separators
+
+## Can I import a Single Function from a Go Module? Using Import Aliases
+
+In Go, you cannot import a single function directly from a module; instead, you must import the entire package, as Go imports are done at the package level, not at the function or individual symbol level.
+
+If a package has a long or confusing name, you can create an alias:
+
+```go
+import (
+    t "time" // Alias "time" as "t"
+)
+```
+
+## Thread Safe Cache with Mutex
+
+* [DIY Golang Web Server: No Dependencies Needed - with thread safe mutex cache](https://www.youtube.com/watch?v=eqvDSkuBihs)
+* [Go from Zero to Hero: Learn Golang in 15 minutes](https://www.youtube.com/watch?v=P7dCWOjRwJA&t=0s)
+
+## What is a "Shebang" you can use to Invoke Go Scripts Directly?
+
+Put the script in a file like `bin/my-amazing-script/main.go` and use a shebang so you can invoke the script directly (or simply use `go run bin/my-amazing-script/main.go` to invoke it):
+
+```go
+//usr/bin/env go run "$0" "$@" ; exit
+package main
+import "fmt"
+func main() {
+	fmt.Println("script starting...")
+}
+```
+
+## HTTP Clients
+
+https://www.reddit.com/r/golang/comments/z23tct/those_who_use_an_http_client_on_top_ofinstead_of/
+
+https://github.com/go-resty/resty
+
+Built in http client has no timeout by default?
+
+https://medium.com/@nate510/don-t-use-go-s-default-http-client-4804cb19f779
+
+## Postgres and Database Drivers / Query Builders
+
+pgx
+https://github.com/jackc/pgx
+
+SQLC
+https://github.com/sqlc-dev/sqlc
+
+Bun
+https://github.com/uptrace/bun?tab=readme-ov-file
+
+https://github.com/lib/pq
+go get github.com/lib/pq
+
+## Example Open Source Golang Projects
+
+Open Telementry
+
+Uptrace Monitoring
+https://github.com/uptrace/uptrace
+
+## How do Initialize a new Go Module
+
+```sh
+# mkdir module-dir
+# cd module-dir
+# create main.go file
+go mod init github.com/seenthis-ab/storylines-2.0/bin/migrate-user-roles
+```
+
+Clean up unused dependencies:
+
+```sh
+go mod tidy
+```
+
+## Testing
+
+From [How to Write Go Code](https://go.dev/doc/code):
+
+Go has a lightweight test framework composed of the go test command and the testing package.
+
+You write a test by creating a file with a name ending in _test.go that contains functions named TestXXX with signature func (t *testing.T). The test framework runs each such function; if the function calls a failure function such as t.Error or t.Fail, the test is considered to have failed.
+
+```go
+package morestrings
+
+import "testing"
+
+func TestReverseRunes(t *testing.T) {
+    cases := []struct {
+        in, want string
+    }{
+        {"Hello, world", "dlrow ,olleH"},
+        {"Hello, 世界", "界世 ,olleH"},
+        {"", ""},
+    }
+    for _, c := range cases {
+        got := ReverseRunes(c.in)
+        if got != c.want {
+            t.Errorf("ReverseRunes(%q) == %q, want %q", c.in, got, c.want)
+        }
+    }
+}
+```
+
+## Hot Reload
+
+You can use the [Air library](https://github.com/air-verse/air) for hot reload or [fswatch](https://medium.com/@litanin/golang-hot-reload-makefile-that-works-50abf7668949):
+
+```sh
+go install github.com/air-verse/air@latest
+air init
+air
 ```
 
 ## nil

@@ -32,5 +32,8 @@ func main() {
 
 	// Environment variables
 	appEnv := os.Getenv("APP_ENV")
+	if appEnv == "" {
+		appEnv = "staging"
+	}
 	fmt.Printf("APP_ENV=%s\n", appEnv)
 }
