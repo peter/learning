@@ -629,6 +629,15 @@ Checking error type:
 * `errors.Is` checks if a specific error is part of the error tree
 * `errors.As` checks if the error tree contains an error that can be assigned to a target type
 
+proposal: Go 2: Error handling that is compact and composeable · Issue #55026 · golang/go · GitHub
+https://github.com/golang/go/issues/55026
+
+Best Practices for Error Handling in Go - JetBrains Guide
+https://www.jetbrains.com/guide/go/tutorials/handle_errors_in_go/best_practices/
+
+Error handling in Go web apps shouldn't be so awkward - Boldly Go
+https://boldlygo.tech/posts/2024-01-08-error-handling/
+
 ## Debug Printouts
 
 ```golang
@@ -721,3 +730,122 @@ Frameworks and libraries:
 From the [Grafana API README](https://github.com/grafana/grafana/tree/main/pkg/api):
 
 "The OpenAPI v2 specification is generated automatically from the annotated Go code using [go-swagger](https://github.com/go-swagger/go-swagger) which scans the source code for [annotation rules](https://goswagger.io/use/spec.html). Refer to [this getting started guide](https://medium.com/@pedram.esmaeeli/generate-swagger-specification-from-go-source-code-648615f7b9d9) for getting familiar with the toolkit."
+
+## How do I do a "select for update skip locked" query in a transaction with pgx in Go?
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+
+	"github.com/jackc/pgx/v4/pgxpool"
+)
+
+func main() {
+	// Initialize a connection pool
+	connString := "postgres://username:password@localhost:5432/database"
+	dbpool, err := pgxpool.Connect(context.Background(), connString)
+	if err != nil {
+		log.Fatalf("Unable to connect to database: %v\n", err)
+	}
+	defer dbpool.Close()
+
+	// Start a transaction
+	ctx := context.Background()
+	tx, err := dbpool.Begin(ctx)
+	if err != nil {
+		log.Fatalf("Failed to begin transaction: %v\n", err)
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback(ctx)
+		} else {
+			tx.Commit(ctx)
+		}
+	}()
+
+	// Execute the SELECT FOR UPDATE SKIP LOCKED query
+	rows, err := tx.Query(ctx, `
+SELECT id, task_data
+FROM tasks
+WHERE status = 'pending'
+ORDER BY created_at
+LIMIT 5
+FOR UPDATE SKIP LOCKED
+`)
+	if err != nil {
+		log.Fatalf("Query failed: %v\n", err)
+	}
+	defer rows.Close()
+
+	// Process the selected rows
+	for rows.Next() {
+		var id int
+		var taskData string
+		err = rows.Scan(&id, &taskData)
+		if err != nil {
+			log.Fatalf("Failed to scan row: %v\n", err)
+		}
+
+		// Here, you can process the task as needed
+		fmt.Printf("Processing task ID %d with data: %s\n", id, taskData)
+	}
+
+	// Check for any errors during iteration
+	if err = rows.Err(); err != nil {
+		log.Fatalf("Row iteration error: %v\n", err)
+	}
+
+	fmt.Println("Completed processing tasks.")
+}
+```
+
+## Can I combine a service that is a scheduler that runs a job Every minute with a pool of workers that works off a queue using postgres?
+
+Yes, you can design a system that combines a scheduler with a worker pool using PostgreSQL as a queue, and this is a common pattern for handling scheduled tasks and worker pools efficiently. Here’s a high-level overview of how you can implement this:
+
+1. Scheduler
+	•	Use a scheduler (like cron, Celery Beat, or custom logic in Python, Go, etc.) to enqueue a task every minute. This scheduler would insert tasks into a PostgreSQL table.
+
+	•	Each job entry in PostgreSQL would represent a task in the queue. You can include columns like id, task_name, status (e.g., pending, in_progress, completed), and scheduled_at.
+
+2. PostgreSQL as a Task Queue
+	•	Use a PostgreSQL table as a queue by inserting tasks that the worker pool will later pick up.
+
+	•	Index the task table on the status column to quickly query for pending tasks.
+
+	•	Optionally, implement locking or row-based selection to handle multiple workers. PostgreSQL’s FOR UPDATE SKIP LOCKED is useful for this, as it allows a worker to take one job without interfering with others.
+
+3. Worker Pool
+	•	Create a pool of workers that continuously poll the task queue in PostgreSQL for new jobs.
+
+	•	Each worker can select a pending task, set its status to in_progress, and process it.
+
+	•	Once the worker completes the task, it updates the task’s status to completed (or failed, if an error occurs).
+
+4. Considerations
+	•	Concurrency: To avoid race conditions, ensure that workers only select jobs that aren’t already being processed by another worker. FOR UPDATE SKIP LOCKED helps here.
+
+	•	Retries: You can design retry logic by checking the task status. For example, a worker can retry tasks marked as failed.
+
+	•	Clean-up: Depending on the volume, periodically clean up the queue by archiving or removing completed jobs.
+
+Sample Table Schema
+
+```sql
+CREATE TABLE jobs (
+    id SERIAL PRIMARY KEY,
+    job_type TEXT NOT NULL,
+	job_data jsonb,
+    status TEXT CHECK (status IN ('pending', 'in_progress', 'completed', 'failed')) DEFAULT 'pending',
+    scheduled_at TIMESTAMPTZ DEFAULT NOW(),
+    started_at TIMESTAMPTZ,
+    completed_at TIMESTAMPTZ,
+    error jsonb
+);
+```
+
+This approach allows your scheduler to enqueue tasks regularly, and workers to pick them up and process them efficiently.
