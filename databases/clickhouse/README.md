@@ -1,5 +1,7 @@
 # Clickhouse
 
+Query billions of rows in milliseconds
+
 ## Introduction
 
 Clickhouse is:
@@ -37,8 +39,11 @@ SHOW CREATE TABLE my_table;
 * [Clickhouse Mac Install](https://clickhouse.com/docs/install/macOS)
 * [Clickhouse Docs](https://clickhouse.com/docs)
 * [Clickhouse Learning](https://learn.clickhouse.com)
+* [Clickhouse Query Optimization Workshop September 2025 (Pablo Musa)](https://learn.clickhouse.com/visitor_catalog_class/show/1786439)
 * [Clickhouse Cloud](https://console.clickhouse.cloud)
 * [Clickhouse Realtime Modeling of Weather Data Case Stury](https://www.ssp.sh/blog/practical-data-modeling-clickhouse/)
+
+* [ClickStack/HyperDX - Clickhouse Observability Platform](https://www.hyperdx.io) ([Clickhouse/HyperDX acquisition](https://clickhouse.com/blog/clickhouse-acquires-hyperdx-the-future-of-open-source-observability))
 
 Other open source analytics databases:
 
